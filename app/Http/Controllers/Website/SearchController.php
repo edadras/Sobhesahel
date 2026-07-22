@@ -15,7 +15,9 @@ class SearchController extends Controller
     {
 //        abort(503);
 
-        if (!$request->has('q') && $request->get('q') == '') {
+        $hasAdvancedFilters = $request->hasAny(['sort', 'post_type', 'type', 'category', 'author', 'from_date', 'to_date']);
+
+        if (!$request->has('q') && $request->get('q') == '' && !$hasAdvancedFilters) {
             abort(404);
         }
 

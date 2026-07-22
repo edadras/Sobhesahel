@@ -2,9 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\Author;
 use App\Models\Gallery;
 use App\Models\News;
 use App\Models\Note;
+use App\Models\Podcast;
+use App\Models\User;
 use App\Models\Video;
 use App\Support\SearchIndexSettings;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,12 +17,13 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Morilog\Jalali\Jalalian;
 
 class SiteSearchService
 {
     /**
-     * @param  array{category?: string, post_type?: string, from_date?: string, to_date?: string, order_type?: string}  $options
+     * @param  array{category?: string, post_type?: string, from_date?: string, to_date?: string, order_type?: string, author?: string}  $options
      */
     public function paginate(string $searchTerm, array $options, int $page = 1, int $perPage = 10): LengthAwarePaginator
     {
@@ -48,6 +52,76 @@ class SiteSearchService
         }
 
         return $this->paginateDatabaseWithTerm($modelEntries, $searchTerm, $options, $page, $perPage, $orderType);
+    }
+
+    /**
+     * Search authors (Author model) and journalist users (User model with published content)
+     * matching the given term. Database-only, so it works even when Meilisearch is down.
+     */
+    public function searchAuthors(string $searchTerm, int $limit = 12): Collection
+    {
+        $searchTerm = trim($searchTerm);
+
+        if ($searchTerm === '') {
+            return collect();
+        }
+
+        $likeTerm = '%'.$searchTerm.'%';
+        $results = collect();
+
+        try {
+            $authors = Author::query()
+                ->where(function (Builder $query) use ($likeTerm) {
+                    $query->where('name', 'like', $likeTerm)
+                        ->orWhere('nik_name', 'like', $likeTerm);
+                })
+                ->orderBy('name')
+                ->limit($limit)
+                ->get();
+
+            foreach ($authors as $author) {
+                $results->push([
+                    'type' => 'author',
+                    'id' => $author->id,
+                    'name' => $author->name,
+                    'nik_name' => $author->nik_name ?? '',
+                    'avatar' => $author->avatar ? Storage::url($author->avatar) : '/asset/img/user05.png',
+                    'url' => route('website.rtl.author', ['user_type' => 'author', 'id' => $author->id]),
+                ]);
+            }
+
+            $remaining = $limit - $results->count();
+
+            if ($remaining > 0) {
+                $users = User::query()
+                    ->where('name', 'like', $likeTerm)
+                    ->where(function (Builder $query) {
+                        $query->whereHas('news', fn (Builder $newsQuery) => $newsQuery->where('status', 'published')->where('is_published', true))
+                            ->orWhereHas('notes', fn (Builder $noteQuery) => $noteQuery->where('status', 'published')->where('is_published', true));
+                    })
+                    ->orderBy('name')
+                    ->limit($remaining)
+                    ->get();
+
+                foreach ($users as $user) {
+                    $results->push([
+                        'type' => 'user',
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'nik_name' => '',
+                        'avatar' => $user->avatar_url ? Storage::url($user->avatar_url) : '/asset/img/user05.png',
+                        'url' => route('website.rtl.author', ['user_type' => 'user', 'id' => $user->id]),
+                    ]);
+                }
+            }
+        } catch (\Throwable $exception) {
+            Log::warning('Author search failed.', [
+                'term' => $searchTerm,
+                'message' => $exception->getMessage(),
+            ]);
+        }
+
+        return $results;
     }
 
     private function shouldUseMeilisearch(): bool
@@ -147,7 +221,7 @@ class SiteSearchService
 
     /**
      * @param  class-string<Model>  $modelClass
-     * @param  array{category?: string, from_date?: string, to_date?: string}  $options
+     * @param  array{category?: string, from_date?: string, to_date?: string, author?: string}  $options
      * @return Builder<Model>
      */
     private function basePublishedQuery(string $modelClass, array $options): Builder
@@ -157,8 +231,23 @@ class SiteSearchService
             ->where('is_published', true);
 
         $query = $this->applyCategoryFilter($query, $modelClass, $options);
+        $query = $this->applyAuthorFilter($query, $options);
 
         return $this->applyDateFilters($query, $options);
+    }
+
+    /**
+     * @param  Builder<Model>  $query
+     * @param  array{author?: string}  $options
+     * @return Builder<Model>
+     */
+    private function applyAuthorFilter(Builder $query, array $options): Builder
+    {
+        if (($options['author'] ?? 'all') === 'all' || ($options['author'] ?? '') === '') {
+            return $query;
+        }
+
+        return $query->where('author_id', (int) $options['author']);
     }
 
     /**
@@ -239,7 +328,7 @@ class SiteSearchService
 
     private function modelHasSubTitle(string $modelClass): bool
     {
-        return in_array($modelClass, [News::class, Gallery::class, Video::class], true);
+        return in_array($modelClass, [News::class, Gallery::class, Video::class, Podcast::class], true);
     }
 
     /**
@@ -265,6 +354,7 @@ class SiteSearchService
             'gallery' => ['galleries' => Gallery::class],
             'video' => ['videos' => Video::class],
             'note' => ['notes' => Note::class],
+            'podcast' => ['podcasts' => Podcast::class],
         ];
 
         return $map[$postType] ?? $all;
@@ -404,11 +494,15 @@ class SiteSearchService
     }
 
     /**
-     * @param  array{category?: string, from_date?: string, to_date?: string}  $options
+     * @param  array{category?: string, from_date?: string, to_date?: string, author?: string}  $options
      */
     private function buildMeilisearchFilter(array $options): string
     {
         $filters = [];
+
+        if (($options['author'] ?? 'all') !== 'all' && ($options['author'] ?? '') !== '') {
+            $filters[] = 'author_id = '.(int) $options['author'];
+        }
 
         if (! empty($options['from_date'])) {
             $from = Jalalian::fromFormat('Y/m/d', $options['from_date'])->toCarbon()->startOfDay()->format('Y-m-d H:i:s');
@@ -464,14 +558,14 @@ class SiteSearchService
     }
 
     /**
-     * @param  array{category?: string, post_type?: string, from_date?: string, to_date?: string, order_type?: string}  $options
-     * @return array{category: string, post_type: string, from_date: string, to_date: string, order_type: string}
+     * @param  array{category?: string, post_type?: string, from_date?: string, to_date?: string, order_type?: string, author?: string}  $options
+     * @return array{category: string, post_type: string, from_date: string, to_date: string, order_type: string, author: string}
      */
     private function normalizeOptions(array $options): array
     {
         $postType = $options['post_type'] ?? 'all';
 
-        if ($postType === 'image') {
+        if ($postType === 'image' || $postType === 'photo') {
             $postType = 'gallery';
         }
 
@@ -481,6 +575,7 @@ class SiteSearchService
             'from_date' => (string) ($options['from_date'] ?? ''),
             'to_date' => (string) ($options['to_date'] ?? ''),
             'order_type' => (string) ($options['order_type'] ?? 'DESC'),
+            'author' => (string) ($options['author'] ?? 'all'),
         ];
     }
 }
