@@ -2,10 +2,13 @@
 
 namespace App\Filament\Widgets;
 
+use App\Services\ContentVisitStats;
+use App\Services\MatomoService;
 use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
+use Carbon\Carbon;
+use Edwink\FilamentUserActivity\Models\UserActivity;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Illuminate\Support\Facades\Http;
 
 class StatisticsWidget extends BaseWidget
 {
@@ -15,84 +18,116 @@ class StatisticsWidget extends BaseWidget
 
     protected static bool $isLazy = false;
 
-    protected static ?string $pollingInterval = '5s';
+    protected static ?string $pollingInterval = '60s';
 
     protected static ?int $sort = 0;
 
     protected function getStats(): array
     {
-//        $matomoUrl = 'http://145.239.138.55:8011/index.php';
-//        $tokenAuth = 'ba67a38bc8b9095dde20cb9870912764';
-//        $siteId = 1;
-//
-//        try {
-//            // Fetch Unique Visitors Today
-//            $uniqueVisitors = $this->fetchMatomoData($matomoUrl, $tokenAuth, $siteId, 'VisitsSummary.getUniqueVisitors', 'day')['value'];
-//
-//            // Fetch Total Visits Today
-//            $totalVisits = $this->fetchMatomoData($matomoUrl, $tokenAuth, $siteId, 'VisitsSummary.getVisits', 'day')['value'];
-//
-////        // Fetch Real-Time Visitors (Last 30 min)
-//            $realTimeVisitors = $this->fetchRealTimeVisitors($matomoUrl, $tokenAuth, $siteId);
-//
-//            return [
-//                Stat::make('بازدیدکنندگان آنلاین', number_format($realTimeVisitors))
-//                    ->description('تعداد بازدیدکنندگان فعال در ۵ دقیقه گذشته')
-//                    ->color('danger') // Red color
-//                    ->icon('heroicon-o-eye'),
-//
-//                Stat::make('بازدیدکنندگان یکتا امروز', number_format($uniqueVisitors))
-//                    ->description('تعداد بازدیدکنندگان یکتا امروز')
-//                    ->color('success') // Green color
-//                    ->icon('heroicon-o-user-group'),
-//
-//                Stat::make('تعداد کل بازدیدهای امروز', number_format($totalVisits))
-//                    ->description('مجموع بازدیدهای ثبت شده امروز')
-//                    ->color('primary') // Blue color
-//                    ->icon('heroicon-o-chart-bar'),
-//            ];
-        return [];
-//        }catch (\Exception $e){
-//            return [];
-//        }
+        try {
+            return array_merge(
+                [$this->onlineEditorsStat()],
+                $this->contentVisitStats(),
+                $this->matomoStats(),
+            );
+        } catch (\Throwable $e) {
+            // The dashboard must never break because of statistics.
+            return [];
+        }
     }
 
-    private function fetchRealTimeVisitors($matomoUrl, $tokenAuth, $siteId)
+    /**
+     * Panel users active in the last 5 minutes (filament-user-activity data).
+     */
+    protected function onlineEditorsStat(): Stat
     {
-        $response = Http::get($matomoUrl, [
-            'module' => 'API',
-            'method' => 'Live.getCounters',
-            'idSite' => $siteId,
-            'lastMinutes' => 5, // Change this value to 5, 10, or 30 for different time ranges
-            'format' => 'json',
-            'token_auth' => $tokenAuth,
-        ]);
+        $online = 0;
 
-        if ($response->successful()) {
-            $data = $response->json();
-            return $data[0]['visitors'] ?? 0;
+        try {
+            $online = UserActivity::query()
+                ->where('created_at', '>=', now()->subMinutes(5))
+                ->distinct('user_id')
+                ->count('user_id');
+        } catch (\Throwable $e) {
+            // Table not migrated yet — show zero.
         }
 
-        return 0;
+        return Stat::make('اعضای آنلاین تحریریه', number_format($online))
+            ->description('کاربران فعال پنل در ۵ دقیقه گذشته')
+            ->color($online > 0 ? 'success' : 'gray')
+            ->icon('heroicon-o-user-group');
     }
 
-    private function fetchMatomoData($matomoUrl, $tokenAuth, $siteId, $method, $periodOrTime)
+    /**
+     * Internal content visit totals from the `visits` counters.
+     *
+     * @return array<Stat>
+     */
+    protected function contentVisitStats(): array
     {
-        $response = Http::get($matomoUrl, [
-            'module' => 'API',
-            'method' => $method,
-            'idSite' => $siteId,
-            'period' => is_numeric($periodOrTime) ? null : $periodOrTime,
-            'date' => is_numeric($periodOrTime) ? null : 'today',
-            'lastMinutes' => is_numeric($periodOrTime) ? $periodOrTime : null,
-            'format' => 'json',
-            'token_auth' => $tokenAuth,
-        ]);
+        $todayVisits = ContentVisitStats::visitsSince(Carbon::today());
+        $weekVisits = ContentVisitStats::visitsSince(Carbon::today()->subDays(6));
+        $monthVisits = ContentVisitStats::visitsSince(Carbon::today()->subDays(29));
 
-        if ($response->successful()) {
-            return is_array($response->json()) ? ($response->json()[0]['visitors'] ?? $response->json()) : 0;
+        $sparkline = array_values(ContentVisitStats::dailyVisits(7));
+
+        return [
+            Stat::make('بازدید مطالب امروز', number_format($todayVisits))
+                ->description('مجموع بازدید مطالب منتشرشده امروز')
+                ->chart($sparkline)
+                ->color('primary')
+                ->icon('heroicon-o-eye'),
+
+            Stat::make('بازدید مطالب ۷ روز گذشته', number_format($weekVisits))
+                ->description('مجموع بازدید مطالب منتشرشده در هفته اخیر')
+                ->color('info')
+                ->icon('heroicon-o-chart-bar'),
+
+            Stat::make('بازدید مطالب ۳۰ روز گذشته', number_format($monthVisits))
+                ->description('مجموع بازدید مطالب منتشرشده در ماه اخیر')
+                ->color('warning')
+                ->icon('heroicon-o-calendar-days'),
+        ];
+    }
+
+    /**
+     * Live site-wide numbers from Matomo. Shows "—" placeholders whenever
+     * Matomo is unconfigured or unreachable.
+     *
+     * @return array<Stat>
+     */
+    protected function matomoStats(): array
+    {
+        $realtime = null;
+        $summary = null;
+
+        try {
+            $realtime = MatomoService::realtimeVisitors();
+            $summary = MatomoService::todaySummary();
+        } catch (\Throwable $e) {
+            // Never break the dashboard because of Matomo.
         }
 
-        return 0;
+        $unavailable = 'ماتومو در دسترس نیست';
+
+        return [
+            Stat::make('بازدیدکنندگان آنلاین سایت', $realtime !== null ? number_format($realtime) : '—')
+                ->description($realtime !== null ? 'بازدیدکنندگان فعال سایت در ۵ دقیقه گذشته' : $unavailable)
+                ->color($realtime !== null ? 'danger' : 'gray')
+                ->icon('heroicon-o-signal'),
+
+            Stat::make('بازدید امروز سایت', $summary !== null ? number_format($summary['visits']) : '—')
+                ->description(
+                    $summary !== null
+                        ? (
+                            $summary['unique'] !== null
+                                ? number_format($summary['unique']).' بازدیدکننده یکتا'
+                                : 'مجموع بازدیدهای ثبت‌شده امروز'
+                        )
+                        : $unavailable
+                )
+                ->color($summary !== null ? 'success' : 'gray')
+                ->icon('heroicon-o-globe-alt'),
+        ];
     }
 }
