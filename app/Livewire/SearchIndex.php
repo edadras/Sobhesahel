@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Author;
 use App\Models\Category;
 use App\Services\SiteSearchService;
 use Livewire\Component;
@@ -13,6 +14,8 @@ class SearchIndex extends Component
 
     public $categories;
 
+    public $authors;
+
     public $query;
 
     public $options = [
@@ -21,6 +24,7 @@ class SearchIndex extends Component
         'from_date' => '',
         'to_date' => '',
         'order_type' => 'DESC',
+        'author' => 'all',
     ];
 
     protected $listeners = [
@@ -31,15 +35,60 @@ class SearchIndex extends Component
     public function mount(): void
     {
         $this->categories = Category::select('id', 'title')->get();
+        $this->authors = Author::select('id', 'name')->orderBy('name')->get();
         $this->query = request()->get('q', '');
+
+        $this->fillOptionsFromRequest();
+    }
+
+    protected function fillOptionsFromRequest(): void
+    {
+        $request = request();
+
+        $sort = strtolower((string) $request->get('sort', 'newest'));
+        $this->options['order_type'] = $sort === 'oldest' ? 'ASC' : 'DESC';
+
+        $postType = (string) $request->get('post_type', $request->get('type', 'all'));
+
+        if (in_array($postType, ['news', 'note', 'photo', 'gallery', 'image', 'video', 'podcast'], true)) {
+            $this->options['post_type'] = $postType;
+        }
+
+        $category = (string) $request->get('category', 'all');
+
+        if ($category !== '' && $category !== 'all') {
+            $this->options['category'] = $category;
+        }
+
+        $author = (string) $request->get('author', 'all');
+
+        if ($author !== '' && $author !== 'all') {
+            $this->options['author'] = $author;
+        }
+
+        $this->options['from_date'] = (string) $request->get('from_date', '');
+        $this->options['to_date'] = (string) $request->get('to_date', '');
+    }
+
+    public function sortUrl(string $sort): string
+    {
+        $params = array_filter([
+            'q' => $this->query,
+            'sort' => $sort,
+            'post_type' => $this->options['post_type'] !== 'all' ? $this->options['post_type'] : null,
+            'category' => $this->options['category'] !== 'all' ? $this->options['category'] : null,
+            'author' => $this->options['author'] !== 'all' ? $this->options['author'] : null,
+            'from_date' => $this->options['from_date'] !== '' ? $this->options['from_date'] : null,
+            'to_date' => $this->options['to_date'] !== '' ? $this->options['to_date'] : null,
+        ], fn ($value) => $value !== null && $value !== '');
+
+        return route('website.rtl.search').'?'.http_build_query($params);
     }
 
     public function updatedQuery(): void
     {
-        $requestQuery = request()->get('q', '');
-
-        if ($requestQuery !== $this->query) {
-            $this->query = $requestQuery;
+        if (request()->has('q') && request()->get('q') !== $this->query) {
+            $this->query = request()->get('q');
         }
 
         $this->resetPage();
@@ -69,7 +118,7 @@ class SearchIndex extends Component
 
     public function getData()
     {
-        $searchTerm = request()->get('q', $this->query ?? '');
+        $searchTerm = request()->has('q') ? request()->get('q', '') : ($this->query ?? '');
 
         if ($searchTerm !== $this->query) {
             $this->query = $searchTerm;
@@ -85,14 +134,13 @@ class SearchIndex extends Component
 
     public function render()
     {
-        $requestQuery = request()->get('q', '');
-
-        if ($requestQuery !== $this->query) {
-            $this->query = $requestQuery;
+        if (request()->has('q') && request()->get('q') !== $this->query) {
+            $this->query = request()->get('q');
         }
 
         return view('livewire.search-index', [
             'posts' => $this->getData(),
+            'authorResults' => app(SiteSearchService::class)->searchAuthors((string) $this->query),
         ]);
     }
 }

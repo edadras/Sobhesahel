@@ -49,6 +49,7 @@ class SearchIndexSettings
             'galleries' => \App\Models\Gallery::class,
             'videos' => \App\Models\Video::class,
             'notes' => \App\Models\Note::class,
+            'podcasts' => \App\Models\Podcast::class,
         ];
     }
 

@@ -34,6 +34,17 @@
                         <option value="video">فیلم</option>
                         <option value="gallery">عکس</option>
                         <option value="note">یادداشت</option>
+                        <option value="podcast">پادکست</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="sel03" class="form-label">نویسنده / مولف</label>
+                    <select class="form-select" id="sel03" wire:model="options.author">
+                        <option value="all">همه</option>
+                        @foreach($authors as $author)
+                            <option value="{{ $author->id }}">{{ $author->name }}</option>
+                        @endforeach
                     </select>
                 </div>
 
@@ -61,6 +72,9 @@
         <!-- Search Box -->
         <div class="mb-4">
             <form method="GET" action="{{ route('website.rtl.search') }}" class="d-flex align-items-center gap-2" style="max-width: 500px;" wire:ignore>
+                @if($options['order_type'] === 'ASC')
+                    <input type="hidden" name="sort" value="oldest">
+                @endif
                 <input
                     type="text"
                     name="q"
@@ -83,6 +97,30 @@
         @else
             <div class="archvLftTtl">جستجو در محتوای سایت</div>
         @endif
+
+        @if($authorResults->isNotEmpty())
+            <div class="searchAuthors mb-4">
+                <div class="archvLftTtl" style="font-size: 15px;">مولفان و نویسندگان</div>
+                <div class="d-flex flex-wrap gap-3 mt-2">
+                    @foreach($authorResults as $person)
+                        <a href="{{ $person['url'] }}"
+                           class="d-flex align-items-center gap-2 transitionCls"
+                           style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 8px 14px; text-decoration: none; color: inherit;">
+                            <img src="{{ $person['avatar'] }}"
+                                 alt="{{ $person['name'] }}"
+                                 style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                            <span class="text-end">
+                                <strong style="display: block; font-size: 13px;">{{ $person['name'] }}</strong>
+                                @if(!empty($person['nik_name']))
+                                    <i style="font-size: 11px; color: #666;">{{ $person['nik_name'] }}</i>
+                                @endif
+                            </span>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
         <div class="searchPage">
             <div class="srchPgRght">
                 <div class="head">
@@ -91,7 +129,7 @@
                         <div class="select">
                             <div class="dropSelDiv">
                                 <span>
-                                    <p>جدید به قدیم</p>
+                                    <p>{{ $options['order_type'] === 'ASC' ? 'قدیم به جدید' : 'جدید به قدیم' }}</p>
                                 </span>
                                 <i class="icon-Group-2209 expndMrIcon transitionCls"></i>
                             </div>
@@ -99,12 +137,12 @@
                         <input type="hidden">
                         <ul class="dropdown-mnu">
                             <li>
-                                <a href="#" wire:click="$set('options.order_type', 'DESC')">
+                                <a href="{{ $this->sortUrl('newest') }}" wire:click.prevent="$set('options.order_type', 'DESC')">
                                     <p>جدید به قدیم</p>
                                 </a>
                             </li>
                             <li class="faDirction">
-                                <a href="#" wire:click="$set('options.order_type', 'ASC')">
+                                <a href="{{ $this->sortUrl('oldest') }}" wire:click.prevent="$set('options.order_type', 'ASC')">
                                     <p>قدیم به جدید</p>
                                 </a>
                             </li>
