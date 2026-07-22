@@ -69,6 +69,24 @@
                         @endforeach
                         <br/>
                     </ul>
+                    @php
+                        $footerMenuItems = \App\Models\Menu::forLocation('footer');
+                    @endphp
+                    @if(count($footerMenuItems) > 0)
+                        <ul class="fotrLinks">
+                            @foreach($footerMenuItems as $menuItem)
+                                <li>
+                                    @if($menuItem['type'] === 'separator')
+                                        <span class="transitionCls">{{ $menuItem['title'] }}</span>
+                                    @else
+                                        <a href="{{ \App\Models\Menu::resolveUrl($menuItem['url']) }}"
+                                           target="{{ $menuItem['target'] ?? '_self' }}"
+                                           class="transitionCls">{{ $menuItem['title'] }}</a>
+                                    @endif
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
                     <ul class="fotrLinks">
                         <li>
                             <a href="{{ route('website.rtl.contact') }}" class="transitionCls">تماس با ما</a>
@@ -83,6 +101,7 @@
                             <a href="{{ route('website.rtl.index',['type' => 'video']) }}" class="transitionCls">فیلم</a>
                         </li>
                     </ul>
+                    @endif
                 </div>
                 <div id="div_eRasanehTrustseal_87336"></div>
                 <script src="https://trustseal.e-rasaneh.ir/trustseal.js"></script>

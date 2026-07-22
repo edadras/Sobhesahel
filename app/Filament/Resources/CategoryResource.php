@@ -55,10 +55,85 @@ class CategoryResource extends Resource implements HasShieldPermissions
                     ->label('English SLUG'),
                 Forms\Components\Select::make('parent_id')
                     ->label('دسته بندی مادر')
-                    ->options(Category::pluck('title', 'id')->toArray())
+                    ->options(fn (?Category $record) => self::getParentOptions($record?->id))
                     ->searchable()
                     ->nullable(),
+                Forms\Components\FileUpload::make('image')
+                    ->label('تصویر')
+                    ->image()
+                    ->nullable(),
+                Forms\Components\Textarea::make('description')
+                    ->label('توضیحات')
+                    ->rows(3)
+                    ->nullable()
+                    ->columnSpanFull(),
+                Forms\Components\Section::make('سئو')
+                    ->schema([
+                        Forms\Components\TextInput::make('seo_title')
+                            ->label('عنوان سئو')
+                            ->nullable(),
+                        Forms\Components\TextInput::make('meta_desc')
+                            ->label('توضیحات متا')
+                            ->nullable(),
+                        Forms\Components\Toggle::make('no_index')
+                            ->label('عدم ایندکس (NoIndex)')
+                            ->default(false),
+                    ])
+                    ->columns(2)
+                    ->collapsible(),
             ]);
+    }
+
+    /**
+     * Indented tree options for the parent select, excluding the record itself
+     * and its descendants (to avoid loops).
+     */
+    public static function getParentOptions(?int $exceptId = null): array
+    {
+        $options = [];
+
+        $roots = Category::query()
+            ->whereNull('parent_id')
+            ->with('childrenRecursive')
+            ->orderBy('id')
+            ->get();
+
+        foreach ($roots as $root) {
+            self::appendParentOption($options, $root, 0, $exceptId);
+        }
+
+        return $options;
+    }
+
+    protected static function appendParentOption(array &$options, Category $category, int $depth, ?int $exceptId): void
+    {
+        if ($exceptId !== null && $category->id === $exceptId) {
+            return;
+        }
+
+        $options[$category->id] = str_repeat('— ', $depth) . $category->title;
+
+        foreach ($category->childrenRecursive as $child) {
+            self::appendParentOption($options, $child, $depth + 1, $exceptId);
+        }
+    }
+
+    public static function getDepth(Category $record): int
+    {
+        $depth = 0;
+        $current = $record;
+
+        while ($current->parent_id !== null && $depth < 10) {
+            $current = $current->parent;
+
+            if (! $current) {
+                break;
+            }
+
+            $depth++;
+        }
+
+        return $depth;
     }
 
     public static function table(Table $table): Table
@@ -67,6 +142,7 @@ class CategoryResource extends Resource implements HasShieldPermissions
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->label('عنوان')
+                    ->formatStateUsing(fn (string $state, Category $record) => str_repeat('— ', self::getDepth($record)) . $state)
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('en_title')
@@ -81,6 +157,11 @@ class CategoryResource extends Resource implements HasShieldPermissions
                 Tables\Columns\TextColumn::make('slug')
                     ->label('نامک')
                     ->searchable(),
+
+                Tables\Columns\IconColumn::make('no_index')
+                    ->label('NoIndex')
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('en_slug')
                     ->label('نامک انگلیسی')
@@ -98,6 +179,7 @@ class CategoryResource extends Resource implements HasShieldPermissions
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->jalaliDateTime('H:i Y/m/d'),
             ])
+            ->modifyQueryUsing(fn (Builder $query) => $query->orderByRaw('COALESCE(parent_id, id), parent_id IS NOT NULL, id'))
             ->filters([
                 //
             ])
@@ -123,8 +205,8 @@ class CategoryResource extends Resource implements HasShieldPermissions
     {
         return [
             'index' => Pages\ListCategories::route('/'),
-//            'create' => Pages\CreateCategory::route('/create'),
-//            'edit' => Pages\EditCategory::route('/{record}/edit'),
+            'create' => Pages\CreateCategory::route('/create'),
+            'edit' => Pages\EditCategory::route('/{record}/edit'),
         ];
     }
 

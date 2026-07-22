@@ -226,6 +226,39 @@
                                         />
                                     </a>
                                     <div class="hedrMnuBx">
+                                        @php
+                                            $headerMenuItems = \App\Models\Menu::forLocation('header');
+                                        @endphp
+                                        @if(count($headerMenuItems) > 0)
+                                            <ul class="hedrMnuUl">
+                                                @foreach($headerMenuItems as $menuItem)
+                                                    <li>
+                                                        @if($menuItem['type'] === 'separator')
+                                                            <span class="transitionCls">{{ $menuItem['title'] }}</span>
+                                                        @else
+                                                            <a href="{{ \App\Models\Menu::resolveUrl($menuItem['url']) }}"
+                                                               target="{{ $menuItem['target'] ?? '_self' }}"
+                                                               class="transitionCls">{{ $menuItem['title'] }}</a>
+                                                        @endif
+                                                        @if(!empty($menuItem['active_children_recursive']))
+                                                            <ul>
+                                                                @foreach($menuItem['active_children_recursive'] as $childItem)
+                                                                    <li>
+                                                                        @if($childItem['type'] === 'separator')
+                                                                            <span class="transitionCls">{{ $childItem['title'] }}</span>
+                                                                        @else
+                                                                            <a href="{{ \App\Models\Menu::resolveUrl($childItem['url']) }}"
+                                                                               target="{{ $childItem['target'] ?? '_self' }}"
+                                                                               class="transitionCls">{{ $childItem['title'] }}</a>
+                                                                        @endif
+                                                                    </li>
+                                                                @endforeach
+                                                            </ul>
+                                                        @endif
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @else
                                         <ul class="hedrMnuUl">
                                             <li>
                                                 <a href="{{ route('website.home') }}"
@@ -255,6 +288,7 @@
                                                    class="transitionCls {{request()->routeIs('website.rtl.video') ? 'active' : ''}}">ویدئو</a>
                                             </li>
                                         </ul>
+                                        @endif
                                     </div>
                                 </div>
                                 <ul class="hdrLftMnu">
