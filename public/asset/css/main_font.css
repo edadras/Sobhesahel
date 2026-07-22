@@ -1,0 +1,282 @@
+/************************0 colors 0****************/
+:root {
+  --body-bg: #ffffff;
+  --bg-2: #fff5f2;
+  --light-3: #f3f3f3;
+  --light-4: #f7f6f4;
+
+  --stroke-stoke-2: #dadada;
+  --stroke-e-3: #e3e3e3;
+
+  --text-1: #262626;
+  --text-2: #626262;
+
+  --shadow: 1px 1px 4px 0px rgba(7, 32, 50, 0.02),
+    -1px -1px 4px 0px rgba(7, 32, 50, 0.02),
+    2px 4px 18px 0px rgba(7, 32, 50, 0.13);
+
+  --shadow2: -4px 6px 4px 0px rgba(54, 54, 54, 0.05);
+
+  --filter: drop-shadow(0px 0px 7px rgba(57, 57, 57, 0.315));
+
+  /* Common */
+  --gray-3: #d7d7d7;
+  --text-3: #a1a1a1;
+  --white: #ffffff;
+  --gray_light: #ffffff;
+  --red-1: #ed3052;
+  --red-bg: #f1817b;
+  --golden: #ffca00;
+  --dark-purple: #5c415d;
+  --blue: #008ae0;
+  --blue-hover: #00609b;
+  --gray: #8a8a8a;
+}
+
+[data-theme="dark"] {
+  --body-bg: #292929;
+  --bg-2: #313131;
+  --light-3: #313131;
+  --light-4: #383838;
+
+  --stroke-stoke-2: #3d3d3d;
+  --stroke-e-3: #3d3d3d;
+
+  --text-1: #ffffff;
+  --text-2: #d8d8d8;
+
+  --shadow: -3px 4px 12px 0px rgb(111 110 110 / 28%),
+    -1px -1px 4px 0px rgb(156 156 156 / 25%),
+    2px 4px 18px 0px rgb(120 120 120 / 14%);
+
+  --shadow2: -3px 4px 12px 0px rgb(111 110 110 / 28%),
+    -1px -1px 4px 0px rgb(156 156 156 / 25%),
+    2px 4px 18px 0px rgb(120 120 120 / 14%);
+
+  --filter: drop-shadow(0px 0px 7px rgba(199, 199, 199, 0.315));
+}
+
+/************************0 fonts 0****************/
+/*----------IRANSansWebFaNum----------*/
+@font-face {
+  font-family: "IRANSansWebFaNum";
+  src: url("../fonts/iransansNum/eot/iransansweb\(fanum\).eot");
+  src: url("../fonts/iransansNum/eot/iransansweb(fanum).eot")
+      format("embedded-opentype"),
+    url("../fonts/iransansNum/woff2/iransansweb(fanum).woff2") format("woff2"),
+    url("../fonts/iransansNum/woff/iransansweb(fanum).woff") format("woff"),
+    url("../fonts/iransansNum/ttf/iransansweb(fanum).ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "IRANSansWebFaBlack";
+  src: url("../fonts/iransansNum/eot/iransansweb\(fanum\)_black.eot");
+  src: url("../fonts/iransansNum/eot/iransansweb(fanum)_black.eot")
+      format("embedded-opentype"),
+    url("../fonts/iransansNum/woff2/iransansweb(fanum)_black.woff2")
+      format("woff2"),
+    url("../fonts/iransansNum/woff/iransansweb(fanum)_black.woff")
+      format("woff"),
+    url("../fonts/iransansNum/ttf/iransansweb(fanum)_black.ttf")
+      format("truetype");
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "IRANSansWebFaBold";
+  src: url("../fonts/iransansNum/eot/iransansweb\(fanum\)_bold.eot");
+  src: url("../fonts/iransansNum/eot/iransansweb(fanum)_bold.eot")
+      format("embedded-opentype"),
+    url("../fonts/iransansNum/woff2/iransansweb\(fanum\)_bold.woff2")
+      format("woff2"),
+    url("../fonts/iransansNum/woff/iransansweb(fanum)_bold.woff") format("woff"),
+    url("../fonts/iransansNum/ttf/iransansweb(fanum)_bold.ttf")
+      format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "IRANSansWebFaMedium";
+  src: url("../fonts/iransansNum/eot/iransansweb\(fanum\)_medium.eot");
+  src: url("../fonts/iransansNum/eot/iransansweb(fanum)_medium.eot")
+      format("embedded-opentype"),
+    url("../fonts/iransansNum/woff2/iransansweb(fanum)_medium.woff2")
+      format("woff2"),
+    url("../fonts/iransansNum/woff/iransansweb(fanum)_medium.woff")
+      format("woff"),
+    url("../fonts/iransansNum/ttf/iransansweb(fanum)_medium.ttf")
+      format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "IRANSansWebFaLight";
+  src: url("../fonts/iransansNum/eot/iransansweb\(fanum\)_light.eot");
+  src: url("../fonts/iransansNum/eot/iransansweb(fanum)_light.eot")
+      format("embedded-opentype"),
+    url("../fonts/iransansNum/woff2/iransansweb(fanum)_light.woff2")
+      format("woff2"),
+    url("../fonts/iransansNum/woff/iransansweb(fanum)_light.woff")
+      format("woff"),
+    url("../fonts/iransansNum/ttf/iransansweb(fanum)_light.ttf")
+      format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "IRANSansWebFaULight";
+  src: url("../fonts/iransansNum/eot/iransansweb\(fanum\)_ultralight.eot");
+  src: url("../fonts/iransansNum/eot/iransansweb(fanum)_ultralight.eot")
+      format("embedded-opentype"),
+    url("../fonts/iransansNum/woff2/iransansweb(fanum)_ultralight.woff2")
+      format("woff2"),
+    url("../fonts/iransansNum/woff/iransansweb(fanum)_ultralight.woff")
+      format("woff"),
+    url("../fonts/iransansNum/ttf/iransansweb(fanum)_ultralight.ttf")
+      format("truetype");
+  font-weight: 100;
+  font-style: normal;
+}
+
+/*-------------Inter--------------*/
+
+@font-face {
+  font-family: "RobotoBlack";
+  src: url("../fonts/roboto/eot/Roboto-Black.eot");
+  src: url("../fonts/roboto/eot/Roboto-Black.eot") format("embedded-opentype"),
+    url("../fonts/roboto/woff2/Roboto-Black.woff2") format("woff2"),
+    url("../fonts/roboto/woff/Roboto-Black.woff") format("woff"),
+    url("../fonts/roboto/ttf/Roboto-Black.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "RobotoBold";
+  src: url("../fonts/roboto/eot/Roboto-Bold.eot");
+  src: url("../fonts/roboto/eot/Roboto-Bold.eot") format("embedded-opentype"),
+    url("../fonts/roboto/woff2/Roboto-Bold.woff2") format("woff2"),
+    url("../fonts/roboto/woff/Roboto-Bold.woff") format("woff"),
+    url("../fonts/roboto/ttf/Roboto-Bold.ttf") format("truetype");
+
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "RobotoMedium";
+  src: url("../fonts/roboto/eot/Roboto-Medium.eot");
+  src: url("../fonts/roboto/eot/Roboto-Medium.eot") format("embedded-opentype"),
+    url("../fonts/roboto/woff2/Roboto-Medium.woff2") format("woff2"),
+    url("../fonts/roboto/woff/Roboto-Medium.woff") format("woff"),
+    url("../fonts/roboto/ttf/Roboto-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "RobotoRegular";
+  src: url("../fonts/roboto/eot/Roboto-Regular.eot");
+  src: url("../fonts/roboto/eot/Roboto-Regular.eot") format("embedded-opentype"),
+    url("../fonts/roboto/woff2/Roboto-Regular.woff2") format("woff2"),
+    url("../fonts/roboto/woff/Roboto-Regular.woff") format("woff"),
+    url("../fonts/roboto/ttf/Roboto-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: " RobotoLight";
+  src: url("../fonts/roboto/eot/Roboto-Light.eot");
+  src: url("../fonts/roboto/eot/Roboto-Light.eot") format("embedded-opentype"),
+    url("../fonts/roboto/woff2/Roboto-Light.woff2") format("woff2"),
+    url("../fonts/roboto/woff/Roboto-Light.woff") format("woff"),
+    url("../fonts/roboto/ttf/Roboto-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "RobotoThin";
+  src: url("../fonts/roboto/eot/Roboto-Thin.eot");
+  src: url("../fonts/roboto/eot/Roboto-Thin.eot") format("embedded-opentype"),
+    url("../fonts/roboto/woff2/Roboto-Thin.woff2") format("woff2"),
+    url("../fonts/roboto/woff/Roboto-Thin.woff") format("woff"),
+    url("../fonts/roboto/ttf/Roboto-Thin.ttf") format("truetype");
+  font-weight: 100;
+  font-style: normal;
+}
+
+/*-------------------main-style---------------------*/
+*:focus {
+  outline: none;
+}
+html,
+body,
+ul {
+  margin: 0;
+  padding: 0;
+}
+ul {
+  list-style: none;
+}
+button:focus,
+button:active {
+  outline: none !important;
+  box-shadow: none;
+}
+img {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-bottom: 0;
+}
+i {
+  font-style: normal;
+}
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: none;
+}
+label {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  display: none;
+}

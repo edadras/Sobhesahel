@@ -1,0 +1,11 @@
+{
+    "filament-settings::translations.form.actions.save": "ذخیره",
+    "filament-settings::translations.notifications.saved": "تنظیمات با موفقیت ذخیره شد",
+    "filament-user-activity::user-activity.resource.model_plural_label": "گزارش فعالیت",
+    "filament-user-activity::user-activity.resource.navigation": "سایر",
+    "filament-user-activity::user-activity.activity-table.column.user": "کاربر",
+    "filament-user-activity::user-activity.activity-table.column.url": "آدرس",
+    "filament-user-activity::user-activity.activity-table.column.time": "زمان",
+    "filament-user-activity::user-activity.currently-active-users": "کاربران فعال"
+}
+

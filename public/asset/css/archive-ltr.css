@@ -1,0 +1,1421 @@
+/*==================archiveSec=================*/
+.archiveSec {
+  margin: 35px 0;
+}
+.archiveSec .archiveRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.archiveSec .archivRght {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 315px;
+}
+.archiveSec .archivRght .titleBx {
+  color: var(--text-1);
+  text-align: left;
+  font-family: "RobotoMedium";
+  font-size: 19px;
+  margin-bottom: 10px;
+  padding-left: 7px;
+}
+.archiveSec .archivRght .filterBox {
+  background: var(--light-3);
+  padding: 20px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.datepicker-container {
+  font-family: "RobotoRegular";
+}
+.datepicker-plot-area {
+  font: 12px "RobotoRegular" !important;
+}
+.archiveSec .filterBox .form-label {
+  text-align: left;
+  color: var(--text-1);
+  font-size: 15px;
+  padding-right: 3px;
+}
+.archiveSec .filterBox input[type="text"],
+.archiveSec .filterBox select {
+  height: 42px;
+  color: var(--text-1);
+  font-family: "RobotoRegular";
+  font-size: 13.5px;
+  background-color: var(--body-bg);
+}
+.archiveSec .filterBox .form-control.datepickrInpt {
+  text-align: left;
+}
+.archiveSec .filterBox input[type="text"]:focus,
+.archiveSec .filterBox select:focus {
+  border: 1px solid var(--red-1);
+}
+.archiveSec .filterBox .fltrChkBx input {
+  background: #ffffffcc;
+  border-color: #ffffffcc;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23ffffffcc' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+  background-color: var(--gray-3);
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+}
+.archiveSec .filterBox .fltrChkBx input:focus {
+  box-shadow: none;
+  outline: none;
+}
+.archiveSec .filterBox .fltrChkBx input:checked {
+  background-color: var(--red-1);
+  border-color: var(--red-1);
+  box-shadow: none;
+  outline: none;
+}
+.archiveSec .filterBox .fltrChkBx label {
+  color: var(--text-1);
+  text-align: left;
+  font-size: 15px;
+}
+.archiveSec .filterBox .filterBtn {
+  width: max-content;
+  height: 41px;
+  display: block;
+  margin: 25px auto 5px auto;
+  color: var(--white);
+  font-family: "RobotoMedium";
+  font-size: 13.5px;
+  background: var(--blue);
+  padding: 5px 20px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.archiveSec .filterBox .filterBtn:hover {
+  background: var(--blue-hover);
+}
+.archiveSec .archivLeft {
+  width: calc(100% - 315px);
+  padding-left: 25px;
+}
+.archiveSec .archivLeft .archvLftTtl {
+  color: var(--text-1);
+  text-align: left;
+  font-family: "RobotoMedium";
+  font-size: 19px;
+  margin-bottom: 15px;
+}
+.archiveSec .archivLeft .archivSort {
+  overflow: auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  padding-right: 10px;
+  height: 51px;
+  padding-bottom: 5px;
+}
+.archiveSec .archivLeft .archivSort::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+  background-color: #d4d4d4;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+.archiveSec .archivLeft .archivSort::-webkit-scrollbar-thumb {
+  background: #929292;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+.archiveSec .archivSort .form-check {
+  padding: 0;
+  margin: 0;
+  width: max-content;
+  height: 41px;
+}
+.archiveSec .archivSort input,
+.archiveSec .archivSort label {
+  height: 100%;
+  left: 0;
+  top: 0;
+  cursor: pointer;
+}
+.archiveSec .archivSort input {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  z-index: 2;
+  opacity: 0;
+}
+.archiveSec .archivSort label {
+  width: max-content;
+  min-width: max-content;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  background: var(--light-3);
+  color: var(--text-1);
+  font-size: 13.5px;
+  border-radius: 25px;
+  -webkit-border-radius: 25px;
+  -moz-border-radius: 25px;
+  -ms-border-radius: 25px;
+  -o-border-radius: 25px;
+}
+.archiveSec .archivSort input:checked ~ label {
+  background: var(--blue);
+  color: var(--white);
+}
+
+/*authors-list*/
+.archiveSec .archivLeft .authorLst {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.archiveSec .authorLst .authorCard {
+  width: 18.89%;
+  border: 1px solid var(--gray-3);
+  border-radius: 12px;
+  padding: 10px;
+  color: var(--text-1);
+  display: block;
+}
+.archiveSec .authorLst .authorCard div {
+  border-radius: 10px;
+  border: 3px solid var(--text-3);
+  background: var(--golden);
+  margin: 0 auto;
+  width: 100%;
+  height: auto;
+  max-width: 144px;
+  max-height: 144px;
+}
+.archiveSec .authorLst .authorCard img {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 144px;
+  margin: auto auto;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.archiveSec .authorLst .authorCard p {
+  text-align: center;
+  font-family: "RobotoMedium";
+  font-size: 13.5px;
+  margin-top: 10px;
+}
+.archiveSec .authorLst .authorCard:hover {
+  color: var(--blue);
+  box-shadow: var(--shadow);
+}
+
+/*archive-list*/
+.archiveList {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 15px 10px;
+  margin: 15px 0 45px 0;
+}
+.archiveList .archiveCard {
+  width: 32%;
+  border: 1px solid var(--stroke-stoke-2);
+  background: var(--light-3);
+  display: block;
+  border-radius: 15px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+}
+.archiveList .archiveCard .imgBox {
+  width: 100%;
+  height: 370px;
+  overflow: hidden;
+  border-radius: 15px 15px 0 0;
+  -webkit-border-radius: 15px 15px 0 0;
+  -moz-border-radius: 15px 15px 0 0;
+  -ms-border-radius: 15px 15px 0 0;
+  -o-border-radius: 15px 15px 0 0;
+}
+.archiveList .archiveCard img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 15px 15px 0 0;
+  -webkit-border-radius: 15px 15px 0 0;
+  -moz-border-radius: 15px 15px 0 0;
+  -ms-border-radius: 15px 15px 0 0;
+  -o-border-radius: 15px 15px 0 0;
+}
+.archiveList .archiveCard .text {
+  text-align: center;
+  padding: 10px;
+  border-radius: 0 0 15px 15px;
+  -webkit-border-radius: 0 0 15px 15px;
+  -moz-border-radius: 0 0 15px 15px;
+  -ms-border-radius: 0 0 15px 15px;
+  -o-border-radius: 0 0 15px 15px;
+}
+.archiveList .archiveCard .text p {
+  color: var(--text-1);
+  font-size: 16px;
+}
+.archiveList .archiveCard .text div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 8px;
+}
+.archiveList .archiveCard .text span {
+  color: var(--gray);
+  font-size: 12px;
+}
+.archiveList .archiveCard:hover {
+  border-color: var(--red-1);
+}
+
+/*===================searchPage====================*/
+.searchPage {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.searchPage .srchPgRght {
+  width: calc(100% - 280px);
+  padding-right: 15px;
+}
+.searchPage .srchPgRght .head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding-bottom: 12px;
+  margin-bottom: 15px;
+}
+.searchPage .srchPgRght .head h3 {
+  color: var(--gray);
+  text-align: right;
+  font-size: 15px;
+}
+.searchPage .srchPgRght .head .dropSel {
+  width: 120px;
+  height: 41px;
+  border: 1px solid var(--stroke-stoke-2);
+  background: var(--light-3);
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.searchPage .srchPgRght .head .dropSelDiv {
+  width: 100%;
+  height: 41px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--text-2);
+  padding: 5px 12px;
+}
+.searchPage .srchPgRght .head .dropSelDiv,
+.searchPage .srchPgRght .head .dropdown-mnu li a {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--text-2);
+}
+.searchPage .srchPgRght .head .dropdown-mnu li a,
+.searchPage .srchPgRght .head .dropSelDiv p {
+  text-align: right;
+  font-size: 12px;
+}
+.searchPage .srchPgRght .head .dropdown-mnu li a {
+  padding: 5px;
+}
+.searchPage .srchPgRght .head .expndMrIcon {
+  font-size: 12px;
+}
+.searchPage .srchPgRght .head .active .expndMrIcon {
+  transform: rotate(180deg);
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+}
+.searchPage .srchPgRght .head .dropdown-mnu {
+  width: 100%;
+  top: 43px;
+}
+.searchPage .srchPgRght .srchPgCard {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 12px;
+}
+.searchPage .srchPgCard .imgBx {
+  min-width: 172px;
+  width: 172px;
+  height: 110px;
+  overflow: hidden;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.searchPage .srchPgCard .imgBx img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.searchPage .srchPgCard .imgBx div {
+  width: 30px;
+  height: 30px;
+  left: 8px;
+  bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.searchPage .srchPgCard .imgBx div span {
+  font-size: 15px;
+  color: var(--white);
+}
+.searchPage .srchPgCard .text {
+  padding-left: 15px;
+  overflow: hidden;
+}
+.searchPage .srchPgCard .text h2 {
+  color: var(--text-1);
+  font-family: "RobotoMedium";
+  font-size: 17px;
+  line-height: 1.2;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.searchPage .srchPgCard .text p {
+  color: var(--gray);
+  line-height: 1.5;
+  font-size: 14px;
+  margin: 6px 0;
+  max-height: 42px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.searchPage .srchPgCard .text span {
+  color: var(--blue);
+  font-family: "RobotoMedium";
+  font-size: 12px;
+  display: block;
+}
+.searchPage .srchPgCard:hover .imgBx img {
+  transform: scale(1.1);
+  -webkit-transform: scale(1.1);
+  -moz-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  -o-transform: scale(1.1);
+}
+.searchPage .srchPgLeft {
+  width: 280px;
+}
+.searchPage .srchPgLeft .lftSidBox {
+  background: var(--light-3);
+  padding: 12px 18px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.searchPage .lftSidBox .head {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+.searchPage .lftSidBox .head span {
+  width: 8px;
+  height: 16px;
+  background: var(--red-1);
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+}
+.searchPage .lftSidBox .head p {
+  color: var(--text-1);
+  text-align: right;
+  font-family: "RobotoMedium";
+  font-size: 19px;
+}
+.searchPage .lftSidBox .survey .surveyQues {
+  color: var(--text-1);
+  font-size: 13.5px;
+  margin: 15px 0;
+}
+.searchPage .lftSidBox .survey .form-check {
+  cursor: pointer;
+}
+.searchPage .lftSidBox .survey input {
+  border: 1px solid var(--text-2);
+  background-color: transparent;
+}
+.searchPage .lftSidBox .survey label {
+  color: var(--text-2);
+  font-size: 12px;
+}
+.searchPage .lftSidBox .survey input:checked {
+  background-color: transparent;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2.5' fill='%23ed3052'/%3e%3c/svg%3e");
+}
+.searchPage .lftSidBox .survey input:checked ~ label {
+  color: var(--text-1);
+  font-family: "RobotoBold";
+  font-size: 12px;
+}
+.searchPage .lftSidBox .survey .surveyBtn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 15px;
+  margin-top: 25px;
+}
+.searchPage .lftSidBox .survey button,
+.searchPage .lftSidBox .survey a {
+  color: var(--text-2);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  height: 30px;
+  padding: 3px 15px;
+  border: 1px solid var(--gray);
+  border-radius: 8px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
+}
+.searchPage .lftSidBox .survey button:hover,
+.searchPage .lftSidBox .survey a:hover {
+  background: var(--red-1);
+  border-color: var(--red-1);
+  color: var(--white);
+}
+.searchPage .srchPgLeft .lftSidImg {
+  display: block;
+  width: 100%;
+  height: 175px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.searchPage .srchPgLeft .lftSidImg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.searchPage .srchPgLeft .lftSidTags {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.searchPage .srchPgLeft .lftSidTagBx {
+  cursor: pointer;
+  width: max-content;
+  text-align: center;
+  background: var(--body-bg);
+  padding: 8px 14px;
+  color: var(--text-1);
+  font-size: 13.5px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.searchPage .srchPgLeft .lftSidTagBx:hover {
+  color: var(--body-bg);
+  background: var(--red-1);
+}
+
+/*====================authorPgSec=====================*/
+.authorPgSec {
+  margin: 20px 0 40px 0;
+}
+.authorPgSec .authorPgRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+.authorPgSec .authorPgRow .right {
+  width: 316px;
+  min-width: 316px;
+  background: var(--light-3);
+  padding: 32px 24px;
+  border-radius: 25px;
+  -webkit-border-radius: 25px;
+  -moz-border-radius: 25px;
+  -ms-border-radius: 25px;
+  -o-border-radius: 25px;
+}
+.authorPgSec .authorInfo .imgBx {
+  width: 126px;
+  height: 126px;
+  margin: 10px auto;
+  border: 3px solid var(--text-3);
+  background: var(--golden);
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+}
+.authorPgSec .authorInfo .imgBx img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+}
+.authorPgSec .authorInfo .name {
+  margin: 10px auto 20px auto;
+}
+.authorPgSec .authorInfo .name h1 {
+  color: var(--text-1);
+  font-family: "RobotoBold";
+  font-size: 19px;
+  margin-bottom: 5px;
+}
+.authorPgSec .authorInfo .name p {
+  color: var(--gray);
+  font-size: 13.5px;
+}
+.authorPgSec .authorInfo .follow {
+  width: max-content;
+  height: 43px;
+  padding: 5px 18px;
+  background: var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px auto 30px auto;
+  gap: 8px;
+  color: var(--white);
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.authorPgSec .authorInfo .follow span {
+  font-size: 14px;
+}
+.authorPgSec .authorInfo .follow i {
+  font-family: "RobotoMedium";
+  font-size: 13.5px;
+}
+.authorPgSec .authorInfo .follow:hover {
+  background: var(--blue-hover);
+}
+.authorPgSec .authorPgRow .authorBio {
+  margin: 5px auto 30px auto;
+}
+.authorPgSec .authorPgRow .authorBio strong,
+.authorPgSec .authorPgRow .authorLink strong {
+  color: var(--blue);
+  font-family: "RobotoBold";
+  font-size: 14px;
+  display: block;
+  margin-bottom: 12px;
+}
+.authorPgSec .authorPgRow .authorBio p {
+  color: var(--gray);
+  font-size: 13.5px;
+}
+.authorPgSec .authorPgRow .authorLink a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin: 5px auto;
+  height: 45px;
+  padding: 0 12px;
+  border: 1px solid var(--stroke-stoke-2);
+  color: var(--text-2);
+  background: var(--light-3);
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.authorPgSec .authorPgRow .authorLink p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: calc(100% - 18px);
+  padding-left: 8px;
+  text-align: left;
+  direction: ltr;
+  font-size: 13.5px;
+}
+.authorPgSec .authorPgRow .authorLink span {
+  font-size: 18px;
+  width: 18px;
+}
+.authorPgSec .authorPgRow .authorLink a:hover {
+  color: var(--blue-hover);
+}
+
+.authorPgSec .authorPgRow .left {
+  width: calc(100% - 316px);
+}
+.authorPgSec .authorPgRow .left h2 {
+  color: var(--text-1);
+  font-family: "RobotoMedium";
+  font-size: 19px;
+  text-align: left;
+  margin-bottom: 15px;
+}
+.authorPgSec .authorPgRow .left .authorNote {
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--light-3);
+  gap: 10px;
+  padding: 15px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.authorPgSec .authorPgRow .authorNote div {
+  padding-left: 15px;
+  color: var(--text-1);
+  text-align: left;
+  font-size: 13.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.authorPgSec .authorPgRow .authorNote div:before {
+  position: absolute;
+  left: 0px;
+  top: 7px;
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: var(--golden);
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+}
+.authorPgSec .authorPgRow .authorNote p {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  min-width: max-content;
+}
+.authorPgSec .authorPgRow .authorNote i {
+  color: var(--gray);
+  text-align: right;
+  font-size: 13.5px;
+  display: block;
+  line-height: 1;
+}
+.authorPgSec .authorPgRow .authorNote span {
+  color: var(--text-2);
+  font-size: 18px;
+}
+.authorPgSec .authorPgRow .left .authorNote:hover {
+  background: var(--stroke-e-3);
+}
+
+/*====================aboutSec=====================*/
+.aboutSec {
+  margin: 60px 0 150px 0;
+}
+.aboutSec h1 {
+  color: var(--text-1);
+  font-family: "RobotoBold";
+  font-size: 23px;
+  margin-bottom: 20px;
+  padding-left: 30px;
+}
+.aboutSec .aboutPgBox {
+  background: var(--light-3);
+  padding: 30px;
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  -ms-border-radius: 20px;
+  -o-border-radius: 20px;
+}
+.aboutSec h2 {
+  color: var(--text-1);
+  font-family: "RobotoMedium";
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+.aboutSec p {
+  color: var(--gray);
+  font-size: 13.5px;
+  margin-bottom: 25px;
+}
+
+/*===================contactSec=====================*/
+.contactSec {
+  margin: 50px 0 80px 0;
+}
+.contactSec .contactRow {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+}
+.contactSec .sendMsgBox {
+  width: 40%;
+  padding: 30px;
+  background: var(--light-3);
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  -ms-border-radius: 20px;
+  -o-border-radius: 20px;
+}
+.contactSec .sendMsgBox h2 {
+  color: var(--text-1);
+  text-align: left;
+  font-family: "RobotoMedium";
+  font-size: 21px;
+  margin-bottom: 15px;
+}
+.contactSec .sendMsgBox p {
+  color: var(--gray);
+  text-align: left;
+  font-size: 13.5px;
+  margin-bottom: 15px;
+}
+.contactSec .sendMsgBox .form-label {
+  color: var(--text-1);
+  text-align: left;
+  font-size: 13.5px;
+}
+.contactSec .sendMsgBox input,
+.contactSec .sendMsgBox textarea {
+  text-align: left;
+  border: 1px solid var(--light-3);
+  background: var(--body-bg);
+  color: var(--text-1);
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.contactSec .sendMsgBox input {
+  height: 48px;
+}
+.contactSec .sendMsgBox input:focus,
+.contactSec .sendMsgBox textarea:focus {
+  border: 1px solid var(--red-1);
+}
+.contactSec .sendMsgBox button {
+  width: 100%;
+  height: 52px;
+  text-align: center;
+  padding: 14px 10px;
+  background: var(--red-1);
+  color: var(--white);
+  font-family: "RobotoMedium";
+  font-size: 15.5px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.contactSec .sendMsgBox button:hover {
+  transform: scale(1.01);
+  -webkit-transform: scale(1.01);
+  -moz-transform: scale(1.01);
+  -ms-transform: scale(1.01);
+  -o-transform: scale(1.01);
+}
+.contactSec .contactBox {
+  width: 60%;
+  padding: 30px;
+  background: linear-gradient(106deg, #fe9775 0.31%, #ed3052 96.76%);
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  -ms-border-radius: 20px;
+  -o-border-radius: 20px;
+}
+.contactSec .contactBox h2 {
+  color: var(--white);
+  text-align: left;
+  font-family: "RobotoMedium";
+  font-size: 21px;
+  margin-bottom: 20px;
+}
+.contactSec .contactBox .through {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.contactSec .contactBox .right {
+  width: calc(100% - 53px);
+  padding-right: 15px;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.contactSec .contactBox .box {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 29px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--white);
+  gap: 20px;
+  border-radius: 15px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+}
+.contactSec .contactBox .smallBx {
+  width: 43%;
+}
+.contactSec .contactBox .bigBx {
+  width: 55%;
+}
+.contactSec .contactBox .box:hover {
+  background: rgba(255, 255, 255, 0.466);
+}
+.contactSec .contactBox .box span {
+  font-size: 42px;
+}
+.contactSec .contactBox .box p {
+  font-family: "RobotoMedium";
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+.contactSec .contactBox .box i {
+  font-family: "RobotoMedium";
+  font-size: 12px;
+}
+.contactSec .contactBox .left {
+  width: 53px;
+}
+.contactSec .contactBox .left li {
+  margin-bottom: 10px;
+}
+.contactSec .contactBox .left li:last-child {
+  margin-bottom: 0;
+}
+.contactSec .contactBox .left a {
+  width: 53px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.15);
+  font-size: 20px;
+  color: var(--white);
+  border-radius: 15px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+}
+.contactSec .contactBox .left a:hover {
+  background: rgba(255, 255, 255, 0.466);
+}
+
+/*=====================login======================*/
+.loginSec {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.loginSec .loginSecBx {
+  margin: 10px auto;
+  width: 478px;
+  max-width: 100%;
+  padding: 40px 30px;
+  border: 1px solid var(--stroke-e-3);
+  background: var(--light-3);
+  border-radius: 15px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+}
+.loginSec .loginSecBx h1 {
+  color: var(--text-1);
+  text-align: center;
+  font-family: "RobotoMedium";
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+.loginSec .loginSecBx .loginLogo {
+  display: block;
+  width: 120px;
+  height: auto;
+  margin: 5px auto 50px auto;
+}
+.loginSec .loginSecBx img {
+  width: 100%;
+  height: auto;
+}
+.loginSec .loginSecBx .resendTime {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  gap: 10px;
+  margin-top: 40px;
+  padding: 10px;
+}
+.loginSec .loginSecBx .resendTime span {
+  text-align: right;
+  color: var(--gray);
+  font-size: 13.5px;
+}
+.loginSec .loginSecBx .resendTime p {
+  color: var(--text-1);
+  text-align: left;
+  font-family: "RobotoMedium";
+  font-size: 13.5px;
+}
+.loginSec .loginSecBx .form-label {
+  color: var(--text-2);
+  text-align: center;
+  font-size: 13.5px;
+  width: 100%;
+}
+.loginSec .loginSecBx .form-label strong {
+  color: var(--text-2);
+  font-family: "RobotoBold";
+  font-size: 13.5px;
+}
+.loginSec .loginSecBx button {
+  width: 100%;
+  height: 52px;
+  text-align: center;
+  background: var(--red-1);
+  color: var(--white);
+  font-family: "RobotoMedium";
+  font-size: 15.5px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.loginSec .loginSecBx button:hover {
+  transform: scale(1.01);
+  -webkit-transform: scale(1.01);
+  -moz-transform: scale(1.01);
+  -ms-transform: scale(1.01);
+  -o-transform: scale(1.01);
+}
+.loginSec .loginSecBx .frmNum {
+  width: 100%;
+  height: 52px;
+  border: 1px solid var(--stroke-e-3);
+  background: var(--body-bg);
+  color: var(--text-1);
+  font-size: 14px;
+  text-align: left;
+  margin-bottom: 50px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.loginSec .loginSecBx input:focus {
+  border: 1px solid var(--red-1);
+}
+.loginSec .loginSecBx .logFrmText {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 12px;
+}
+.loginSec .loginSecBx .logFrmText p {
+  color: var(--text-2);
+  font-size: 13.5px;
+  display: block;
+  line-height: 1;
+}
+.loginSec .loginSecBx .logFrmText a {
+  color: var(--red-1);
+  font-family: "RobotoMedium";
+  font-size: 14px;
+  display: block;
+  line-height: 1;
+}
+.loginSec .loginSecBx .logFrmText a:hover {
+  opacity: 0.8;
+}
+.loginSec .loginSecBx .enterPhonBx {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row-reverse;
+  gap: 8px;
+}
+.loginSec .loginSecBx .enterPhonBx input {
+  width: 52px;
+  height: 52px;
+  border: 1px solid var(--stroke-e-3);
+  font-family: "RobotoBold";
+  font-size: 20px;
+  color: var(--text-1);
+  text-align: center;
+  background: var(--body-bg);
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+
+/*=====================media======================*/
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .searchPage .srchPgLeft {
+    width: 230px;
+  }
+  .searchPage .srchPgRght {
+    width: calc(100% - 230px);
+  }
+  .searchPage .srchPgCard .imgBx {
+    min-width: 150px;
+    width: 150px;
+  }
+  .searchPage .srchPgLeft .lftSidBox {
+    padding: 15px;
+  }
+  .searchPage .srchPgLeft .lftSidTagBx {
+    padding: 8px 10px;
+    font-size: 12.5px;
+  }
+  .archiveList .archiveCard .imgBox {
+    height: 260px;
+  }
+  .archiveSec .authorLst .authorCard {
+    width: 23.7%;
+  }
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+  .contactSec .contactBox .through {
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+  }
+  .contactSec .contactBox .right {
+    width: 100%;
+    padding-right: 0;
+  }
+  .contactSec .contactBox .smallBx {
+    width: 45%;
+  }
+  .contactSec .contactBox .bigBx {
+    width: 52%;
+  }
+  .contactSec .contactBox .left {
+    width: 100%;
+  }
+  .contactSec .contactBox .left ul {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .contactSec .contactBox .left li {
+    margin-bottom: 0;
+  }
+}
+@media (max-width: 991px) {
+  .contactSec .contactRow {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .contactSec .contactBox,
+  .contactSec .sendMsgBox {
+    width: 100%;
+  }
+  .archiveSec .archiveRow {
+    flex-direction: column;
+    gap: 35px;
+  }
+  .archiveSec .archivRght {
+    width: 100%;
+    position: static;
+  }
+  .archiveSec .archivLeft {
+    width: 100%;
+    padding-left: 0;
+  }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .authorPgSec .authorPgRow .authorNote i {
+    font-size: 12px;
+    line-height: 0.77;
+  }
+  .authorPgSec .authorPgRow .authorNote span {
+    font-size: 16px;
+  }
+  .authorPgSec .authorPgRow .right {
+    width: 260px;
+    min-width: 260px;
+    padding: 25px 15px;
+  }
+  .authorPgSec .authorPgRow .left {
+    width: calc(100% - 260px);
+  }
+}
+@media (max-width: 767px) {
+  .loginSec .loginSecBx {
+    padding: 20px 15px;
+  }
+  .loginSec .loginSecBx .enterPhonBx {
+    gap: 4px;
+  }
+  .loginSec .loginSecBx .enterPhonBx input {
+    width: 41px;
+    height: 41px;
+    font-size: 16px;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+  }
+  .authorPgSec .authorPgRow .authorNote i {
+    font-size: 10px;
+    line-height: 1;
+  }
+  .authorPgSec .authorPgRow .authorNote span {
+    font-size: 13px;
+  }
+  .authorPgSec .authorPgRow {
+    flex-direction: column;
+    gap: 30px;
+  }
+  .authorPgSec .authorPgRow .right,
+  .authorPgSec .authorPgRow .left {
+    width: 100%;
+    min-width: 100%;
+  }
+  .contactSec .contactBox .through {
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+  }
+  .contactSec .contactBox .right {
+    width: 100%;
+    padding-right: 0;
+  }
+  .contactSec .contactBox .smallBx,
+  .contactSec .contactBox .bigBx {
+    width: 100%;
+    padding: 15px;
+  }
+  .contactSec .contactBox .left {
+    width: 100%;
+  }
+  .contactSec .contactBox .left ul {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .contactSec .contactBox .left li {
+    margin-bottom: 0;
+  }
+
+  .searchPage .lftSidBox .head p {
+    font-size: 17px;
+  }
+  .searchPage {
+    flex-direction: column;
+    gap: 25px;
+  }
+  .searchPage .srchPgRght {
+    width: 100%;
+    padding-right: 0;
+  }
+  .searchPage .srchPgLeft {
+    width: 100%;
+  }
+}
+@media (min-width: 481px) and (max-width: 767px) {
+  .searchPage .srchPgCard .imgBx {
+    min-width: 125px;
+    width: 125px;
+    height: 120px;
+  }
+  .archiveList .archiveCard .imgBox {
+    height: 340px;
+  }
+  .archiveList .archiveCard {
+    width: 48%;
+  }
+  .archiveSec .authorLst .authorCard {
+    width: 33.7%;
+    flex: 23.4%;
+  }
+}
+@media (min-width: 576px) and (max-width: 767px) {
+  .searchPage .srchPgCard .text h2 {
+    font-size: 16px;
+  }
+  .searchPage .srchPgCard .text p {
+    font-size: 13px;
+    max-height: 39px;
+  }
+}
+@media (max-width: 575px) {
+  .authorPgSec .authorPgRow .authorNote div:before {
+    top: 5px;
+  }
+  .authorPgSec .authorPgRow .left .authorNote {
+    padding: 15px 9px;
+  }
+  .authorPgSec .authorPgRow .left h2 {
+    font-size: 15.5px;
+  }
+  .authorPgSec .authorPgRow .authorNote div {
+    font-size: 12px;
+  }
+  .contactSec .contactBox .left a {
+    width: 42px;
+    height: 39px;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+  }
+  .contactSec .contactBox h2,
+  .contactSec .sendMsgBox h2 {
+    font-size: 18px;
+  }
+  .contactSec .contactBox,
+  .contactSec .sendMsgBox {
+    padding: 15px;
+  }
+  .searchPage .srchPgLeft .lftSidBox {
+    padding: 15px;
+  }
+  .searchPage .srchPgCard .text p {
+    font-size: 12px;
+    max-height: 35px;
+  }
+  .searchPage .srchPgCard .text h2 {
+    font-size: 15px;
+  }
+}
+@media (max-width: 480px) {
+  .authorPgSec .authorInfo .imgBx,
+  .searchPage .srchPgCard .imgBx {
+    min-width: 100px;
+    width: 100px;
+    height: 100px;
+  }
+  .archiveList {
+    justify-content: center;
+  }
+  .archiveList .archiveCard .imgBox {
+    min-width: 180px;
+    height: 320px;
+  }
+  .archiveList .archiveCard {
+    width: 100%;
+    flex: 47.8%;
+  }
+  .archiveSec .authorLst .authorCard {
+    width: 47.7%;
+    flex: 33.4%;
+  }
+}

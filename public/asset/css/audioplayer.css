@@ -1,0 +1,300 @@
+.podcastCat .app-cover {
+  width: 100%;
+  height: 109px;
+  margin: 0 auto;
+}
+.app-cover .player {
+  height: 100%;
+}
+.podcastCat .app-cover .player-track {
+  padding: 10px;
+}
+.app-cover .player-track {
+  transition: 0.3s ease top;
+}
+.app-cover .audioList {
+  display: none;
+}
+.app-cover #album-name {
+  color: #54576f;
+  font-size: 17px;
+  font-weight: bold;
+}
+.app-cover #track-name {
+  color: #acaebd;
+  font-size: 13px;
+  margin: 2px 0 13px 0;
+}
+.app-cover #track-time {
+  margin-bottom: 3px;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.app-cover #current-time,
+.app-cover #track-length {
+  color: transparent;
+  font-size: 12px;
+}
+.app-cover #track-time.active #current-time,
+.app-cover #track-time.active #track-length {
+  color: #8a8a8a;
+}
+.app-cover #s-area,
+.app-cover #seek-bar {
+  position: relative;
+  height: 7px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.app-cover #s-area {
+  background-color: var(--stroke-e-3);
+  cursor: pointer;
+}
+.app-cover #ins-time {
+  position: absolute;
+  top: -29px;
+  color: #fff;
+  font-size: 12px;
+  white-space: pre;
+  padding: 5px 6px;
+  display: none;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.app-cover #s-hover {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  opacity: 0.2;
+  z-index: 2;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.app-cover #ins-time,
+.app-cover #s-hover {
+  background-color: #3b3d50;
+}
+.app-cover #seek-bar {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  background-image: linear-gradient(to right, #ed3052, #ff6b00, #ffca00);
+  z-index: 1;
+  transition: 0.2s ease width;
+  -webkit-transition: 0.2s ease width;
+  -moz-transition: 0.2s ease width;
+  -ms-transition: 0.2s ease width;
+  -o-transition: 0.2s ease width;
+}
+
+@keyframes rotateAlbumArt {
+  0% {
+    transform: rotateZ(0);
+  }
+  100% {
+    transform: rotateZ(360deg);
+  }
+}
+.app-cover #buffer-box {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 13px;
+  color: #1f1f1f;
+  font-size: 13px;
+  font-family: Helvetica;
+  text-align: center;
+  font-weight: bold;
+  line-height: 1;
+  padding: 6px;
+  margin: -12px auto 0 auto;
+  background-color: rgba(255, 255, 255, 0.19);
+  opacity: 0;
+  z-index: 2;
+}
+.app-cover #album-art img,
+.app-cover #buffer-box {
+  transition: 0.1s linear all;
+}
+.app-cover #album-art.buffering img {
+  opacity: 0.25;
+}
+.app-cover #album-art.buffering img.active {
+  opacity: 0.8;
+  filter: blur(2px);
+  -webkit-filter: blur(2px);
+}
+.app-cover #album-art.buffering #buffer-box {
+  opacity: 1;
+}
+.app-cover .player-controls {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 1px;
+}
+.pdcstAudio2 .app-cover .player-controls {
+  margin: 20px auto 35px;
+}
+.app-cover .button {
+  width: max-content;
+  height: max-content;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.app-cover .button i {
+  display: block;
+  text-align: center;
+  line-height: 1;
+}
+.play-previous,
+.play-next {
+  color: var(--text-1);
+  font-size: 50px;
+}
+.play-pause-button {
+  font-size: 50px;
+  position: relative;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+}
+.play-pause-button i {
+  position: relative;
+  z-index: 2;
+}
+.play-pause-button:before {
+  position: absolute;
+  content: "";
+  left: 6px;
+  top: 6px;
+  z-index: 1;
+  width: calc(100% - 14px);
+  height: calc(100% - 14px);
+  background: #fff;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+}
+
+/**/
+.podcastCat .play-pause-button {
+  color: var(--red-1);
+}
+.pdcstAudio2 .app-cover .button:hover i,
+.podcastCat .app-cover .button:hover i {
+  color: var(--red-1);
+}
+
+.podPgLft .app-cover {
+  padding-top: 15px;
+  height: 280px;
+}
+.podPgLft .app-cover .player-track {
+  opacity: 0;
+}
+.podPgLft .app-cover .player-track.active {
+  opacity: 1;
+}
+.podPgLft .app-cover .player-track {
+  padding: 0;
+}
+.podPgLft .player-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.podPgLft .player-controls {
+  height: 230px;
+  width: 230px;
+}
+.podPgLft .play-pause-button {
+  color: var(--golden);
+}
+.podPgLft .app-cover .button:hover i {
+  color: var(--golden);
+}
+.podPgLft .play-pause-button small,
+.podPgLft .play-pause-button span,
+.podPgLft .play-pause-button p,
+.podPgLft .play-pause-button::after {
+  position: absolute;
+  border: 1px solid var(--golden);
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+}
+.podPgLft .play-pause-button::after {
+  content: "";
+  width: calc(100% + 30px);
+  height: calc(100% + 30px);
+  opacity: 0.1;
+  left: -15px;
+  top: -15px;
+}
+.podPgLft .play-pause-button p {
+  width: calc(100% + 70px);
+  height: calc(100% + 70px);
+  left: -35px;
+  top: -35px;
+  opacity: 0.1;
+}
+.podPgLft .play-pause-button span {
+  width: calc(100% + 124px);
+  height: calc(100% + 124px);
+  left: -62px;
+  top: -62px;
+  opacity: 0.2;
+}
+.podPgLft .play-pause-button small {
+  width: calc(100% + 180px);
+  height: calc(100% + 180px);
+  left: -90px;
+  top: -90px;
+  opacity: 0.15;
+}
+.podPgLft .play-pause-button div {
+  width: calc(100% + 130px);
+  height: calc(100% + 130px);
+  left: -70px;
+  top: -70px;
+  opacity: 0.3;
+}
+
+@media (max-width: 480px) {
+  .podPgLft .app-cover {
+    height: 240px;
+  }
+  .podPgLft .player-controls {
+    height: 174px;
+    width: 174px;
+  }
+}

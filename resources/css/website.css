@@ -1,0 +1,16 @@
+@import './vendor/bootstrap.min.css';
+@import './vendor/animate.css';
+@import './vendor/audioplayer.css';
+@import './vendor/lg-video.css';
+@import './vendor/video-js.css';
+
+/* For Swiper, if you installed via NPM and are importing its CSS bundle */
+/* If you did `npm install swiper` and `import 'swiper/css/bundle';` in app.js, */
+/* then you generally DON'T need to import swiper-bundle.min.css here. */
+/* If you copied it and want it processed here, then include it: */
+/* @import './vendor/swiper-bundle.min.css'; */
+
+
+/* Import your main site CSS */
+@import './vendor/main-rtl.css';
+@import './vendor/icomoon.css';

@@ -1,0 +1,1651 @@
+body.profileBody {
+  background: var(--light-4);
+}
+
+/*==================newsPgSec=================*/
+.profileSec {
+  margin: 50px 0;
+}
+.profileSec .dashboardRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.profileSec .dashRight {
+  width: 256px;
+  padding: 20px;
+  position: sticky;
+  top: 0;
+  right: 0;
+  background: var(--body-bg);
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  -ms-border-radius: 20px;
+  -o-border-radius: 20px;
+}
+.profileSec .dashRight .dashUsrRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.profileSec .dashRight .dashUsrBx {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+.profileSec .dashRight .dashUsrBx img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  background: var(--light-3);
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.profileSec .dashRight .dashUsrBx h1 {
+  color: var(--text-1);
+  text-align: right;
+  font-family: "IRANSansWebFaMedium";
+  font-size: 17px;
+}
+.profileSec .dashRight .uploadBtn {
+  width: max-content;
+  height: max-content;
+  cursor: pointer;
+}
+.profileSec .dashRight .uploadBtn input,
+.profileSec .dashRight .uploadBtn label {
+  left: 0;
+  top: 0;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+}
+.profileSec .dashRight .uploadBtn input {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 2;
+}
+.profileSec .dashRight .uploadBtn label {
+  width: max-content;
+  height: max-content;
+  font-size: 18px;
+  color: var(--blue);
+}
+.profileSec .dashRight .uploadBtn:hover label {
+  color: var(--blue-hover);
+}
+.profileSec .dashRight .dashWeltRow div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid var(--light-3);
+  padding: 16px;
+  margin-bottom: 1px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.profileSec .dashRight .dashWeltRow img {
+  width: 28px;
+  height: auto;
+}
+.profileSec .dashRight .dashWeltRow p {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  color: var(--text-1);
+}
+.profileSec .dashRight .dashWeltRow p i {
+  font-family: "IRANSansWebFaMedium";
+  font-size: 15px;
+}
+.profileSec .dashRight .dashWeltRow p small {
+  font-size: 11px;
+}
+.profileSec .dashRight .dashWeltRow button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  width: max-content;
+  height: max-content;
+  color: var(--blue);
+  border: none;
+  background: transparent;
+}
+.profileSec .dashRight .dashWeltRow button i {
+  font-size: 13.5px;
+}
+.profileSec .dashRight .dashWeltRow button span {
+  font-size: 14px;
+}
+.profileSec .dashRight .dashWeltRow button:hover {
+  color: var(--blue-hover);
+}
+.profileSec .dashRghtMnu li {
+  margin-bottom: 1px;
+}
+.profileSec .dashRghtMnu li a {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  color: var(--text-1);
+  padding: 12px 15px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.profileSec .dashRghtMnu li:last-child a {
+  color: var(--red-1);
+}
+.profileSec .dashRghtMnu li a:hover {
+  background: var(--light-3);
+}
+.profileSec .dashRghtMnu li a.active:hover,
+.profileSec .dashRghtMnu li a.active {
+  background: var(--red-1);
+  color: var(--white);
+  box-shadow: 2px 3px 50px 0px rgba(0, 0, 0, 0.15);
+}
+.profileSec .dashRghtMnu li span {
+  font-size: 20px;
+}
+.profileSec .dashRghtMnu li i {
+  font-size: 15px;
+}
+.profileSec .dashLeft {
+  padding-right: 30px;
+  width: calc(100% - 256px);
+}
+.profileSec .dashLeft .userInfoBox {
+  background: var(--body-bg);
+  padding: 30px 20px;
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  -ms-border-radius: 20px;
+  -o-border-radius: 20px;
+}
+.profileSec .userInfoBox .head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 1px 6px 15px 8px;
+  border-bottom: 1px solid var(--stroke-stoke-2);
+}
+.profileSec .userInfoBox .head strong {
+  color: var(--text-3);
+  text-align: right;
+  font-family: "IRANSansWebFaBold";
+  font-size: 15px;
+}
+.profileSec .userInfoBox .head a {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  color: var(--blue);
+}
+.profileSec .userInfoBox .head a span {
+  font-size: 18px;
+}
+.profileSec .userInfoBox .head a .icon-Group-2330 {
+  font-size: 15px;
+}
+.profileSec .userInfoBox .head a i {
+  font-size: 13.5px;
+}
+.profileSec .userInfoBox .head a:hover {
+  color: var(--blue-hover);
+}
+.profileSec .userInfoBox .body {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  padding: 30px 8px;
+}
+.profileSec .userInfoBox .body img {
+  width: 142px;
+  height: 142px;
+  object-fit: cover;
+  background: var(--light-3);
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.profileSec .userInfoBox .body ul {
+  width: calc(100% - 142px);
+  padding-right: 40px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 20px 30px;
+}
+.profileSec .userInfoBox .body li {
+  width: 47%;
+}
+.profileSec .userInfoBox .body span {
+  color: var(--text-3);
+  font-size: 13.5px;
+}
+.profileSec .userInfoBox .body p {
+  color: var(--text-1);
+  font-size: 15px;
+}
+.profileSec .userInfoBox .profEditBx {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 30px 0;
+}
+.profileSec .profEditBx .editUsrPic {
+  width: 142px;
+  min-width: 142px;
+}
+.profileSec .profEditBx .profPicBx {
+  width: 100%;
+  height: 142px;
+  margin-bottom: 12px;
+  background-color: var(--light-3);
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.profileSec .profEditBx .editUsrPic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.profileSec .profEditBx .editUsrBtn {
+  width: 100%;
+  height: 41px;
+}
+.profileSec .profEditBx .editUsrBtn input,
+.profileSec .profEditBx .editUsrBtn label {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+}
+.profileSec .profEditBx .editUsrBtn input {
+  opacity: 0;
+  z-index: 2;
+}
+.profileSec .profEditBx .editUsrBtn label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--text-1);
+  background: var(--light-3);
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.profileSec .profEditBx .editUsrBtn label i {
+  font-size: 13.5px;
+}
+.profileSec .profEditBx .editUsrBtn label span {
+  font-size: 18px;
+}
+.profileSec .profEditBx .editUsrBtn:hover label {
+  background: var(--red-1);
+  color: var(--white);
+}
+.profileSec .editUsrPic .deletUsrPic {
+  border: none;
+  background: transparent;
+  margin: 10px auto;
+  width: max-content;
+  height: max-content;
+  display: block;
+  color: var(--red-1);
+  text-align: center;
+  font-family: "IRANSansWebFaMedium";
+  font-size: 12px;
+}
+.profileSec .editUsrPic .deletUsrPic:hover {
+  color: var(--red-bg);
+}
+.profileSec .editUsrFrm {
+  padding-right: 30px;
+}
+.profileSec .editUsrFrm2 {
+  padding: 5px 25px;
+}
+.profileSec .editUsrFrm label {
+  text-align: right;
+}
+.profileSec .editUsrFrm label span {
+  color: var(--text-1);
+  font-size: 13.5px;
+}
+.profileSec .editUsrFrm label i {
+  color: var(--red-1);
+  font-family: "IRANSansWebFaBold";
+  font-size: 17px;
+}
+.profileSec .editUsrFrm .input-group {
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.profileSec .editUsrFrm input {
+  background: transparent;
+  color: var(--text-1);
+  height: 45px;
+  font-size: 13.5px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.profileSec .editUsrFrm input:focus {
+  border: 1px solid var(--red-1);
+}
+.profileSec .profEditBx .usrFrmBtn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+.profileSec .profEditBx button {
+  text-align: center;
+  font-size: 13.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 100px;
+  height: 45px;
+  padding: 5px 24px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.profileSec .profEditBx button[type="submit"] {
+  background: var(--blue);
+  color: var(--white);
+}
+.profileSec .profEditBx button[type="submit"]:hover {
+  background: var(--blue-hover);
+}
+.profileSec .profEditBx button[type="button"] {
+  background: var(--gray-3);
+}
+.profileSec .profEditBx button[type="button"]:hover {
+  background: var(--gray);
+  color: var(--white);
+}
+
+.profileSec .tabBox {
+  background: var(--body-bg);
+  padding: 30px 20px;
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  -ms-border-radius: 20px;
+  -o-border-radius: 20px;
+}
+.profileSec .tabBox .tabBXHeader {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  border-bottom: 1px solid var(--stroke-stoke-2);
+}
+.profileSec .tabBox .tabBXHeader a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-bottom: 1px solid transparent;
+  color: var(--text-2);
+  text-align: center;
+  font-family: "IRANSansWebFaBold";
+  font-size: 15px;
+}
+.profileSec .tabBox .tabBXHeader a.active {
+  border-bottom: 1px solid var(--red-1);
+  color: var(--red-1);
+}
+.profileSec .dashLeft .tabcontent {
+  display: none;
+  padding: 30px 0;
+}
+.profileSec .dashLeft #tabOne {
+  display: block;
+}
+
+.profileSec .dashLeft .tabFavList li {
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.profileSec .tabFavList li a {
+  color: var(--text-1);
+  text-align: right;
+  font-family: "IRANSansWebFaMedium";
+  font-size: 15px;
+}
+.profileSec .tabFavList li button,
+.profileSec .tabAuthrLst button {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: var(--red-bg);
+  color: var(--red-1);
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+}
+.profileSec .tabFavList li button span,
+.profileSec .tabAuthrLst button span {
+  line-height: 2;
+  display: block;
+  font-size: 23px;
+}
+.profileSec .tabFavList li button:hover,
+.profileSec .tabAuthrLst button:hover {
+  background: var(--red-1);
+  color: var(--white);
+}
+.profileSec .dashLeft .tabAuthrLst {
+  margin-bottom: 45px;
+}
+.profileSec .tabAuthrLst li {
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.profileSec .tabAuthrLst li a {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+}
+.profileSec .tabAuthrLst a i {
+  background: var(--golden);
+  border: 3px solid var(--text-3);
+  width: 69px;
+  height: 69px;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+}
+.profileSec .tabAuthrLst a img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+}
+.profileSec .tabAuthrLst a strong {
+  color: var(--text-1);
+  font-family: "IRANSansWebFaMedium";
+  font-size: 15px;
+  font-weight: 500;
+}
+.profileSec .tabAuthrLst a p {
+  color: var(--gray);
+  font-family: "IRANSansWebFaMedium";
+  font-size: 13.5px;
+}
+/*bookMrkBox*/
+.profileSec .dashLeft .bookMrkBox {
+  margin: 30px 0 45px 0;
+}
+.profileSec .bookMrkBox .bookMrkCrd {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 24px;
+}
+.profileSec .bookMrkBox .imgBx {
+  width: 172px;
+  height: 110px;
+  overflow: hidden;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.profileSec .bookMrkBox .imgBx img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.profileSec .bookMrkBox .imgBx div {
+  width: 30px;
+  height: 30px;
+  left: 8px;
+  bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.profileSec .bookMrkBox .imgBx div span {
+  font-size: 15px;
+  color: var(--white);
+}
+.profileSec .bookMrkBox .text {
+  width: calc(100% - 172px);
+  padding-right: 12px;
+}
+.profileSec .bookMrkBox .text a {
+  display: block;
+}
+.profileSec .bookMrkBox .text h2 {
+  color: var(--text-1);
+  font-family: "IRANSansWebFaMedium";
+  font-size: 17px;
+  line-height: 1.2;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.profileSec .bookMrkBox .text p {
+  color: var(--gray);
+  line-height: 1.5;
+  font-size: 14px;
+  margin: 6px 0;
+  max-height: 42px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.profileSec .bookMrkCrd .bookCrdBtm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.profileSec .bookMrkCrd .bookCrdBtm p {
+  color: var(--blue);
+  font-family: "IRANSansWebFaMedium";
+  font-size: 12px;
+  display: block;
+  height: max-content;
+}
+.profileSec .bookMrkCrd .bookCrdBtm button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+.profileSec .bookMrkCrd .bookCrdBtm i {
+  color: var(--text-1);
+  font-family: "IRANSansWebFaMedium";
+  font-size: 12px;
+}
+.profileSec .bookMrkCrd .bookCrdBtm span {
+  color: var(--blue);
+}
+.profileSec .bookMrkCrd .bookCrdBtm button:hover i {
+  color: var(--blue);
+}
+.profileSec .bookMrkBox .bookMrkCrd:hover img {
+  transform: scale(1.1);
+  -webkit-transform: scale(1.1);
+  -moz-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  -o-transform: scale(1.1);
+}
+
+/*poinTable*/
+.profileSec .dashLeft .poinTable {
+  margin: 30px 0;
+}
+.table > :not(caption) > * > * {
+  background: var(--body-bg);
+}
+.sponsrTable thead tr th,
+.profileSec .poinTable thead tr th {
+  background: var(--light-3);
+  padding: 0.7rem 0.5rem;
+  color: var(--text-1);
+  text-align: center;
+  font-family: "IRANSansWebFaBold";
+  font-size: 15px;
+  min-width: 100px;
+}
+.sponsrTable thead tr th:first-child,
+.profileSec .poinTable thead tr th:first-child {
+  min-width: 60px;
+  border-radius: 0 18px 18px 0;
+  -webkit-border-radius: 0 18px 18px 0;
+  -moz-border-radius: 0 18px 18px 0;
+  -ms-border-radius: 0 18px 18px 0;
+  -o-border-radius: 0 18px 18px 0;
+}
+.sponsrTable thead tr th:last-child,
+.profileSec .poinTable thead tr th:last-child {
+  min-width: 180px;
+  border-radius: 18px 0 0 18px;
+  -webkit-border-radius: 18px 0 0 18px;
+  -moz-border-radius: 18px 0 0 18px;
+  -ms-border-radius: 18px 0 0 18px;
+  -o-border-radius: 18px 0 0 18px;
+}
+.sponsrTable table tr td,
+.profileSec .poinTable td {
+  padding: 1rem 0.7rem;
+  vertical-align: middle;
+}
+.profileSec .sponsrTable td p,
+.profileSec .poinTable td p {
+  color: var(--text-2);
+  text-align: center;
+  font-size: 15px;
+}
+.profileSec .poinTable .swap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  font-size: 17px;
+}
+.profileSec .poinTable .red {
+  color: var(--red-1);
+}
+.profileSec .poinTable .blue {
+  color: var(--blue);
+}
+.profileSec .poinTable .gray {
+  color: var(--gray-3);
+}
+.profileSec .poinTable .score {
+  text-align: center;
+  font-size: 15px;
+}
+
+/*plans*/
+.plansHed {
+  text-align: center;
+  margin: 20px auto;
+  max-width: 500px;
+}
+.plansHed strong {
+  color: var(--text-1);
+  font-family: "IRANSansWebFaBold";
+  font-size: 19px;
+  line-height: 1.5;
+  display: block;
+  margin-bottom: 15px;
+}
+.plansHed p {
+  color: var(--text-2);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+.plansRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 45px 38px;
+  margin: 70px 20px 40px 0;
+}
+.plansRow li {
+  width: 230px;
+}
+.plansRow li a {
+  display: block;
+  width: 230px;
+  padding: 25px 18px 20px 18px;
+  z-index: 2;
+  border: 1px solid transparent;
+  background: var(--body-bg);
+  box-shadow: var(--shadow2);
+  border-radius: 25px;
+  -webkit-border-radius: 25px;
+  -moz-border-radius: 25px;
+  -ms-border-radius: 25px;
+  -o-border-radius: 25px;
+}
+.plansRow li:before {
+  position: absolute;
+  top: -15px;
+  right: -20px;
+  content: "";
+  width: 220px;
+  height: 100%;
+  z-index: 1;
+  border-radius: 25px;
+  -webkit-border-radius: 25px;
+  -moz-border-radius: 25px;
+  -ms-border-radius: 25px;
+  -o-border-radius: 25px;
+}
+.plansRow li.pink:before {
+  background: #fffbec;
+}
+.plansRow li.purple:before {
+  background: #f9ecff;
+}
+.plansRow li.blue:before {
+  background: #eceeff;
+}
+.plansRow a h2 {
+  color: var(--text-1);
+  text-align: right;
+  font-family: "IRANSansWebFaBold";
+  font-size: 17px;
+}
+.plansRow a .text {
+  text-align: right;
+  margin: 20px 0;
+}
+.plansRow a .text p {
+  color: var(--text-1);
+  font-family: "IRANSansWebFaMedium";
+  font-size: 15px;
+}
+.plansRow a .text i {
+  color: var(--text-3);
+  font-size: 13.5px;
+}
+.plansRow a .price {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  margin-bottom: 15px;
+}
+.plansRow a .price strong {
+  color: var(--text-1);
+  font-family: "IRANSansWebFaBold";
+  font-size: 19px;
+}
+.plansRow a .price small {
+  color: var(--text-2);
+  font-size: 12px;
+}
+.plansRow a .planCrdBtn {
+  color: var(--text-1);
+  text-align: center;
+  font-size: 15px;
+  cursor: pointer;
+  width: max-content;
+  min-width: 120px;
+  height: 44px;
+  padding: 5px 20px;
+  margin: 1px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--light-3);
+  box-shadow: 1px -5px 4px 0px rgba(228, 228, 253, 0.7) inset;
+  border-radius: 25px;
+  -webkit-border-radius: 25px;
+  -moz-border-radius: 25px;
+  -ms-border-radius: 25px;
+  -o-border-radius: 25px;
+}
+.plansRow a .planCrdBtn:hover {
+  background: var(--blue);
+  color: var(--white);
+}
+.plansRow li:hover {
+  transform: translateY(-5px);
+  -webkit-transform: translateY(-5px);
+  -moz-transform: translateY(-5px);
+  -ms-transform: translateY(-5px);
+  -o-transform: translateY(-5px);
+}
+
+.sponsrEmpty {
+  margin: 50px auto 30px auto;
+}
+.sponsrEmpty p {
+  color: var(--text-3);
+  text-align: center;
+  font-size: 15px;
+  margin-bottom: 40px;
+}
+.sponsrEmpty a {
+  height: 46px;
+  padding: 12px 24px;
+  background: var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  margin: 10px auto;
+  gap: 7px;
+  color: var(--white);
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.sponsrEmpty a span {
+  font-size: 15px;
+}
+.sponsrEmpty a i {
+  font-family: "IRANSansWebFaMedium";
+  font-size: 13.5px;
+}
+.sponsrEmpty a:hover {
+  background: var(--blue-hover);
+}
+
+/*sponsrTable*/
+.profileSec .sponsrTable {
+  margin: 30px 0;
+}
+.profileSec .sponsrTable .status {
+  text-align: center;
+  font-family: "IRANSansWebFaMedium";
+  margin: 0 auto;
+  font-size: 12px;
+  width: max-content;
+  height: 30px;
+  line-height: 2;
+  padding: 3px 12px;
+  border-radius: 15px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+}
+.profileSec .sponsrTable .status.orange {
+  color: var(--golden);
+  background: #fff8dd;
+}
+.profileSec .sponsrTable .status.red {
+  color: var(--red-1);
+  background: #fbe5e9;
+}
+.profileSec .sponsrTable .status.blue {
+  color: var(--blue);
+  background: #e3f3fd;
+}
+.profileSec .sponsrTable a {
+  color: var(--white);
+  text-align: center;
+  font-family: "IRANSansWebFaBold";
+  font-size: 12px;
+  width: max-content;
+  margin: 0 auto;
+  height: 35px;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--red-1);
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.profileSec .sponsrTable a:hover {
+  background: var(--red-bg);
+}
+
+/*addSpnsrFrm*/
+.profileSec .addSpnsrFrm {
+  margin: 30px 0;
+}
+.profileSec .addSpnsrFrm input[type="file"] {
+  height: auto;
+}
+.profileSec .addSpnsrFrm .form-select {
+  height: 45px;
+  padding: 0.375rem 0.75rem 0.375rem 2.25rem;
+  background-position: left 0.75rem center;
+  background-color: transparent;
+}
+.profileSec .addSpnsrFrm textarea {
+  background-color: transparent;
+}
+.profileSec .addSpnsrFrm .form-select:focus,
+.profileSec .addSpnsrFrm textarea:focus {
+  border: 1px solid var(--red-1);
+}
+.profileSec .addSpnsrFrm .spnsrFrmBtn {
+  background: var(--blue);
+  width: 116px;
+  padding: 12px 24px;
+  color: var(--white);
+  display: block;
+  margin: 0 auto 0 0;
+  text-align: center;
+  font-family: "IRANSansWebFaBold";
+  font-size: 13.5px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.profileSec .addSpnsrFrm .spnsrFrmBtn:hover {
+  background: var(--blue-hover);
+}
+
+/*settingBox*/
+.profileSec .settingBox {
+  margin: 25px 0;
+}
+.profileSec .settingBox .form-check {
+  margin-bottom: 18px;
+}
+.profileSec .settingBox label {
+  color: var(--text-1);
+  text-align: right;
+  font-family: "IRANSansWebFaMedium";
+  font-size: 15px;
+}
+
+.setFont {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.setFont p {
+  color: var(--text-1);
+  text-align: right;
+  font-family: "IRANSansWebFaMedium";
+  font-size: 15px;
+}
+.setFont .rangeWrap {
+  width: max-content;
+  margin: 1px auto 1px 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.rangeWrap button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-1);
+  font-size: 20px;
+  border: none;
+  background: transparent;
+}
+.rangeWrap button:hover {
+  color: var(--red-1);
+}
+.rangeWrap .form-container-range {
+  position: relative;
+  width: 260px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+}
+.rangeWrap .form-range {
+  -webkit-appearance: none !important;
+  margin: 0;
+  width: 100%;
+  height: 30px;
+  position: absolute;
+  top: 0;
+  z-index: 2;
+}
+.rangeWrap .form-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  background: var(--body-bg);
+  height: 20px;
+  width: 20px;
+  border: none;
+  border-radius: 50%;
+  transition: 0.35s;
+  cursor: pointer;
+  filter: var(--filter);
+  box-shadow: none;
+  overflow: unset;
+  -webkit-filter: var(--filter);
+}
+.rangeWrap .form-range::-ms-thumb {
+  background: var(--body-bg);
+  height: 20px;
+  width: 20px;
+  border: none;
+  border-radius: 50%;
+  transition: 0.35s;
+  cursor: pointer;
+  box-shadow: none;
+  overflow: unset;
+}
+.rangeWrap .form-range::-moz-range-thumb {
+  background: var(--body-bg);
+  height: 20px;
+  width: 20px;
+  border: none;
+  border-radius: 50%;
+  transition: 0.35s;
+  cursor: pointer;
+  box-shadow: none;
+  overflow: unset;
+}
+.rangeWrap .form-range::-webkit-slider-runnable-track {
+  background: var(--gray-3);
+  height: 6px;
+}
+.rangeWrap .form-range::-moz-range-track {
+  height: 6px;
+  background: var(--gray-3);
+}
+.rangeWrap .form-range::-ms-track {
+  height: 6px;
+  background: var(--gray-3);
+}
+.rangeWrap .form-range:focus {
+  outline: none;
+}
+.rangeWrap .form-range:focus::-webkit-slider-thumb {
+  background: var(--body-bg);
+  box-shadow: none;
+  overflow: unset;
+}
+.rangeWrap .form-range:focus::-ms-thumb {
+  background: var(--body-bg);
+  box-shadow: none;
+  overflow: unset;
+}
+.rangeWrap .form-range:focus::-moz-range-thumb {
+  background: var(--body-bg);
+  box-shadow: none;
+  overflow: unset;
+}
+.rangeWrap .range-markers {
+  position: relative;
+  top: 0.8px;
+  z-index: 1;
+  height: 15px;
+  width: 100%;
+  display: flex;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+}
+.rangeWrap .range-markers .marker {
+  background: var(--gray-3);
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  transition: 0.15s ease-out;
+}
+.deletAcc button {
+  color: var(--red-1);
+  width: max-content;
+  text-align: right;
+  font-family: "IRANSansWebFaMedium";
+  font-size: 15px;
+  margin: 15px 0 1px auto;
+  border: none;
+  background: transparent;
+}
+.deletAcc button:hover {
+  color: var(--red-bg);
+}
+
+/*=================storeModal===============*/
+.storeModal .modal-content {
+  background: var(--body-bg);
+}
+.storeModal .modal-header {
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--stroke-e-3);
+}
+.storeModal .modal-header h1 {
+  color: var(--text-1);
+  font-family: "IRANSansWebFaBold";
+  font-size: 16px;
+  text-align: right;
+}
+.storeModal .modal-header button {
+  width: max-content;
+  height: 22px;
+  border: none;
+  background: transparent;
+  display: block;
+}
+.storeModal .modal-header button span {
+  font-size: 22px;
+  line-height: 1;
+  color: var(--gray);
+}
+.storeModal .mdlSrchBx {
+  width: calc(100% - 40px);
+  height: 47px;
+  margin: 15px auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border: 1px solid var(--stroke-e-3);
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.storeModal .mdlSrchBx button {
+  width: 40px;
+  height: 47px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: var(--text-2);
+  border: none;
+  background: transparent;
+  border-radius: 0 10px 10px 0;
+  -webkit-border-radius: 0 10px 10px 0;
+  -moz-border-radius: 0 10px 10px 0;
+  -ms-border-radius: 0 10px 10px 0;
+  -o-border-radius: 0 10px 10px 0;
+}
+.storeModal .mdlSrchBx button:hover {
+  color: var(--red-1);
+}
+.storeModal .mdlSrchBx input {
+  width: calc(100% - 40px);
+  background: transparent;
+  height: 100%;
+  font-size: 14px;
+  color: var(--text-1);
+  border: none;
+  border-radius: 10px 0 0 10px;
+  -webkit-border-radius: 10px 0 0 10px;
+  -moz-border-radius: 10px 0 0 10px;
+  -ms-border-radius: 10px 0 0 10px;
+  -o-border-radius: 10px 0 0 10px;
+}
+.storeModal .mdlSrchBx:has(input:focus) {
+  border: 1px solid var(--red-1);
+}
+.storeModal .storMdlHed {
+  display: block;
+  width: 100%;
+  border-bottom: 1px solid var(--stroke-stoke-2);
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
+  padding: 0 1rem 10px 1rem;
+  text-align: right;
+  color: var(--text-3);
+  font-family: "IRANSansWebFaBold";
+  font-size: 15px;
+}
+.storeModal .storMdlCrd {
+  overflow: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 15px;
+  flex-wrap: wrap;
+  height: 420px;
+  padding: 15px;
+}
+.storeModal .storMdlCrd::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background-color: #cacaca;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+.storeModal .storMdlCrd::-webkit-scrollbar-thumb {
+  background: #8b8b8b;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+.storeModal .storMdlCrd a {
+  display: block;
+  width: 48%;
+  border-bottom: 1px solid #efefef;
+  border-radius: 14px 14px 0 0;
+  -webkit-border-radius: 14px 14px 0 0;
+  -moz-border-radius: 14px 14px 0 0;
+  -ms-border-radius: 14px 14px 0 0;
+  -o-border-radius: 14px 14px 0 0;
+}
+.storeModal .storMdlCrd a .storCrdImg {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.storeModal .storMdlCrd a img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.storeModal .storMdlCrd a .storCrdBdy {
+  padding: 8px;
+}
+.storeModal .storMdlCrd .storCrdBdy p {
+  color: var(--gray);
+  text-align: right;
+  font-size: 13.5px;
+  max-height: 63px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 10px 0;
+}
+.storeModal .storMdlCrd .storCrdBdy div {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+}
+.storeModal .storMdlCrd .storCrdBdy strong {
+  color: var(--text-1);
+  font-family: "IRANSansWebFaBold";
+  font-size: 17px;
+}
+.storeModal .storMdlCrd .storCrdBdy i {
+  color: var(--text-2);
+  font-size: 12px;
+}
+.storeModal .storMdlCrd .storCrdBdy span {
+  margin: 15px auto;
+  color: var(--text-1);
+  text-align: center;
+  font-family: "IRANSansWebFaMedium";
+  font-size: 13.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 20px;
+  width: max-content;
+  height: 40px;
+  background: var(--light-3);
+  box-shadow: 1px -5px 4px 0px rgba(228, 228, 253, 0.7) inset;
+  border-radius: 25px;
+  -webkit-border-radius: 25px;
+  -moz-border-radius: 25px;
+  -ms-border-radius: 25px;
+  -o-border-radius: 25px;
+}
+.storeModal .storMdlCrd a span:hover {
+  background: var(--blue);
+  color: var(--white);
+}
+.storeModal .storMdlCrd a:hover {
+  border-color: var(--red-1);
+}
+.storeModal .storMdlCrd a:hover img {
+  transform: scale(1.1);
+  -webkit-transform: scale(1.1);
+  -moz-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  -o-transform: scale(1.1);
+}
+
+/*=================deletModal===============*/
+.deletModal .modal-content {
+  background: var(--body-bg);
+  padding: 20px;
+  border-radius: 25px;
+  -webkit-border-radius: 25px;
+  -moz-border-radius: 25px;
+  -ms-border-radius: 25px;
+  -o-border-radius: 25px;
+}
+.deletModal .dltMdlHed {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e1e5e7;
+  padding-bottom: 10px;
+}
+.deletModal .dltMdlHed h1 {
+  color: var(--text-3);
+  text-align: right;
+  font-family: "IRANSansWebFaBold";
+  font-size: 15px;
+}
+.deletModal .dltMdlHed button {
+  width: max-content;
+  height: 22px;
+  border: none;
+  background: transparent;
+  display: block;
+}
+.deletModal .dltMdlHed button span {
+  font-size: 22px;
+  line-height: 1;
+  color: var(--gray);
+}
+.deletModal .dltMdlBody {
+  margin-top: 25px;
+}
+.deletModal .dltMdlBody p {
+  color: var(--text-1);
+  text-align: right;
+  font-size: 13.5px;
+}
+.deletModal .dltMdlBody div {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 15px;
+  margin-top: 25px;
+}
+.deletModal .dltMdlBody button {
+  text-align: center;
+  font-family: "IRANSansWebFaBold";
+  font-size: 13.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 32px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+.deletModal .dltMdlBody button[type="button"] {
+  color: var(--text-1);
+  background: var(--light-3);
+}
+.deletModal .dltMdlBody button[type="submit"] {
+  color: var(--white);
+  background: var(--red-1);
+}
+
+/*=================media===============*/
+@media (max-width: 1199px) {
+  .profileSec .userInfoBox .body img {
+    width: 130px;
+    height: 130px;
+  }
+  .profileSec .userInfoBox .body ul {
+    width: calc(100% - 130px);
+    padding-right: 15px;
+  }
+}
+@media (min-width: 768px) and (max-width: 1199px) {
+  .profileSec .userInfoBox .body ul {
+    gap: 20px;
+  }
+  .profileSec .userInfoBox .body li {
+    width: 46%;
+  }
+}
+@media (max-width: 991px) {
+  .profileSec .dashboardRow {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .profileSec .dashRight {
+    position: static;
+    width: 100%;
+  }
+  .profileSec .dashLeft {
+    width: 100%;
+    padding-right: 0;
+  }
+}
+@media (max-width: 767px) {
+  .profileSec .sponsrTable .status {
+    font-size: 10px;
+    line-height: 2.5;
+  }
+  .rangeWrap button {
+    font-size: 16px;
+    padding: 0;
+  }
+  .setFont .rangeWrap {
+    gap: 6px;
+  }
+  .rangeWrap .form-container-range {
+    width: 200px;
+  }
+  .rangeWrap .form-range::-webkit-slider-thumb {
+    height: 15px;
+    width: 15px;
+  }
+  .rangeWrap .form-range::-ms-thumb {
+    height: 15px;
+    width: 15px;
+  }
+  .rangeWrap .form-range::-moz-range-thumb {
+    height: 15px;
+    width: 15px;
+  }
+  .rangeWrap .range-markers .marker {
+    width: 12px;
+    height: 12px;
+  }
+  .setFont p,
+  .profileSec .settingBox label {
+    font-size: 13px;
+  }
+  .deletAcc button {
+    font-size: 14px;
+  }
+  .profileSec .userInfoBox .body {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .profileSec .userInfoBox .body ul {
+    flex-wrap: wrap;
+    width: 100%;
+    padding-right: 0;
+    gap: 20px 60px;
+  }
+  .profileSec .userInfoBox .body li {
+    width: max-content;
+  }
+  .profileSec .userInfoBox .body img {
+    width: 115px;
+    height: 115px;
+  }
+  .profileSec .profEditBx .editUsrPic {
+    margin: 0 auto;
+  }
+  .profileSec .userInfoBox .profEditBx {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .profileSec .editUsrFrm {
+    width: 100%;
+    padding-right: 0;
+  }
+  .profileSec .userInfoBox .head {
+    flex-wrap: wrap;
+  }
+  .sponsrTable thead tr th,
+  .profileSec .poinTable thead tr th {
+    font-size: 13px;
+  }
+  .profileSec .poinTable .score,
+  .profileSec .sponsrTable td p,
+  .profileSec .poinTable td p {
+    font-size: 13px;
+  }
+  .plansRow a h2 {
+    font-size: 16px;
+  }
+  .plansRow a .text p {
+    font-size: 14px;
+  }
+  .plansHed {
+    max-width: 380px;
+  }
+  .plansHed strong {
+    font-size: 17px;
+  }
+  .profileSec .poinTable .swap,
+  .plansRow a .text i,
+  .plansHed p {
+    font-size: 12px;
+  }
+  .plansRow li,
+  .plansRow li:before,
+  .plansRow li a {
+    width: 100%;
+  }
+  .profileSec .tabAuthrLst li a {
+    gap: 8px;
+  }
+  .profileSec .tabAuthrLst a i {
+    width: 50px;
+    height: 50px;
+  }
+  .profileSec .tabAuthrLst a strong {
+    font-size: 14px;
+  }
+  .profileSec .tabAuthrLst a p {
+    font-size: 11px;
+  }
+  .profileSec .bookMrkCrd .bookCrdBtm i,
+  .profileSec .bookMrkCrd .bookCrdBtm p {
+    font-size: 10px;
+  }
+  .profileSec .bookMrkCrd .bookCrdBtm span {
+    font-size: 14px;
+  }
+  .profileSec .bookMrkBox .text h2 {
+    font-size: 15px;
+  }
+  .profileSec .bookMrkBox .text p {
+    font-size: 12px;
+    height: 37px;
+  }
+  .profileSec .bookMrkCrd .bookCrdBtm p {
+    height: max-content;
+    margin: 0;
+  }
+  .profileSec .editUsrFrm2 {
+    padding: 0;
+  }
+  .profileSec .dashRghtMnu li i {
+    font-size: 13px;
+  }
+  .profileSec .dashRghtMnu li span {
+    font-size: 18px;
+  }
+  .profileSec .dashRight .dashUsrBx h1 {
+    font-size: 15px;
+  }
+  .profileSec .userInfoBox .head strong {
+    font-size: 14px;
+  }
+  .profileSec .dashRight .dashWeltRow button span,
+  .profileSec .dashRight .dashWeltRow button i {
+    font-size: 12px;
+  }
+  .profileSec .addSpnsrFrm .spnsrFrmBtn,
+  .profileSec .editUsrFrm label span {
+    font-size: 12.5px;
+  }
+}
+@media (min-width: 481px) and (max-width: 767px) {
+  .profileSec .bookMrkBox .imgBx {
+    width: 145px;
+  }
+  .profileSec .bookMrkBox .text {
+    width: calc(100% - 145px);
+  }
+}
+@media (max-width: 575px) {
+  .setFont {
+    flex-wrap: wrap;
+    gap: 25px;
+  }
+  .profileSec .bookMrkBox .bookMrkCrd {
+    margin-bottom: 18px;
+  }
+  .profileSec .dashLeft .bookMrkBox {
+    margin: 25px 0;
+  }
+}
+@media (max-width: 480px) {
+  .profileSec .dashLeft .userInfoBox {
+    padding: 20px 15px;
+  }
+  .profileSec .bookMrkBox .imgBx {
+    width: 90px;
+    height: 90px;
+  }
+  .profileSec .bookMrkBox .text {
+    width: calc(100% - 90px);
+  }
+}
