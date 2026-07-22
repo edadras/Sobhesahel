@@ -3,6 +3,19 @@
 return [
 
     /*
+    |--------------------------------------------------------------------------
+    | Matomo (self-hosted analytics)
+    |--------------------------------------------------------------------------
+    | When matomo_url and matomo_token are both set, the admin dashboard
+    | statistics widgets will fetch live visitor data from the Matomo HTTP
+    | API. When they are empty, the widgets silently fall back to internal
+    | (database) statistics and show "—" placeholders for live numbers.
+    */
+    'matomo_url' => env('MATOMO_URL'),
+    'matomo_token' => env('MATOMO_TOKEN'),
+    'matomo_site_id' => env('MATOMO_SITE_ID', 1),
+
+    /*
      * The property id of which you want to display data.
      */
     'property_id' => env('ANALYTICS_PROPERTY_ID'),
