@@ -72,7 +72,7 @@ class AdminPanelProvider extends PanelProvider
             ]) 
             ->renderHook(PanelsRenderHook::BODY_END, fn () => view('filament.shortcuts'))
             ->login(Login::class)
-            ->brandLogo(Storage::url(setting('general.fa_logo')))
+            ->brandLogo(fn () => Storage::url(rescue(fn () => setting('general.fa_logo'), '', false)))
             ->brandLogoHeight('40px')
             ->plugins([
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
