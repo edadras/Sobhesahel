@@ -21,6 +21,11 @@
 
         <textarea wire:model="comment_text" class="form-control" placeholder="دیدگاه خود را بنویسید..." rows="3"></textarea>
         @error('comment_text') <small class="text-danger">{{ $message }}</small> @enderror
+
+        {{-- Honeypot: hidden from humans, bots fill it and get silently dropped --}}
+        <div style="position:absolute;left:-9999px;top:-9999px;height:0;width:0;overflow:hidden;" aria-hidden="true">
+            <input wire:model="comment_website" type="text" name="comment_website" tabindex="-1" autocomplete="off">
+        </div>
     </div>
 
     @foreach($comments as $comment)

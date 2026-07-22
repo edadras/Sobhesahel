@@ -8,9 +8,13 @@ use App\Models\Comment;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -99,6 +103,18 @@ class CommentResource extends Resource implements HasShieldPermissions
 
                 Forms\Components\Section::make('اطلاعات سیستمی')
                     ->schema([
+                        Forms\Components\TextInput::make('ip')
+                            ->label('آدرس IP')
+                            ->disabled(),
+
+                        Forms\Components\TextInput::make('user_agent')
+                            ->label('مرورگر کاربر (User Agent)')
+                            ->disabled(),
+
+                        Forms\Components\TextInput::make('spam_reason')
+                            ->label('دلیل اسپم')
+                            ->disabled(),
+
                         Forms\Components\TextInput::make('user_id')
                             ->label('شناسه کاربر')
                             ->numeric()
@@ -172,6 +188,18 @@ class CommentResource extends Resource implements HasShieldPermissions
                         'rejected' => 'danger',
                         default => 'gray',
                     }),
+                Tables\Columns\TextColumn::make('ip')
+                    ->label('آدرس IP')
+                    ->searchable()
+                    ->copyable()
+                    ->toggleable(),
+
+                Tables\Columns\TextColumn::make('spam_reason')
+                    ->label('دلیل اسپم')
+                    ->limit(30)
+                    ->tooltip(fn ($record) => $record->spam_reason)
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('تاریخ ایجاد')
                     ->jalaliDateTime('H:i Y/m/d')
@@ -192,15 +220,152 @@ class CommentResource extends Resource implements HasShieldPermissions
                         'verified' => 'تأیید شده',
                         'rejected' => 'رد شده',
                     ]),
+
+                Tables\Filters\Filter::make('ip')
+                    ->label('نظرات همین IP')
+                    ->form([
+                        Forms\Components\TextInput::make('ip')
+                            ->label('آدرس IP'),
+                    ])
+                    ->query(fn (Builder $query, array $data): Builder => $query
+                        ->when($data['ip'] ?? null, fn (Builder $query, $ip) => $query->where('ip', $ip)))
+                    ->indicateUsing(fn (array $data): ?string => ($data['ip'] ?? null)
+                        ? 'نظرات IP: ' . $data['ip']
+                        : null),
             ])
             ->actions([
+                Tables\Actions\Action::make('approve')
+                    ->label('تأیید')
+                    ->icon('heroicon-m-check-circle')
+                    ->color('success')
+                    ->visible(fn (Comment $record) => $record->status !== 'verified')
+                    ->action(function (Comment $record) {
+                        $record->update(['status' => 'verified']);
+
+                        Notification::make()
+                            ->title('دیدگاه تأیید شد')
+                            ->success()
+                            ->send();
+                    }),
+
+                Tables\Actions\Action::make('reject')
+                    ->label('رد')
+                    ->icon('heroicon-m-x-circle')
+                    ->color('danger')
+                    ->visible(fn (Comment $record) => $record->status !== 'rejected')
+                    ->action(function (Comment $record) {
+                        $record->update(['status' => 'rejected']);
+
+                        Notification::make()
+                            ->title('دیدگاه رد شد')
+                            ->danger()
+                            ->send();
+                    }),
+
+                Tables\Actions\Action::make('same_ip')
+                    ->label('نظرات همین IP')
+                    ->icon('heroicon-m-funnel')
+                    ->color('gray')
+                    ->visible(fn (Comment $record) => filled($record->ip))
+                    ->url(fn (Comment $record): string => static::getUrl('index', [
+                        'tableFilters' => ['ip' => ['ip' => $record->ip]],
+                    ])),
+
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\BulkAction::make('approve')
+                        ->label('تأیید گروهی')
+                        ->icon('heroicon-m-check-circle')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->deselectRecordsAfterCompletion()
+                        ->action(function (Collection $records) {
+                            $records->each->update(['status' => 'verified']);
+
+                            Notification::make()
+                                ->title('دیدگاه‌های انتخاب شده تأیید شدند')
+                                ->success()
+                                ->send();
+                        }),
+
+                    Tables\Actions\BulkAction::make('reject')
+                        ->label('رد گروهی')
+                        ->icon('heroicon-m-x-circle')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->deselectRecordsAfterCompletion()
+                        ->action(function (Collection $records) {
+                            $records->each->update(['status' => 'rejected']);
+
+                            Notification::make()
+                                ->title('دیدگاه‌های انتخاب شده رد شدند')
+                                ->danger()
+                                ->send();
+                        }),
+
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])  ->defaultSort('id','DESC');
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make('دیدگاه')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('name')
+                            ->label('نام کاربر'),
+
+                        Infolists\Components\TextEntry::make('email')
+                            ->label('ایمیل کاربر'),
+
+                        Infolists\Components\TextEntry::make('comment')
+                            ->label('متن دیدگاه')
+                            ->columnSpanFull(),
+
+                        Infolists\Components\TextEntry::make('status')
+                            ->label('وضعیت')
+                            ->badge()
+                            ->formatStateUsing(fn ($state) => match ($state) {
+                                'pending' => 'در انتظار بررسی',
+                                'verified' => 'تأیید شده',
+                                'rejected' => 'رد شده',
+                                default => 'نامشخص',
+                            })
+                            ->color(fn ($state) => match ($state) {
+                                'pending' => 'warning',
+                                'verified' => 'success',
+                                'rejected' => 'danger',
+                                default => 'gray',
+                            }),
+
+                        Infolists\Components\TextEntry::make('spam_reason')
+                            ->label('دلیل اسپم')
+                            ->placeholder('—'),
+                    ])->columns(2),
+
+                Infolists\Components\Section::make('اطلاعات فنی')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('ip')
+                            ->label('آدرس IP')
+                            ->copyable()
+                            ->placeholder('ثبت نشده'),
+
+                        Infolists\Components\TextEntry::make('user_agent')
+                            ->label('مرورگر کاربر (User Agent)')
+                            ->placeholder('ثبت نشده')
+                            ->columnSpanFull(),
+
+                        Infolists\Components\TextEntry::make('created_at')
+                            ->label('تاریخ ایجاد')
+                            ->jalaliDateTime('H:i Y/m/d')
+                            ->placeholder('—'),
+                    ])->columns(2),
+            ]);
     }
 
     public static function getRelations(): array
