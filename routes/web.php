@@ -33,6 +33,10 @@ Route::get('test',function (){
 Route::get('org/{slug}','App\Http\Controllers\Website\OrganizationController@index')->name('website.rtl.organization');
 // Market prices page (قیمت‌ها) — must stay registered before the {type} catch-all routes below.
 Route::get('prices','App\Http\Controllers\Website\PriceController@index')->name('website.rtl.prices');
+// پرسش و پاسخ (Q&A) - must stay BEFORE the catch-all {type} routes below
+Route::get('qa','App\Http\Controllers\Website\QaController@index')->name('website.rtl.qa');
+Route::post('qa','App\Http\Controllers\Website\QaController@store')->name('website.rtl.qa.store');
+Route::get('qa/{id}/{slug?}','App\Http\Controllers\Website\QaController@show')->name('website.rtl.qa.single')->where('id','[0-9]+');
 
 //DONE
 Route::get('{type}/{code}/{slug}','App\Http\Controllers\Website\PostController@new_single')->name('website.rtl.single')->where('type','news|note|podcast|video|photo');
