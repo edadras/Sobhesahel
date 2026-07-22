@@ -75,6 +75,11 @@ class GalleryResource extends Resource implements HasShieldPermissions
                             ->image()
                             ->imageEditor()
                             ->required(),
+                        Forms\Components\Toggle::make('apply_watermark')
+                            ->label('اعمال واترمارک صبح ساحل')
+                            ->helperText('با فعال کردن این گزینه، لوگوی صبح ساحل روی تصویر گالری و تصاویر جدید درج می‌شود. فایل‌های اصلی بدون واترمارک حفظ خواهند شد.')
+                            ->default(false)
+                            ->columnSpanFull(),
                         Forms\Components\Section::make('تنظیمات انتشار')->schema([
                             Forms\Components\SpatieTagsInput::make('tags')
                                 ->label('تگ‌ها')->type('fa'),
