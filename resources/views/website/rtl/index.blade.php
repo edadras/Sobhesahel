@@ -30,6 +30,24 @@
                             <div class="topLftSldr">
                                 <div class="swiper">
                                     <div class="swiper-wrapper">
+                                        @php
+                                            $slider_ad = \App\Models\Advertise::getImageAdvertise('slider_advertise_image');
+                                        @endphp
+                                        @if($slider_ad != null)
+                                            <a href="{{ $slider_ad['url'] }}"
+                                               class="swiper-slide transitionCls" target="_blank" rel="nofollow">
+                                                <div class="topLftImg">
+                                                    <img src="{{ \Illuminate\Support\Facades\Storage::url($slider_ad['image']) }}"
+                                                         alt="{{ $slider_ad['name'] }}"
+                                                         loading="lazy"/>
+                                                </div>
+                                                <div class="topLftInfo">
+                                                    <strong>
+                                                        {{ $slider_ad['name'] }}
+                                                    </strong>
+                                                </div>
+                                            </a>
+                                        @endif
                                         @foreach(collect($top_slider)->take(12) as $item)
                                             <a href="{{ $item['url'] }}"
                                                class="swiper-slide transitionCls">
@@ -257,6 +275,8 @@
             </div>
         </section>
     @endif
+
+    @include('website.components.advertise-banner', ['position' => 'home_body_advertise_image', 'container' => true])
 
     @if($setting['video']['is_active'])
         <section class="mediaSec position-relative mb-5">

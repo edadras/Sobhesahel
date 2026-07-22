@@ -178,6 +178,8 @@
                                     @endforeach
                                 </div>
                             </div>
+
+                            @include('website.components.advertise-banner', ['position' => 'single_page_advertise_image'])
                         </div>
                         @include('website.rtl.sidebar')
                     </div>

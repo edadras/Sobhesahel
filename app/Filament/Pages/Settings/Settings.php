@@ -3,6 +3,7 @@
 namespace App\Filament\Pages\Settings;
 
 use App\Models\Advertise;
+use App\Support\AdvertisePositionConfig;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Closure;
 use Filament\Forms\Components\FileUpload;
@@ -125,12 +126,14 @@ class Settings extends BaseSettings
                                 ->multiple()
 //                                ->preload()
                                 ->label('اخبار فوری'),
-                            Select::make('top_advertise_image')->searchable()->options(Advertise::where('image', '!=', null)->pluck('name', 'id'))
-                                ->multiple()->preload()
-                                ->label('تبلیغات تصویری منو بالا'),
-                            Select::make('button_advertise_image')->searchable()->options(Advertise::where('image', '!=', null)->pluck('name', 'id'))
-                                ->multiple()->preload()
-                                ->label('تبلیغات تصویری منو پایین'),
+                            ...collect(AdvertisePositionConfig::IMAGE_POSITIONS)
+                                ->map(fn (string $label, string $key) => Select::make($key)
+                                    ->searchable()
+                                    ->options(Advertise::where('image', '!=', null)->pluck('name', 'id'))
+                                    ->multiple()->preload()
+                                    ->label($label))
+                                ->values()
+                                ->all(),
                             Select::make('text_advertise')->searchable()->options(Advertise::where('image', null)->pluck('name', 'id'))
                                 ->multiple()->preload()
                                 ->label('تبلیغات متنی منو'),

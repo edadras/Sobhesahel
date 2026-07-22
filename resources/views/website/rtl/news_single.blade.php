@@ -175,6 +175,8 @@
                                 {!! $post['body'] !!}
                             </div>
 
+                            @include('website.components.advertise-banner', ['position' => 'single_page_advertise_image'])
+
 {{--                            @if(count($post['tags']) != 0)--}}
 {{--                                <div class="newsTags">--}}
 {{--                                    <p>تگ ها:</p>--}}

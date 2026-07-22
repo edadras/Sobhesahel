@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\AdvertiseResource\Pages;
 use App\Filament\Resources\AdvertiseResource\RelationManagers;
 use App\Models\Advertise;
+use App\Support\AdvertisePositionConfig;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -70,6 +71,16 @@ class AdvertiseResource extends Resource implements HasShieldPermissions
                     ->image()
                     ->hidden(fn ($get) => $get('status') !== 'image')
                     ->required(fn ($get) => $get('status') === 'image'),
+
+                Forms\Components\Select::make('positions')
+                    ->label('جایگاه‌های نمایش')
+                    ->multiple()
+                    ->options(fn ($get) => $get('status') === 'text'
+                        ? AdvertisePositionConfig::TEXT_POSITIONS
+                        : AdvertisePositionConfig::IMAGE_POSITIONS)
+                    ->helperText('این تبلیغ در جایگاه‌های انتخاب شده در سایت نمایش داده می‌شود.')
+                    ->dehydrated(false),
+
                 Forms\Components\Toggle::make('is_active')->label('آیا فعال است؟')
             ]);
     }
