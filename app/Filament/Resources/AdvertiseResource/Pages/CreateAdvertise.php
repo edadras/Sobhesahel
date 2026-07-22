@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateAdvertise extends CreateRecord
 {
     protected static string $resource = AdvertiseResource::class;
+
+    protected function afterCreate(): void
+    {
+        $this->record->syncPositions($this->data['positions'] ?? []);
+    }
 }

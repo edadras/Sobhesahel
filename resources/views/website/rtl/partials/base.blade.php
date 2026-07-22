@@ -47,6 +47,7 @@
 
 @include('website.components.yektanet-ads', ['position' => 'content_bottom'])
 @livewire('breaking-news')
+@include('website.components.advertise-breaking-bar')
 
 @include('website.components.yektanet-ads', ['position' => 'footer'])
 

@@ -2,15 +2,23 @@
 
 namespace App\Models;
 
+use App\Support\AdvertisePositionConfig;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
+use Outerweb\Settings\Models\Setting;
 
 class Advertise extends Model
 {
     use HasFactory;
 
     protected $guarded = ['id'];
+
+    protected static function booted(): void
+    {
+        static::deleted(function (Advertise $advertise) {
+            $advertise->removeFromAllPositions();
+        });
+    }
 
     public static function getImageAdvertise($title,$lang_id = 1)
     {
@@ -20,16 +28,22 @@ class Advertise extends Model
             return null;
         }
 
+        $ads = self::whereIn('id',$data)
+            ->where('is_active',true)
+            ->whereNotNull('image')
+            ->get();
 
-            $ad_object = self::getRandomElement($data);
+        if ($ads->isEmpty()){
+            return null;
+        }
 
-            $ad = self::findOrFail($ad_object);
+        $ad = $ads->random();
 
-            $ad->url = route('advertise_click',['id' => $ad->id]);
+        $ad->url = route('advertise_click',['id' => $ad->id]);
 
 //            $ad->increment('view');
 
-            return $ad;
+        return $ad;
 
     }
 
@@ -41,48 +55,81 @@ class Advertise extends Model
             return null;
         }
 
-        $advertises = self::whereIn('id',$data)->get();
+        $advertises = self::whereIn('id',$data)->where('is_active',true)->get();
 
         return $advertises;
     }
 
-    private static function getRandomElement(array $arr)
+    /**
+     * Setting keys of the positions this advertise is currently assigned to.
+     */
+    public static function getPositionsForAd($adId): array
     {
-        if (count($arr) === 0) {
-            return null;
+        if ($adId == null){
+            return [];
         }
 
-        return $arr[array_rand($arr)];
+        $positions = [];
+
+        foreach (AdvertisePositionConfig::allPositionKeys() as $key){
+            $ids = array_map('intval',(array) (setting($key) ?? []));
+
+            if (in_array((int) $adId,$ids,true)){
+                $positions[] = $key;
+            }
+        }
+
+        return $positions;
+    }
+
+    /**
+     * Assign this advertise to the given position keys (and remove it
+     * from every other position of the same type).
+     */
+    public function syncPositions(?array $positions): void
+    {
+        $positions = $positions ?? [];
+
+        $available = $this->image != null
+            ? array_keys(AdvertisePositionConfig::IMAGE_POSITIONS)
+            : array_keys(AdvertisePositionConfig::TEXT_POSITIONS);
+
+        foreach ($available as $key){
+            $ids = array_map('intval',(array) (setting($key) ?? []));
+            $ids = array_values(array_diff($ids,[(int) $this->id]));
+
+            if (in_array($key,$positions,true)){
+                $ids[] = (int) $this->id;
+            }
+
+            Setting::set($key,array_values(array_unique($ids)));
+        }
+    }
+
+    /**
+     * Remove this advertise from every position it is assigned to.
+     */
+    public function removeFromAllPositions(): void
+    {
+        foreach (AdvertisePositionConfig::allPositionKeys() as $key){
+            $ids = array_map('intval',(array) (setting($key) ?? []));
+            $filtered = array_values(array_diff($ids,[(int) $this->id]));
+
+            if (count($filtered) !== count($ids)){
+                Setting::set($key,$filtered);
+            }
+        }
     }
 
     public function delete_advertise()
     {
         try {
-            $this->remove_advertise_from_locations();
-
+            // Positions are cleaned up by the "deleted" model event.
             $this->delete();
             return true;
         }catch (\Exception $e){
             return false;
         }
-    }
-
-    public function remove_advertise_from_locations()
-    {
-        $setting = AppSetting::getAdvertiseSetting($this->lang_id);
-
-        foreach ($setting as $banner_key => $item){
-            foreach ($item as $key => $ad_object){
-                if ($ad_object['id'] == $this->id){
-                    unset($setting[$banner_key][$key]);
-                }
-            }
-        }
-
-        AppSetting::update_or_insert('advertise_' . $this->lang_id,null,$setting);
-
-        Cache::forget('app_setting_advertise_1');
-        Cache::forget('app_setting_advertise_2');
     }
 
     public function handle_click($id)

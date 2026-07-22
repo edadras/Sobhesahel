@@ -130,6 +130,8 @@
                                     </ul>
                                 </div>
                             @endif
+                            @include('website.components.advertise-banner', ['position' => 'single_page_advertise_image'])
+
                             <div class="newsAddCmnt" id="app">
                                 <div class="head">
                                     <div>

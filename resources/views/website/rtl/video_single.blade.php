@@ -123,6 +123,8 @@
         </div>
     </section>
 
+    @include('website.components.advertise-banner', ['position' => 'single_page_advertise_image', 'container' => true])
+
     {{--    <section class="imgCatSec">--}}
     {{--        <div class="container">--}}
     {{--            <div class="row">--}}

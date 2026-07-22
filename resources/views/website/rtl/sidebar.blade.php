@@ -59,6 +59,8 @@
                     </a>
                 @endforeach
             </div>
+
+            @include('website.components.advertise-banner', ['position' => 'latest_news_advertise_image'])
         @endif
 
     @if(isset($related))
