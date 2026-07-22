@@ -52,14 +52,14 @@ class CategoryController extends Controller
         $seo = [
             'title' => $category->title,
             'description' => $category->meta_desc ?? $category->description ?? '',
-            'type' => 'category',
+            'type' => 'website',
             'image' => null,
-            'url' => request()->fullUrl(),
-            'site_name' => 'گروه رسانه‌ای صبح‌ساحل',
+            'url' => route('website.rtl.category', ['slug' => $category->slug]),
+            'site_name' => setting('general.fa_brand_name') ?? 'گروه رسانه‌ای صبح‌ساحل',
             'locale' => 'fa_IR',
         ];
 
-        $website_title = $category->title . ' | ' . 'گروه رسانه‌ای صبح‌ساحل';
+        $website_title = $category->title . ' | ' . (setting('general.fa_brand_name') ?? 'گروه رسانه‌ای صبح‌ساحل');
 
 
         return view('website.rtl.article',compact('posts','page_title','category_id','has_follow','related_title','related','most_visited','seo','website_title'));

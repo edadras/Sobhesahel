@@ -28,7 +28,17 @@ class SearchController extends Controller
 //                return $item->getPostTotallyForWebsite(1);
 //            });
 
-        return view('website.rtl.search', compact('posts', 'count'));
+        $website_title = 'جستجو | ' . (setting('general.fa_brand_name') ?? 'گروه رسانه‌ای صبح‌ساحل');
+
+        $seo = [
+            'title' => 'جستجو',
+            'description' => 'جستجو در اخبار، یادداشت‌ها، ویدئوها و پادکست‌های پایگاه خبری صبح ساحل',
+            'type' => 'website',
+            'url' => route('website.rtl.search'),
+            'robots' => 'noindex,follow',
+        ];
+
+        return view('website.rtl.search', compact('posts', 'count', 'website_title', 'seo'));
     }
 
     public function en_index(Request $request)

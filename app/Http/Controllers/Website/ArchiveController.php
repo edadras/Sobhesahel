@@ -17,7 +17,16 @@ class ArchiveController extends Controller
     {
         $posts = Archive::getLatest()->resolve();
 
-        return view('website.rtl.archive', compact('posts'));
+        $website_title = 'آرشیو روزنامه | ' . (setting('general.fa_brand_name') ?? 'گروه رسانه‌ای صبح‌ساحل');
+
+        $seo = [
+            'title' => 'آرشیو روزنامه',
+            'description' => 'آرشیو نسخه‌های PDF روزنامه صبح ساحل',
+            'type' => 'website',
+            'url' => route('website.rtl.archive'),
+        ];
+
+        return view('website.rtl.archive', compact('posts', 'website_title', 'seo'));
     }
 
     public function en_index()

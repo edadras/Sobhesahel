@@ -1,2 +1,15 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /login
+Disallow: /profile
+Disallow: /test
+Disallow: /up
+Disallow: /search/api
+Disallow: /pdf/api
+Disallow: /ads/click/
+Disallow: /livewire/
+Disallow: /telescope
+
+Sitemap: https://sobhesahel.com/sitemap.xml

@@ -344,20 +344,40 @@ trait ContentTrait
 
     public function getSeoData(): array
     {
+        try {
+            $published_time = !empty($this->publish_at)
+                ? Carbon::parse($this->publish_at)->toIso8601String()
+                : null;
+        } catch (\Throwable $e) {
+            $published_time = null;
+        }
+
+        try {
+            $modified_time = !empty($this->updated_at)
+                ? Carbon::parse($this->updated_at)->toIso8601String()
+                : null;
+        } catch (\Throwable $e) {
+            $modified_time = null;
+        }
+
         return [
             'title' => $this->seo_title ?? $this->title,
             'description' => $this->meta_desc ?? $this->short_description ?? '',
             'type' => 'article',
             'image' => $this->getImageUrl(),
             'url' => $this->getUrl(),
-            'site_name' => 'گروه رسانه‌ای صبح‌ساحل',
+            'site_name' => setting('general.fa_brand_name') ?? 'گروه رسانه‌ای صبح‌ساحل',
             'locale' => 'fa_IR',
+            'published_time' => $published_time,
+            'modified_time' => $modified_time,
         ];
     }
 
     public function getWebsiteTitle()
     {
-        return $this->title . ' | ' . 'گروه رسانه‌ای صبح‌ساحل';
+        $brand = setting('general.fa_brand_name') ?? 'گروه رسانه‌ای صبح‌ساحل';
+
+        return $this->title . ' | ' . $brand;
     }
 
     public function comments()
