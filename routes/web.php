@@ -29,6 +29,9 @@ Route::get('test',function (){
     dd(array_map(fn($item) => $item['title'],$news),array_map(fn($item) => $item['title'],$one_news));
 });
 
+// Organization public profiles — must stay registered BEFORE the catch-all {type} routes below.
+Route::get('org/{slug}','App\Http\Controllers\Website\OrganizationController@index')->name('website.rtl.organization');
+
 //DONE
 Route::get('{type}/{code}/{slug}','App\Http\Controllers\Website\PostController@new_single')->name('website.rtl.single')->where('type','news|note|podcast|video|photo');
 
