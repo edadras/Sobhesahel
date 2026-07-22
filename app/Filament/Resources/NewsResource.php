@@ -78,6 +78,11 @@ class NewsResource extends Resource implements HasShieldPermissions
                             ->image()
                             ->imageEditor()
                             ->required(),
+                        Forms\Components\Toggle::make('apply_watermark')
+                            ->label('اعمال واترمارک صبح ساحل')
+                            ->helperText('با فعال کردن این گزینه، لوگوی صبح ساحل روی تصویر خبر درج می‌شود. فایل اصلی بدون واترمارک حفظ خواهد شد.')
+                            ->default(false)
+                            ->columnSpanFull(),
                         Forms\Components\Section::make('تنظیمات انتشار')->schema([
                             Forms\Components\Select::make('category')
                                 ->relationship('categories', 'title')
