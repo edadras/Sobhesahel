@@ -29,6 +29,11 @@ Route::get('test',function (){
     dd(array_map(fn($item) => $item['title'],$news),array_map(fn($item) => $item['title'],$one_news));
 });
 
+// پرسش و پاسخ (Q&A) - must stay BEFORE the catch-all {type} routes below
+Route::get('qa','App\Http\Controllers\Website\QaController@index')->name('website.rtl.qa');
+Route::post('qa','App\Http\Controllers\Website\QaController@store')->name('website.rtl.qa.store');
+Route::get('qa/{id}/{slug?}','App\Http\Controllers\Website\QaController@show')->name('website.rtl.qa.single')->where('id','[0-9]+');
+
 //DONE
 Route::get('{type}/{code}/{slug}','App\Http\Controllers\Website\PostController@new_single')->name('website.rtl.single')->where('type','news|note|podcast|video|photo');
 
