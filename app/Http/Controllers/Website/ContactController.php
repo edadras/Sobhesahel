@@ -12,7 +12,16 @@ class ContactController extends Controller
 {
     public function index()
     {
-        return view('website.rtl.contact');
+        $website_title = 'تماس با ما | ' . (setting('general.fa_brand_name') ?? 'گروه رسانه‌ای صبح‌ساحل');
+
+        $seo = [
+            'title' => 'تماس با ما',
+            'description' => 'راه‌های ارتباط با تحریریه و دفتر گروه رسانه‌ای صبح ساحل',
+            'type' => 'website',
+            'url' => route('website.rtl.contact'),
+        ];
+
+        return view('website.rtl.contact', compact('website_title', 'seo'));
     }
 
     public function en_index()
@@ -52,7 +61,16 @@ class ContactController extends Controller
     {
         $about = setting('about.fa') ?? '';
 
-        return view('website.rtl.about-us',compact('about'));
+        $website_title = 'درباره ما | ' . (setting('general.fa_brand_name') ?? 'گروه رسانه‌ای صبح‌ساحل');
+
+        $seo = [
+            'title' => 'درباره ما',
+            'description' => trim((string) strip_tags($about)) ?: 'آشنایی با گروه رسانه‌ای صبح ساحل، پایگاه خبری استان هرمزگان',
+            'type' => 'website',
+            'url' => route('website.rtl.about'),
+        ];
+
+        return view('website.rtl.about-us',compact('about','website_title','seo'));
     }
 
     public function en_about_index()

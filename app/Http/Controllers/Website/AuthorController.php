@@ -44,7 +44,19 @@ class AuthorController extends Controller
             $has_follow = false;
         }
 
-        return view('website.rtl.author',compact('user','posts','has_follow'));
+        $author_name = trim((string) ($user['name'] ?? ''));
+
+        $website_title = ($author_name !== '' ? $author_name . ' | ' : '') . (setting('general.fa_brand_name') ?? 'گروه رسانه‌ای صبح‌ساحل');
+
+        $seo = [
+            'title' => $author_name !== '' ? $author_name : 'نویسنده',
+            'description' => trim((string) ($user['bio'] ?? '')) ?: ('آخرین مطالب ' . $author_name . ' در پایگاه خبری صبح ساحل'),
+            'type' => 'profile',
+            'image' => $user['avatar'] ?? null,
+            'url' => route('website.rtl.author', ['user_type' => $user_type, 'id' => $id]),
+        ];
+
+        return view('website.rtl.author',compact('user','posts','has_follow','website_title','seo'));
     }
 
     public function en_index($id)

@@ -60,14 +60,6 @@ class PostController extends Controller
 
         $post->posted_at_jalali = Jalalian::fromCarbon(Carbon::parse($post->publish_at))->format('%d %B %Y H:i');
 
-        // Generate SEO metadata
-        $seo = [
-            'title' => $post->title,
-            'description' => strip_tags($post->short_description ?? ''),
-//            'keywords' => implode(',', $post->tags->pluck('name')->toArray()),
-            'image' => asset($post->image ?? ''),
-        ];
-
 //        $most_visited = News::getMostViewed(5)->toArray(request());
 
 //        $related = $post->getRelated(5)->toArray(request());
@@ -158,7 +150,14 @@ class PostController extends Controller
 
         $poll = Poll::getActivePoll();
 
-        return view($view_name, compact('posts', 'page_title', 'website_title', 'most_visited', 'related', 'related_title','poll'));
+        $seo = [
+            'title' => $page_title,
+            'description' => 'آرشیو ' . $page_title . ' پایگاه خبری صبح ساحل؛ جدیدترین مطالب ' . $page_title . ' هرمزگان و ایران',
+            'type' => 'website',
+            'url' => url()->current(),
+        ];
+
+        return view($view_name, compact('posts', 'page_title', 'website_title', 'most_visited', 'related', 'related_title', 'poll', 'seo'));
     }
 
     public function en_index($type)
