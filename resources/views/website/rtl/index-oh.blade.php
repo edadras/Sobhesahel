@@ -84,6 +84,8 @@
         </div>
     </section>
 
+    @include('website.components.market-prices'){{-- renders nothing when no active price exists --}}
+
     @if($setting['rows']['row_1']['is_active'])
         <section class="catTwoSec">
             <div class="container">

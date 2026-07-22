@@ -13,3 +13,12 @@ Schedule::command('app:sitemap')
     ->twiceDaily(3, 15)
     ->withoutOverlapping()
     ->onOneServer();
+
+// Refresh market prices (ارز، طلا، سکه) from the configured provider.
+// Skipped entirely in "manual" mode, where editors maintain prices by hand.
+if (config('prices.provider') !== 'manual') {
+    Schedule::command('app:fetch-prices')
+        ->everyThirtyMinutes()
+        ->withoutOverlapping()
+        ->onOneServer();
+}
