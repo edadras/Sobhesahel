@@ -44,8 +44,51 @@ class AuthorResource extends Resource implements HasShieldPermissions
             ->schema([
                 Forms\Components\TextInput::make('name')->label('نام نویسنده')->required(),
                 Forms\Components\TextInput::make('nik_name')->label('لقب')->helperText('مانند : سردبیر روزنامه'),
+                Forms\Components\Select::make('type')
+                    ->label('نوع فعالیت')
+                    ->options(Author::TYPES)
+                    ->native(false)
+                    ->nullable(),
                 Forms\Components\Textarea::make('bio')->label('بیوگرافی'),
                 Forms\Components\FileUpload::make('avatar')->avatar()->label('آواتار'),
+                Forms\Components\RichEditor::make('resume')
+                    ->label('رزومه')
+                    ->columnSpanFull(),
+                Forms\Components\Repeater::make('work_history')
+                    ->label('سوابق کاری')
+                    ->schema([
+                        Forms\Components\TextInput::make('title')->label('عنوان شغلی')->required(),
+                        Forms\Components\TextInput::make('organization')->label('سازمان / رسانه'),
+                        Forms\Components\TextInput::make('from')->label('از سال'),
+                        Forms\Components\TextInput::make('to')->label('تا سال')->helperText('در صورت ادامه داشتن، خالی بگذارید'),
+                    ])
+                    ->columns(2)
+                    ->collapsible()
+                    ->defaultItems(0)
+                    ->addActionLabel('افزودن سابقه کاری')
+                    ->columnSpanFull(),
+                Forms\Components\Repeater::make('social_links')
+                    ->label('شبکه‌های اجتماعی')
+                    ->schema([
+                        Forms\Components\Select::make('network')
+                            ->label('شبکه')
+                            ->options(Author::SOCIAL_NETWORKS)
+                            ->native(false)
+                            ->required(),
+                        Forms\Components\TextInput::make('url')->label('آدرس (لینک)')->url()->required(),
+                    ])
+                    ->columns(2)
+                    ->defaultItems(0)
+                    ->addActionLabel('افزودن شبکه اجتماعی')
+                    ->columnSpanFull(),
+                Forms\Components\TextInput::make('email')
+                    ->label('ایمیل')
+                    ->email()
+                    ->helperText('فقط برای نمایش در پنل مدیریت'),
+                Forms\Components\TextInput::make('phone')
+                    ->label('شماره تماس')
+                    ->tel()
+                    ->helperText('فقط برای نمایش در پنل مدیریت'),
             ]);
     }
 
@@ -56,6 +99,10 @@ class AuthorResource extends Resource implements HasShieldPermissions
                 Tables\Columns\ImageColumn::make('avatar')->circular()->label('آواتار'),
                 Tables\Columns\TextColumn::make('name')->label('نام')->searchable(),
                 Tables\Columns\TextColumn::make('nik_name')->label('لقب')->searchable(),
+                Tables\Columns\TextColumn::make('type')
+                    ->label('نوع فعالیت')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => Author::TYPES[$state] ?? $state),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('تاریخ ایجاد')
                     ->jalaliDateTime('H:i Y/m/d')
@@ -93,6 +140,15 @@ class AuthorResource extends Resource implements HasShieldPermissions
                             ImageEntry::make('avatar')->label('')->circular()->hidden(fn($state) => $state == null)->width(50)->height(50),
                             TextEntry::make('name')->label('نام'),
                             TextEntry::make('nik_name')->label('لقب'),
+                        ]),
+                        Grid::make(3)->schema([
+                            TextEntry::make('type')
+                                ->label('نوع فعالیت')
+                                ->badge()
+                                ->formatStateUsing(fn ($state) => Author::TYPES[$state] ?? $state)
+                                ->hidden(fn ($state) => $state == null),
+                            TextEntry::make('email')->label('ایمیل')->hidden(fn ($state) => $state == null),
+                            TextEntry::make('phone')->label('شماره تماس')->hidden(fn ($state) => $state == null),
                         ])
                     ]),
             ]);
