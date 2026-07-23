@@ -101,7 +101,8 @@
             <i></i>
             <strong>آگهی:</strong>
         </div>
-        <a href="{{ $breaking_bar_ad['url'] }}" target="_blank" rel="nofollow">
+        {{-- Anchor goes through the click-tracking route (ads/click/{id}). --}}
+        <a href="{{ route('advertise_click', ['id' => $breaking_bar_ad['id']]) }}" target="_blank" rel="nofollow">
             <img src="{{ \Illuminate\Support\Facades\Storage::url($breaking_bar_ad['image']) }}"
                  alt="{{ $breaking_bar_ad['name'] }}"
                  loading="lazy"/>

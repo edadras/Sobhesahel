@@ -35,3 +35,10 @@ if (config('prices.provider') !== 'manual') {
         ->withoutOverlapping()
         ->onOneServer();
 }
+
+// Flush cache-buffered advertise impressions/clicks into advertise_daily_stats
+// and deactivate ads that reached their max view/click limits.
+Schedule::command('app:advertise-flush-stats')
+    ->everyTenMinutes()
+    ->withoutOverlapping()
+    ->onOneServer();

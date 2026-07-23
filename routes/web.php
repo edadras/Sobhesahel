@@ -42,6 +42,8 @@ Route::get('qa/{id}/{slug?}','App\Http\Controllers\Website\QaController@show')->
 Route::get('{type}/{code}/{slug}','App\Http\Controllers\Website\PostController@new_single')->name('website.rtl.single')->where('type','news|note|podcast|video|photo');
 
 Route::get('ads/click/{id}','App\Http\Controllers\Website\AdvertiseController@index')->name('advertise_click');
+Route::get('ads/impression/{id}','App\Http\Controllers\Website\AdvertiseController@impression')->name('advertise_impression');
+Route::get('ads/vast/{id}','App\Http\Controllers\Website\AdvertiseController@vast')->name('advertise_vast');
 
 Route::post('{type}/{code}/{slug}','Website\NewsController@comment')->where('type','news|note|podcast|video|photo');
 
