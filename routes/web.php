@@ -38,6 +38,10 @@ Route::get('qa','App\Http\Controllers\Website\QaController@index')->name('websit
 Route::post('qa','App\Http\Controllers\Website\QaController@store')->name('website.rtl.qa.store');
 Route::get('qa/{id}/{slug?}','App\Http\Controllers\Website\QaController@show')->name('website.rtl.qa.single')->where('id','[0-9]+');
 
+// شهروند خبرنگار (Citizen journalist) - must stay BEFORE the catch-all {type} routes below
+Route::get('citizen-report','App\Http\Controllers\Website\CitizenReportController@index')->name('website.rtl.citizen_report');
+Route::post('citizen-report','App\Http\Controllers\Website\CitizenReportController@store')->name('website.rtl.citizen_report.store');
+
 //DONE
 Route::get('{type}/{code}/{slug}','App\Http\Controllers\Website\PostController@new_single')->name('website.rtl.single')->where('type','news|note|podcast|video|photo');
 

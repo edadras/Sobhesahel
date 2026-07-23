@@ -100,6 +100,9 @@
                         <li>
                             <a href="{{ route('website.rtl.index',['type' => 'video']) }}" class="transitionCls">فیلم</a>
                         </li>
+                        <li>
+                            <a href="{{ route('website.rtl.citizen_report') }}" class="transitionCls">شهروند خبرنگار</a>
+                        </li>
                     </ul>
                     @endif
                 </div>
