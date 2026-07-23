@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Resources\ContentMetaDataResource;
 use App\Observers\NewsObserver;
 use App\Traits\ContentTrait;
 use App\Traits\HasTitleValues;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Category;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Scout\Searchable;
 use Spatie\Tags\HasTags;
@@ -44,6 +46,7 @@ class News extends Model
         'auto_send_whatsapp' => 'boolean',
         'telegram_sent_at' => 'datetime',
         'whatsapp_sent_at' => 'datetime',
+        'archive_at' => 'datetime',
     ];
 
     /**
@@ -51,6 +54,13 @@ class News extends Model
      * action right before saving so NewsObserver can log and notify with it.
      */
     public ?string $workflowRejectReason = null;
+
+    /**
+     * آرشیو خودکار — transient flag set by the cron (app:cron) right before
+     * suspending an expired item, so NewsObserver logs the revision with the
+     * dedicated "auto_archived" action instead of a generic status change.
+     */
+    public bool $isAutoArchiving = false;
 
     /**
      * Can the given (or current) user publish/approve news?
@@ -171,6 +181,72 @@ class News extends Model
     public function getMediaFileUrl(): ?string
     {
         return $this->getFileUrl($this->media_file);
+    }
+
+    /**
+     * اخبار مرتبط هوشمند — smarter related news:
+     * items sharing the most tags first (Spatie tags tables), then recent
+     * items from the same categories; excluding self, published only,
+     * cached for 10 minutes.
+     *
+     * @return \Illuminate\Support\Collection<int, \App\Models\News>
+     */
+    public function relatedSmart(int $limit = 5)
+    {
+        return Cache::remember(
+            "related_news_smart_{$this->id}",
+            now()->addMinutes(10),
+            function () use ($limit) {
+                $related = collect();
+
+                $tagIds = $this->tags()->pluck('tags.id')->all();
+
+                if ($tagIds !== []) {
+                    $related = static::query()
+                        ->where('id', '!=', $this->id)
+                        ->where('status', 'published')
+                        ->where('is_published', true)
+                        ->whereHas('tags', fn ($query) => $query->whereIn('tags.id', $tagIds))
+                        ->withCount([
+                            'tags as shared_tags_count' => fn ($query) => $query->whereIn('tags.id', $tagIds),
+                        ])
+                        ->orderByDesc('shared_tags_count')
+                        ->orderByDesc('publish_at')
+                        ->take($limit)
+                        ->get();
+                }
+
+                if ($related->count() < $limit) {
+                    $categoryIds = $this->categories()->pluck('categories.id')->all();
+
+                    if ($categoryIds !== []) {
+                        $related = $related->concat(
+                            static::query()
+                                ->where('id', '!=', $this->id)
+                                ->whereNotIn('id', $related->pluck('id')->all())
+                                ->where('status', 'published')
+                                ->where('is_published', true)
+                                ->whereHas('categories', fn ($query) => $query->whereIn('categories.id', $categoryIds))
+                                ->orderByDesc('publish_at')
+                                ->take($limit - $related->count())
+                                ->get()
+                        );
+                    }
+                }
+
+                return $related->take($limit)->values();
+            }
+        );
+    }
+
+    /**
+     * News-only override of ContentTrait::getRelated() so the news single
+     * page gets the smart related list, without changing the shared trait
+     * behavior for the other content types (note, video, podcast, ...).
+     */
+    public function getRelated($limit = 5)
+    {
+        return ContentMetaDataResource::collection($this->relatedSmart((int) $limit));
     }
 
     public function data()
