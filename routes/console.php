@@ -44,6 +44,13 @@ if (config('prices.provider') !== 'manual') {
         ->onOneServer();
 }
 
+// درآمدزایی — اشتراک ویژه: mark active subscriptions whose end date has
+// passed as expired, once a day (access codes stop unlocking the archive).
+Schedule::command('app:expire-subscriptions')
+    ->dailyAt('01:15')
+    ->withoutOverlapping()
+    ->onOneServer();
+
 // Flush cache-buffered advertise impressions/clicks into advertise_daily_stats
 // and deactivate ads that reached their max view/click limits.
 Schedule::command('app:advertise-flush-stats')

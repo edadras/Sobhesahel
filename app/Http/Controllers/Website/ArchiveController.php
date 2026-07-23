@@ -76,6 +76,23 @@ class ArchiveController extends Controller
                 $q->where('slug', $archive);
             })->where('archive_number',$number)->firstOrFail();
 
+        // اشتراک دیجیتال نشریات: when enabled in config/payments.php, the PDF
+        // is only served to visitors holding an active subscription access
+        // code (stored in session). Default (gate_archive=false) keeps the
+        // archive free, exactly as before.
+        if (config('payments.gate_archive', false)) {
+            $active = \App\Models\Subscription::findActiveByCode(session('subscription_access_code'));
+
+            if ($active === null) {
+                session()->forget('subscription_access_code');
+
+                return view('website.rtl.archive_access', [
+                    'post' => $post,
+                    'website_title' => 'نسخه دیجیتال نشریات | ' . (setting('general.fa_brand_name') ?? 'گروه رسانه‌ای صبح‌ساحل'),
+                ]);
+            }
+        }
+
         $url = Storage::url($post->archive_file);
 
         return view('website.pages.pdf',compact('url','post'));
