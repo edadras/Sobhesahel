@@ -36,6 +36,10 @@ class PollController extends Controller
 
          $poll = $option->poll;
 
+         if (!$poll->isOpen()){
+             return ResponseHelper::simple_response(false,($lang == 'fa') ? 'این نظرسنجی پایان یافته است' : 'This poll has ended.');
+         }
+
          if ($poll->login_required && !auth()->check()){
              return ResponseHelper::simple_response(false,($lang == 'fa') ? 'برای شرکت در این نظر سنجی ابتدا وارد حساب کاربری خود شوید' : 'To participate in this survey, please log in to your account first.');
          }
@@ -44,27 +48,18 @@ class PollController extends Controller
         $userAgent = $request->userAgent();
         $userId = Auth::id();
 
-        $existingVote = PollVote::where('poll_id', $poll->id)
-            ->where(function ($query) use ($userIp, $userAgent, $userId) {
-                $query->where('user_ip', $userIp)
-                    ->where('user_agent', $userAgent);
-                if ($userId) {
-                    $query->orWhere('user_id', $userId);
-                }
-            })
-            ->exists();
+        $voted = PollVote::castVote(
+            $poll->id,
+            $option->id,
+            $userId,
+            $userIp,
+            $userAgent,
+            (bool) $poll->login_required
+        );
 
-        if ($existingVote) {
+        if (!$voted) {
             return ResponseHelper::simple_response(false, $lang == 'fa' ? 'شما قبلاً در این نظرسنجی شرکت کرده‌اید' : 'You have already participated in this survey.');
         }
-
-        PollVote::create([
-            'poll_id' => $poll->id,
-            'poll_option_id' => $option->id,
-            'user_id' => $userId,
-            'user_ip' => $userIp,
-            'user_agent' => $userAgent,
-        ]);
 
         return ResponseHelper::basic_response(true, [
             'message' => ($lang == 'fa') ? 'رأی شما با موفقیت ثبت شد' : 'Your vote has been successfully submitted.',

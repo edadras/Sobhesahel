@@ -48,8 +48,23 @@ class PollResource extends Resource implements HasShieldPermissions
                     Forms\Components\Grid::make()->schema([
                         Forms\Components\Section::make('تنظیمات')->schema([
                             Forms\Components\Toggle::make('is_active')->label('آیا فعال است ؟'),
-                            Forms\Components\Toggle::make('login_required')->label('نیازمند ورود')
+                            Forms\Components\Toggle::make('login_required')->label('نیازمند ورود'),
+                            Forms\Components\TextInput::make('poll_category')
+                                ->label('دسته‌بندی نظرسنجی')
+                                ->datalist(fn () => array_values(Poll::categories()))
+                                ->helperText('از دسته‌های موجود انتخاب کنید یا دسته جدید بنویسید'),
                         ]),
+                        Forms\Components\Section::make('زمان‌بندی انتشار')->schema([
+                            Forms\Components\DateTimePicker::make('starts_at')
+                                ->jalali()
+                                ->label('زمان شروع')
+                                ->helperText('خالی = بدون محدودیت'),
+                            Forms\Components\DateTimePicker::make('ends_at')
+                                ->jalali()
+                                ->label('زمان پایان')
+                                ->after('starts_at')
+                                ->helperText('خالی = بدون محدودیت'),
+                        ])->description('نظرسنجی فقط در این بازه قابل رأی دادن است'),
                     ])->columnSpan(4),
                 ])
             ]);
@@ -60,7 +75,16 @@ class PollResource extends Resource implements HasShieldPermissions
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('question')->limit(50)->label('متن نظرسنجی'),
+                Tables\Columns\TextColumn::make('poll_category')
+                    ->label('دسته‌بندی')
+                    ->badge()
+                    ->placeholder('بدون دسته'),
                 Tables\Columns\IconColumn::make('is_active')->boolean()->label('آیا فعال است'),
+                Tables\Columns\TextColumn::make('ends_at')
+                    ->label('زمان پایان')
+                    ->jalaliDateTime('H:i Y/m/d')
+                    ->placeholder('بدون محدودیت')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('تاریخ ایجاد')
                     ->jalaliDateTime('H:i Y/m/d')
@@ -74,9 +98,19 @@ class PollResource extends Resource implements HasShieldPermissions
                     ->jalaliDateTime('H:i Y/m/d'),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('poll_category')
+                    ->label('دسته‌بندی')
+                    ->options(fn () => Poll::categories()),
             ])
             ->actions([
+                Tables\Actions\Action::make('results')
+                    ->label('نتایج')
+                    ->icon('heroicon-o-chart-bar')
+                    ->color('info')
+                    ->modalHeading('نتایج نظرسنجی')
+                    ->modalContent(fn (Poll $record) => view('filament.poll-results', ['poll' => $record]))
+                    ->modalSubmitAction(false)
+                    ->modalCancelAction(fn ($action) => $action->label('بستن')),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])

@@ -13,6 +13,14 @@ class ViewPoll extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('results')
+                ->label('نتایج')
+                ->icon('heroicon-o-chart-bar')
+                ->color('info')
+                ->modalHeading('نتایج نظرسنجی')
+                ->modalContent(fn () => view('filament.poll-results', ['poll' => $this->record]))
+                ->modalSubmitAction(false)
+                ->modalCancelAction(fn ($action) => $action->label('بستن')),
             Actions\EditAction::make(),
         ];
     }
