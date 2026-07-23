@@ -58,6 +58,12 @@ class ArchiveResource extends Resource implements HasShieldPermissions
                             ->required(),
                         Forms\Components\DatePicker::make('archive_date')->required()->jalali()->label('تاریخ آرشیو'),
                         Forms\Components\TextInput::make('archive_number')->required()->numeric()->label('شماره آرشیو'),
+                        Forms\Components\Select::make('type')
+                            ->label('نوع نشریه')
+                            ->options(Archive::TYPES)
+                            ->default('daily')
+                            ->required()
+                            ->native(false),
                         Forms\Components\FileUpload::make('archive_file')->required()->label('فایل آرشیو')->columnSpanFull()
                     ])->columnSpan(8),
                     Forms\Components\Grid::make()->schema([
@@ -123,6 +129,17 @@ class ArchiveResource extends Resource implements HasShieldPermissions
                 Tables\Columns\ImageColumn::make('image_large')->label('تصویر'),
                 Tables\Columns\TextColumn::make('title')->label('عنوان')->searchable()
                     ->description(fn ($record): string => Jalalian::fromCarbon(Carbon::parse($record->archive_date))->format('Y/m/d')),
+                Tables\Columns\TextColumn::make('type')
+                    ->label('نوع نشریه')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => Archive::TYPES[$state] ?? Archive::TYPES['daily'])
+                    ->color(fn ($state) => match ($state) {
+                        'daily' => 'primary',
+                        'special' => 'success',
+                        'quarterly' => 'warning',
+                        'dossier' => 'danger',
+                        default => 'gray'
+                    }),
                 Tables\Columns\TextColumn::make('visits')->label('بازدید'),
                 Tables\Columns\TextColumn::make('status')
                     ->label('وضعیت انتشار')->badge()
@@ -152,8 +169,11 @@ class ArchiveResource extends Resource implements HasShieldPermissions
                     ->jalaliDateTime('H:i Y/m/d'),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('type')
+                    ->label('نوع نشریه')
+                    ->options(Archive::TYPES),
             ])
+            ->reorderable('sort_order')
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ActionGroup::make([
@@ -184,7 +204,7 @@ class ArchiveResource extends Resource implements HasShieldPermissions
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\NewsRelationManager::class,
         ];
     }
 

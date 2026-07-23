@@ -13,6 +13,13 @@ class Poll extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'is_active' => 'boolean',
+        'login_required' => 'boolean',
+        'starts_at' => 'datetime',
+        'ends_at' => 'datetime',
+    ];
+
     protected static function boot()
     {
         parent::boot();
@@ -58,13 +65,60 @@ class Poll extends Model
 
     public function fetchResults()
     {
-        $this->results = collect($this->poll->options)->mapWithKeys(function ($option) {
+        $this->results = $this->options->mapWithKeys(function ($option) {
             return [$option->id => $option->votes()->count()];
         })->toArray();
     }
 
+    /**
+     * آیا نظرسنجی شروع شده است؟ (null = بدون محدودیت)
+     */
+    public function hasStarted(): bool
+    {
+        return $this->starts_at === null || $this->starts_at->isPast();
+    }
+
+    /**
+     * آیا نظرسنجی پایان یافته است؟ (null = بدون محدودیت)
+     */
+    public function hasEnded(): bool
+    {
+        return $this->ends_at !== null && $this->ends_at->isPast();
+    }
+
+    /**
+     * آیا رأی‌گیری در حال حاضر باز است؟
+     */
+    public function isOpen(): bool
+    {
+        return $this->is_active && $this->hasStarted() && ! $this->hasEnded();
+    }
+
+    /**
+     * نظرسنجی فعالی که پنجره انتشار آن شروع شده باشد.
+     * نظرسنجی پایان‌یافته همچنان برگردانده می‌شود تا فقط نتایج آن نمایش داده شود.
+     */
     public static function getActivePoll()
     {
-        return self::where('is_active',true)->first();
+        return self::where('is_active', true)
+            ->where(function ($query) {
+                $query->whereNull('starts_at')->orWhere('starts_at', '<=', now());
+            })
+            ->orderByDesc('id')
+            ->first();
+    }
+
+    /**
+     * دسته‌بندی‌های موجود نظرسنجی‌ها.
+     */
+    public static function categories(): array
+    {
+        return self::query()
+            ->whereNotNull('poll_category')
+            ->where('poll_category', '!=', '')
+            ->distinct()
+            ->orderBy('poll_category')
+            ->pluck('poll_category', 'poll_category')
+            ->toArray();
     }
 }

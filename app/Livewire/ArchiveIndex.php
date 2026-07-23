@@ -14,6 +14,7 @@ class ArchiveIndex extends Component
 
     public $options = [
         'archive' => 'all',
+        'type' => 'all',
         'number' => '',
         'from_date' => '',
         'to_date' => '',
@@ -21,9 +22,12 @@ class ArchiveIndex extends Component
 
     public $list = [];
 
+    public $types = [];
+
     public function mount()
     {
         $this->list = ArchiveCategory::distinct()->pluck('title', 'id')->toArray();
+        $this->types = Archive::TYPES;
     }
 
     public function updatedOptions()
@@ -73,6 +77,10 @@ class ArchiveIndex extends Component
             $query->where('category_id', $this->options['archive']);
         }
 
+        if (($this->options['type'] ?? 'all') !== 'all') {
+            $query->where('type', $this->options['type']);
+        }
+
         if (!empty($this->options['number'])) {
             // Convert Persian numbers to English for archive_number
             $number = $this->convertToEnglishNumbers($this->options['number']);
@@ -95,7 +103,10 @@ class ArchiveIndex extends Component
             }
         }
 
-        return $query->orderBy('archive_date', 'DESC')->latest()->paginate(12);
+        return $query->orderBy('sort_order')
+            ->orderBy('archive_date', 'DESC')
+            ->latest()
+            ->paginate(12);
     }
 
     public function render()

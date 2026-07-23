@@ -24,6 +24,18 @@ class PollComponent extends Component
 
     public function vote()
     {
+        if (! $this->poll->isOpen()) {
+            $this->fetchResults();
+            $this->alert('error', 'این نظرسنجی پایان یافته است.', [
+                'toast' => false,
+                'position' => 'center',
+                'showConfirmButton' => true,
+                'confirmButtonText' => 'باشه',
+                'confirmButtonColor' => '#3085d6'
+            ]);
+            return;
+        }
+
         if ($this->selectedOption == '' || $this->selectedOption == null){
             $this->alert('error', 'شما هیچ گزینه ای را انتخاب نکرده اید!', [
                 'toast' => false,
@@ -48,8 +60,17 @@ class PollComponent extends Component
 
         $userId = Auth::id();
 
-        if (!PollVote::castVote($this->poll->id, $this->selectedOption, $userId)) {
-            $this->alert('error', 'شما قبلاً رأی داده‌اید!', [
+        $voted = PollVote::castVote(
+            $this->poll->id,
+            (int) $this->selectedOption,
+            $userId,
+            request()->ip(),
+            request()->userAgent(),
+            (bool) $this->poll->login_required
+        );
+
+        if (! $voted) {
+            $this->alert('error', 'شما قبلاً در این نظرسنجی شرکت کرده‌اید!', [
                 'toast' => false,
                 'position' => 'center',
                 'showConfirmButton' => true,
@@ -80,6 +101,7 @@ class PollComponent extends Component
     {
         return view('livewire.poll-component', [
             'loginRequired' => $this->poll->login_required ? route('login') : null,
+            'isEnded' => $this->poll->hasEnded(),
         ]);
     }
 }

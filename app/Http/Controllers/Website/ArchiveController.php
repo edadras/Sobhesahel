@@ -71,12 +71,13 @@ class ArchiveController extends Controller
 
     public function pdf($archive, $number)
     {
-        $post = Archive::whereHas('archive_category', function ($q) use ($archive) {
+        $post = Archive::with(['news' => fn ($q) => $q->where('is_published', true)])
+            ->whereHas('archive_category', function ($q) use ($archive) {
                 $q->where('slug', $archive);
             })->where('archive_number',$number)->firstOrFail();
 
         $url = Storage::url($post->archive_file);
 
-        return view('website.pages.pdf',compact('url'));
+        return view('website.pages.pdf',compact('url','post'));
     }
 }

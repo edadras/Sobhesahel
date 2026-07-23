@@ -43,6 +43,27 @@
                     <div class="archivLeft">
                         <div class="archivSort">
                             <div class="form-check position-relative">
+                                <input class="form-check-input position-absolute" type="radio" name="type_filter"
+                                       id="type-all" value="all" wire:model="options.type" wire:change="getData"/>
+                                <label class="form-check-label transitionCls position-relative" for="type-all">
+                                    همه نشریات
+                                </label>
+                            </div>
+
+                            @foreach($types ?? [] as $type_key => $type_name)
+                                <div class="form-check position-relative">
+                                    <input class="form-check-input position-absolute" type="radio"
+                                           name="type_filter" id="type-{{ $type_key }}" value="{{ $type_key }}"
+                                           wire:model="options.type" wire:change="getData"/>
+                                    <label class="form-check-label transitionCls position-relative" for="type-{{ $type_key }}">
+                                        {{ $type_name }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <div class="archivSort">
+                            <div class="form-check position-relative">
                                 <input class="form-check-input position-absolute" type="radio" name="all"
                                        id="all" value="all" wire:model="options.archive" wire:change="getData"/>
                                 <label class="form-check-label transitionCls position-relative" for="all">
