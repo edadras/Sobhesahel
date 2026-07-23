@@ -16,8 +16,10 @@ use App\Traits\HasCommonNewsTable;
 use App\Traits\HasContentField;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Carbon\Carbon;
+use App\Services\SocialPublishService;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -128,20 +130,19 @@ class NewsResource extends Resource implements HasShieldPermissions
                             Forms\Components\SpatieTagsInput::make('tags')
                                 ->label('برچسب‌ها')->type('fa'),
                             Forms\Components\ToggleButtons::make('status')
-                                ->options([
-                                    'draft' => 'پیش نویس',
-                                    'scheduled' => 'زمان بندی شده',
-                                    'published' => 'منتشر شده',
-                                    'suspended' => 'معلق',
-                                ])
+                                // گردش کار تحریریه: کاربران بدون مجوز publish_news فقط
+                                // پیش‌نویس و «در انتظار تأیید» را می‌بینند.
+                                ->options(fn () => self::statusOptionsForCurrentUser())
                                 ->icons([
                                     'draft' => 'heroicon-o-pencil',
+                                    'pending_review' => 'heroicon-o-inbox-arrow-down',
                                     'scheduled' => 'heroicon-o-clock',
                                     'published' => 'heroicon-o-check-circle',
                                     'suspended' => 'heroicon-o-pause-circle',
                                 ])
                                 ->colors([
                                     'draft' => 'warning',
+                                    'pending_review' => 'info',
                                     'scheduled' => 'danger',
                                     'published' => 'success',
                                     'suspended' => 'gray',
@@ -197,6 +198,20 @@ class NewsResource extends Resource implements HasShieldPermissions
                                 })
                                 ->columns(3),
                         ]),
+                        Forms\Components\Section::make('شبکه‌های اجتماعی')->schema([
+                            Forms\Components\Toggle::make('auto_send_telegram')
+                                ->label('ارسال خودکار به تلگرام')
+                                ->helperText(fn ($record) => $record?->telegram_sent_at
+                                    ? 'به تلگرام ارسال شده است.'
+                                    : 'هنگام انتشار خبر، یک‌بار به کانال تلگرام ارسال می‌شود.')
+                                ->default(false),
+                            Forms\Components\Toggle::make('auto_send_whatsapp')
+                                ->label('ارسال خودکار به واتساپ')
+                                ->helperText(fn ($record) => $record?->whatsapp_sent_at
+                                    ? 'به واتساپ ارسال شده است.'
+                                    : 'هنگام انتشار خبر، یک‌بار به واتساپ ارسال می‌شود.')
+                                ->default(false),
+                        ])->description('انتشار خودکار خبر پس از انتشار در سایت'),
                         Forms\Components\Section::make('تنظیمات نمایش')->schema([
                             Forms\Components\ColorPicker::make('title_color')
                                 ->label('رنگ تیتر'),
@@ -264,7 +279,53 @@ class NewsResource extends Resource implements HasShieldPermissions
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('approve')
+                    ->label('تأیید و انتشار')
+                    ->icon('heroicon-o-check-badge')
+                    ->color('success')
+                    ->visible(fn (News $record) => $record->status === News::STATUS_PENDING_REVIEW
+                        && ! $record->trashed()
+                        && News::userCanPublish())
+                    ->requiresConfirmation()
+                    ->modalHeading('تأیید و انتشار خبر')
+                    ->modalDescription(fn (News $record) => 'خبر «' . $record->title . '» منتشر شود؟')
+                    ->action(fn (News $record) => self::approveNews($record)),
+                Tables\Actions\Action::make('reject')
+                    ->label('بازگشت برای اصلاح')
+                    ->icon('heroicon-o-arrow-uturn-right')
+                    ->color('danger')
+                    ->visible(fn (News $record) => $record->status === News::STATUS_PENDING_REVIEW
+                        && ! $record->trashed()
+                        && News::userCanPublish())
+                    ->form([
+                        Forms\Components\Textarea::make('review_reason')
+                            ->label('دلیل بازگشت برای اصلاح')
+                            ->required()
+                            ->rows(3),
+                    ])
+                    ->modalHeading('بازگشت خبر برای اصلاح')
+                    ->action(fn (News $record, array $data) => self::rejectNews($record, $data['review_reason'])),
                 Tables\Actions\ActionGroup::make([
+                    Tables\Actions\Action::make('social_publish')
+                        ->label('ارسال به شبکه‌های اجتماعی')
+                        ->icon('heroicon-o-paper-airplane')
+                        ->color('info')
+                        ->visible(fn (News $record) => $record->status === 'published' && ! $record->trashed())
+                        ->requiresConfirmation()
+                        ->modalHeading('ارسال به شبکه‌های اجتماعی')
+                        ->modalDescription(fn (News $record) => 'خبر «' . $record->title . '» به تلگرام و واتساپ ارسال شود؟')
+                        ->action(function (News $record) {
+                            $results = app(SocialPublishService::class)->manualPublish($record);
+
+                            $success = collect($results)->contains(fn ($result) => $result['ok']);
+
+                            Notification::make()
+                                ->title('نتیجه ارسال به شبکه‌های اجتماعی')
+                                ->body('تلگرام: ' . $results['telegram']['message']
+                                    . ' — واتساپ: ' . $results['whatsapp']['message'])
+                                ->{$success ? 'success' : 'warning'}()
+                                ->send();
+                        }),
                     Tables\Actions\DeleteAction::make(),
                     Tables\Actions\RestoreAction::make()
                         ->label('بازیابی'),
@@ -334,5 +395,85 @@ class NewsResource extends Resource implements HasShieldPermissions
         ];
     }
 
+    /**
+     * Shield permissions for this resource. Overrides the shared
+     * FilamentContent trait to add the custom "publish" prefix, generating
+     * the `publish_news` permission that gates the editorial workflow
+     * (انتشار، زمان‌بندی، تعلیق، تأیید و بازگشت برای اصلاح).
+     */
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'create',
+            'update',
+            'delete',
+            'publish',
+        ];
+    }
 
+    /**
+     * گردش کار تحریریه — status choices by role:
+     * users lacking publish_news can only save drafts or submit for review.
+     */
+    public static function statusOptionsForCurrentUser(): array
+    {
+        $options = [
+            'draft' => 'پیش نویس',
+            'pending_review' => 'در انتظار تأیید',
+        ];
+
+        if (News::userCanPublish()) {
+            $options += [
+                'scheduled' => 'زمان بندی شده',
+                'published' => 'منتشر شده',
+                'suspended' => 'معلق',
+            ];
+        }
+
+        return $options;
+    }
+
+    /**
+     * Approve a pending news item: publish it and confirm to the editor.
+     * The observer records the "approved" revision and fires social sends.
+     */
+    public static function approveNews(News $record): void
+    {
+        $record->status = 'published';
+
+        try {
+            $publishAt = $record->publish_at ? Carbon::parse($record->publish_at) : null;
+        } catch (\Throwable) {
+            $publishAt = null;
+        }
+
+        if (! $publishAt || $publishAt->isFuture()) {
+            $record->publish_at = now();
+        }
+
+        $record->save();
+
+        Notification::make()
+            ->title('خبر تأیید و منتشر شد')
+            ->success()
+            ->send();
+    }
+
+    /**
+     * Send a pending news item back to draft with a required reason.
+     * The observer records the "rejected" revision (including the reason)
+     * and notifies the author.
+     */
+    public static function rejectNews(News $record, string $reason): void
+    {
+        $record->workflowRejectReason = $reason;
+        $record->status = 'draft';
+        $record->save();
+
+        Notification::make()
+            ->title('خبر برای اصلاح بازگردانده شد')
+            ->warning()
+            ->send();
+    }
 }

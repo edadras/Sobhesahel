@@ -39,6 +39,7 @@ trait HasCommonNewsTable
                 ->badge()
                 ->formatStateUsing(fn($state) => match ($state) {
                     'draft' => 'پیش نویس',
+                    'pending_review' => 'در انتظار تأیید',
                     'scheduled' => 'زمان بندی شده',
                     'published' => 'منتشر شده',
                     'suspended' => 'معلق',
@@ -46,6 +47,7 @@ trait HasCommonNewsTable
                 })
                 ->color(fn($state) => match ($state) {
                     'draft' => 'warning',
+                    'pending_review' => 'info',
                     'scheduled' => 'danger',
                     'published' => 'success',
                     'suspended' => 'gray',
