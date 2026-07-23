@@ -20,13 +20,77 @@ class News extends Model
 {
     use HasTags, ContentTrait, Searchable, ImageOptimizer, HasTitleValues, InteractsWithSiteSearch, SoftDeletes;
 
+    /**
+     * گردش کار تحریریه — Shield permission that gates publishing.
+     *
+     * Convention: Shield resource permissions are "{prefix}_{resource}"
+     * (view_news, create_news, ...). We add the custom prefix "publish" via
+     * NewsResource::getPermissionPrefixes(), producing "publish_news".
+     * Users holding it (خبرنگار ↛ / دبیر، سردبیر، مدیرمسئول ✓) may publish,
+     * schedule, suspend, approve and reject; everyone else can only save
+     * drafts or submit for review (در انتظار تأیید).
+     */
+    public const PUBLISH_PERMISSION = 'publish_news';
+
+    public const STATUS_PENDING_REVIEW = 'pending_review';
+
     protected $guarded = ['id'];
 
     protected $casts = [
         'subtitles' => 'array',
         'show_visits' => 'boolean',
         'show_comments' => 'boolean',
+        'auto_send_telegram' => 'boolean',
+        'auto_send_whatsapp' => 'boolean',
+        'telegram_sent_at' => 'datetime',
+        'whatsapp_sent_at' => 'datetime',
     ];
+
+    /**
+     * Transient (not persisted) reject reason, set by the "بازگشت برای اصلاح"
+     * action right before saving so NewsObserver can log and notify with it.
+     */
+    public ?string $workflowRejectReason = null;
+
+    /**
+     * Can the given (or current) user publish/approve news?
+     */
+    public static function userCanPublish($user = null): bool
+    {
+        $user = $user ?? auth()->user();
+
+        try {
+            return (bool) $user?->can(self::PUBLISH_PERMISSION);
+        } catch (\Throwable) {
+            return false;
+        }
+    }
+
+    /**
+     * Users allowed to approve pending news (holders of publish_news —
+     * directly or via role — plus super admins). Used for workflow
+     * notifications; never throws.
+     *
+     * @return \Illuminate\Support\Collection<int, \App\Models\User>
+     */
+    public static function approvers(): \Illuminate\Support\Collection
+    {
+        $users = collect();
+
+        try {
+            $users = $users->merge(User::permission(self::PUBLISH_PERMISSION)->get());
+        } catch (\Throwable) {
+            // Permission not created yet — fall through to super admins only.
+        }
+
+        try {
+            $users = $users->merge(User::role('super_admin')->get());
+        } catch (\Throwable) {
+            // Role missing — ignore.
+        }
+
+        return $users->unique('id')->values();
+    }
 
     protected static function boot()
     {

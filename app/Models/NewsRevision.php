@@ -24,6 +24,9 @@ class NewsRevision extends Model
         'status_changed' => 'تغییر وضعیت',
         'deleted' => 'حذف خبر',
         'restored' => 'بازیابی خبر',
+        'submitted_for_review' => 'ارسال برای تأیید',
+        'approved' => 'تأیید و انتشار',
+        'rejected' => 'بازگشت برای اصلاح',
     ];
 
     public const FIELD_LABELS = [
@@ -48,10 +51,14 @@ class NewsRevision extends Model
         'show_comments' => 'نمایش دیدگاه‌ها',
         'seo_title' => 'عنوان سئو',
         'meta_desc' => 'کلمات کلیدی',
+        'review_reason' => 'دلیل بازگشت برای اصلاح',
+        'auto_send_telegram' => 'ارسال خودکار به تلگرام',
+        'auto_send_whatsapp' => 'ارسال خودکار به واتساپ',
     ];
 
     public const STATUS_LABELS = [
         'draft' => 'پیش‌نویس',
+        'pending_review' => 'در انتظار تأیید',
         'scheduled' => 'زمان‌بندی‌شده',
         'published' => 'منتشرشده',
         'suspended' => 'معلق',

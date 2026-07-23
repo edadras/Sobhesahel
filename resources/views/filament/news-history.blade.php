@@ -4,10 +4,10 @@
             <div class="flex items-center justify-between gap-3">
                 <span @class([
                     'fi-badge inline-flex items-center rounded-md px-2 py-1 text-xs font-medium',
-                    'bg-success-50 text-success-700 dark:bg-success-400/10 dark:text-success-400' => $revision->action === 'created',
-                    'bg-info-50 text-info-700 dark:bg-info-400/10 dark:text-info-400' => $revision->action === 'updated',
+                    'bg-success-50 text-success-700 dark:bg-success-400/10 dark:text-success-400' => in_array($revision->action, ['created', 'approved']),
+                    'bg-info-50 text-info-700 dark:bg-info-400/10 dark:text-info-400' => in_array($revision->action, ['updated', 'submitted_for_review']),
                     'bg-warning-50 text-warning-700 dark:bg-warning-400/10 dark:text-warning-400' => $revision->action === 'status_changed',
-                    'bg-danger-50 text-danger-700 dark:bg-danger-400/10 dark:text-danger-400' => $revision->action === 'deleted',
+                    'bg-danger-50 text-danger-700 dark:bg-danger-400/10 dark:text-danger-400' => in_array($revision->action, ['deleted', 'rejected']),
                     'bg-primary-50 text-primary-700 dark:bg-primary-400/10 dark:text-primary-400' => $revision->action === 'restored',
                 ])>
                     {{ $revision->action_label }}

@@ -35,6 +35,10 @@ class ListNews extends ListRecords
                 ->badge(fn () => News::where('status', 'draft')->count())
                 ->badgeColor('warning')
                 ->modifyQueryUsing(fn (Builder $query) => $query->withoutTrashed()->where('status', 'draft')),
+            'pending_review' => Tab::make('در انتظار تأیید')
+                ->badge(fn () => News::where('status', News::STATUS_PENDING_REVIEW)->count())
+                ->badgeColor('info')
+                ->modifyQueryUsing(fn (Builder $query) => $query->withoutTrashed()->where('status', News::STATUS_PENDING_REVIEW)),
             'scheduled' => Tab::make('زمان‌بندی‌شده')
                 ->badge(fn () => News::where('status', 'scheduled')->count())
                 ->badgeColor('danger')

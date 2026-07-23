@@ -13,7 +13,9 @@ class ShieldSeeder extends Seeder
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $rolesWithPermissions = '[{"name":"super_admin","guard_name":"web","permissions":[]}]';
-        $directPermissions = '[]';
+        // publish_news: گردش کار تحریریه — grants publish/schedule/suspend and
+        // approve/reject on NewsResource (see NewsResource::getPermissionPrefixes()).
+        $directPermissions = '[{"name":"publish_news","guard_name":"web"}]';
 
         static::makeRolesWithPermissions($rolesWithPermissions);
         static::makeDirectPermissions($directPermissions);
