@@ -9,9 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
-use Laravel\Fortify\TwoFactorAuthenticatable;
 use Spatie\Permission\Traits\HasRoles;
-use Vormkracht10\TwoFactorAuth\Enums\TwoFactorType;
 
 class User extends Authenticatable implements HasAvatar
 {
@@ -50,7 +48,6 @@ class User extends Authenticatable implements HasAvatar
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'two_factor_type' => TwoFactorType::class,
         ];
     }
 

@@ -12,6 +12,13 @@ return [
     |
     */
 
+    // Master switch for the public comment form. Overridable from the admin
+    // settings page ("نظرات" tab) via AppServiceProvider.
+    'enabled' => true,
+
+    // Status given to a new, non-spam comment: "pending" or "verified".
+    'default_status' => 'pending',
+
     // Minimum number of seconds between the comment form being rendered
     // and the comment being submitted. Faster submissions are treated as bots.
     'min_seconds' => 5,

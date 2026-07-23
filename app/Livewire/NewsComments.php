@@ -57,6 +57,16 @@ class NewsComments extends Component
 
     public function submitComment(CommentSpamGuard $spamGuard)
     {
+        if (! config('comments.enabled', true)) {
+            $this->alert('error', 'ثبت دیدگاه در حال حاضر غیرفعال است.', [
+                'toast' => false,
+                'position' => 'center',
+                'showConfirmButton' => true,
+                'confirmButtonText' => 'باشه',
+            ]);
+            return;
+        }
+
         try {
             $this->validate();
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -101,7 +111,7 @@ class NewsComments extends Component
             'name' => $this->comment_name,
             'email' => $this->comment_email,
             'comment' => $this->comment_text,
-            'status' => $isSpam ? 'rejected' : 'pending',
+            'status' => $isSpam ? 'rejected' : (string) config('comments.default_status', 'pending'),
             'spam_reason' => $isSpam ? $verdict['reason'] : null,
             'ip' => request()->ip(),
             'user_agent' => mb_substr((string) request()->userAgent(), 0, 512),

@@ -37,6 +37,7 @@
 </head>
 
 <body>
+{!! rescue(fn () => setting('scripts.body_start'), '', false) !!}
 @include('website.rtl.partials.header')
 
 @include('website.components.yektanet-ads', ['position' => 'header'])
@@ -70,5 +71,6 @@
 {{--        g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);--}}
 {{--    })();--}}
 {{--</script>--}}
+{!! rescue(fn () => setting('scripts.body_end'), '', false) !!}
 </body>
 </html>
