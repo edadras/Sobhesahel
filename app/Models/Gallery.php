@@ -5,12 +5,13 @@ namespace App\Models;
 use App\Traits\ContentTrait;
 use App\Traits\InteractsWithSiteSearch;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Spatie\Tags\HasTags;
 
 class Gallery extends Model
 {
-    use HasTags, ContentTrait, Searchable, InteractsWithSiteSearch;
+    use HasTags, ContentTrait, Searchable, InteractsWithSiteSearch, SoftDeletes;
 
     protected $guarded = ['id'];
 

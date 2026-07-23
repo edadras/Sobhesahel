@@ -249,6 +249,7 @@ trait ContentTrait
         return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($limit, $from_date) {
             return ContentMetaDataResource::collection(
                 self::where('created_at', '>=', $from_date)
+                    ->where('is_published', true)
                     ->orderBy('visits', 'desc')
                     ->take($limit)
                     ->get()
@@ -279,6 +280,7 @@ trait ContentTrait
                             $query->whereIn('tags.id', $tagIds);
                         })
                             ->where('id', '!=', $this->id)
+                            ->where('is_published', true)
                             ->latest()
                             ->take($limit - $relatedNews->count())
                             ->get();
@@ -302,6 +304,7 @@ trait ContentTrait
                                 $query->whereIn('categories.id', $categoryIds);
                             })
                                 ->where('id', '!=', $this->id)
+                                ->where('is_published', true)
                                 ->orderBy('id', 'DESC')
                                 ->take($limit - $relatedNews->count())
                                 ->get();
@@ -330,7 +333,7 @@ trait ContentTrait
 
         return Cache::remember($cacheKey, now()->addMinutes(60), function () use ($limit) {
             return ContentMetaDataResource::collection(
-                self::orderBy('id', 'DESC')->take($limit)->get()
+                self::where('is_published', true)->orderBy('id', 'DESC')->take($limit)->get()
             );
         });
     }
@@ -338,7 +341,7 @@ trait ContentTrait
     public static function getByCategory(string $category_id, int $take = 5)
     {
         return ContentMetaDataResource::collection(
-            Category::find($category_id)->news()->orderBy('id', 'DESC')->take($take)->get()
+            Category::find($category_id)->news()->where('is_published', true)->orderBy('id', 'DESC')->take($take)->get()
         );
     }
 

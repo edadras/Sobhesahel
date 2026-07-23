@@ -61,6 +61,16 @@
                                     </li>
                                 </ul>
                             </div>
+
+                            @foreach(['image_second', 'image_third'] as $extraImageField)
+                                @php $extraImageUrl = $post->getFileUrl($post->{$extraImageField} ?? null); @endphp
+                                @if($extraImageUrl)
+                                    <div class="newsTopImg position-relative" style="margin-top: 10px">
+                                        <img src="{{ $extraImageUrl }}" alt="{{ $post->title }}">
+                                    </div>
+                                @endif
+                            @endforeach
+
                             <div class="newsDateRow">
                                 @foreach($post->categories as $item)
 
@@ -77,10 +87,18 @@
                                     <i>
                                         {{ $post['posted_at_jalali'] }}
                                     </i>
-                                    <span class="icon-Vector-Stroke-4"></span>
-                                    <i>
-                                        {{ count($comments) }}
-                                        کامنت</i>
+                                    @if($post->show_visits ?? true)
+                                        <span class="icon-Vector-Stroke-4"></span>
+                                        <i>
+                                            {{ $post->visits ?? 0 }}
+                                            بازدید</i>
+                                    @endif
+                                    @if($post->show_comments ?? true)
+                                        <span class="icon-Vector-Stroke-4"></span>
+                                        <i>
+                                            {{ count($comments) }}
+                                            کامنت</i>
+                                    @endif
                                 </div>
                             </div>
 
@@ -106,13 +124,24 @@
                                     {{ $post['sub_title'] }}
                                 </h6>
 
-                                <h1>
+                                <h1 @if(!empty($post->title_color)) style="color: {{ $post->title_color }}" @endif>
                                     {{ $post['title'] }}
                                 </h1>
 
                                 <p>
                                     {!! strip_tags($post['short_description']) !!}
                                 </p>
+
+                                @php $subtitles = array_filter(is_array($post->subtitles ?? null) ? $post->subtitles : []); @endphp
+                                @if(count($subtitles))
+                                    <ul class="newsSubtitles text-end" style="list-style: none; padding: 0; margin: 10px 0">
+                                        @foreach($subtitles as $subtitle)
+                                            <li style="margin-bottom: 5px">
+                                                <strong>{{ is_array($subtitle) ? ($subtitle['subtitle'] ?? reset($subtitle)) : $subtitle }}</strong>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
 
                                 <div>
                                     <p>اشتراک گذاری:</p>
@@ -171,9 +200,41 @@
                                     </ul>
                                 </div>
                             </div>
+                            @php
+                                $mediaUrl = method_exists($post, 'getMediaFileUrl') ? $post->getMediaFileUrl() : null;
+                                $mediaExt = $mediaUrl ? strtolower(pathinfo(parse_url($mediaUrl, PHP_URL_PATH) ?? '', PATHINFO_EXTENSION)) : null;
+                            @endphp
+                            @if($mediaUrl)
+                                @if(in_array($mediaExt, ['mp4', 'webm', 'mov', 'm4v']))
+                                    <div class="videoPgRight position-relative" style="margin: 15px 0">
+                                        <video controls preload="metadata" style="width: 100%; max-width: 100%" src="{{ $mediaUrl }}">
+                                            مرورگر شما از پخش ویدئو پشتیبانی نمی‌کند.
+                                        </video>
+                                    </div>
+                                @else
+                                    <div class="pdcstAudio pdcstAudio2 position-relative" style="margin: 15px 0">
+                                        <audio controls preload="metadata" style="width: 100%" src="{{ $mediaUrl }}">
+                                            مرورگر شما از پخش صوت پشتیبانی نمی‌کند.
+                                        </audio>
+                                    </div>
+                                @endif
+                            @endif
+
+                            @if(!empty($post->pre_message))
+                                <div class="newsText text-end newsPreMessage">
+                                    <p><strong>{{ $post->pre_message }}</strong></p>
+                                </div>
+                            @endif
+
                             <div class="newsText text-end">
                                 {!! $post['body'] !!}
                             </div>
+
+                            @if(!empty($post->post_message))
+                                <div class="newsText text-end newsPostMessage">
+                                    <p><strong>{{ $post->post_message }}</strong></p>
+                                </div>
+                            @endif
 
                             @include('website.components.advertise-banner', ['position' => 'single_page_advertise_image'])
 
@@ -194,7 +255,9 @@
 {{--                                </div>--}}
 {{--                            @endif--}}
 
-                            @livewire('news-comments', ['post' => $post])
+                            @if($post->show_comments ?? true)
+                                @livewire('news-comments', ['post' => $post])
+                            @endif
 
                         </div>
                         @include('website.rtl.sidebar')

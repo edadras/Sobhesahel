@@ -15,6 +15,10 @@ class EditNews extends EditRecord
     {
         return [
             Actions\DeleteAction::make(),
+            Actions\RestoreAction::make()
+                ->label('بازیابی'),
+            Actions\ForceDeleteAction::make()
+                ->label('حذف دائمی'),
         ];
     }
 

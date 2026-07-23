@@ -20,13 +20,13 @@ class AuthorController extends Controller
         if ($user_type == 'author'){
             $user = Author::findOrFail($id);
 
-            $posts = News::where('author_id',$id)->orderBy('id','DESC')->paginate()->through(function ($item) {
+            $posts = News::where('author_id',$id)->where('is_published', true)->orderBy('id','DESC')->paginate()->through(function ($item) {
                 return ContentMetaDataResource::make($item)->resolve();
             });
         }elseif ($user_type == 'user'){
             $user = User::findOrFail($id);
 
-            $posts = News::where('user_id',$id)->orderBy('id','DESC')->paginate()->through(function ($item) {
+            $posts = News::where('user_id',$id)->where('is_published', true)->orderBy('id','DESC')->paginate()->through(function ($item) {
                 return ContentMetaDataResource::make($item)->resolve();
             });
         }else{

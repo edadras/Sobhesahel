@@ -91,7 +91,7 @@
                                             </div>
                                         </div>
                                         <div class="text text-end">
-                                            <h2>
+                                            <h2 @if(!empty($post['title_color'])) style="color: {{ $post['title_color'] }}" @endif>
                                                 {{ $post['title'] }}
                                             </h2>
                                                <p>

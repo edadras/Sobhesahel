@@ -2,20 +2,31 @@
 
 namespace App\Models;
 
+use App\Observers\NewsObserver;
 use App\Traits\ContentTrait;
 use App\Traits\HasTitleValues;
 use App\Traits\ImageOptimizer;
 use App\Traits\InteractsWithSiteSearch;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Category;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Scout\Searchable;
 use Spatie\Tags\HasTags;
 
+#[ObservedBy([NewsObserver::class])]
 class News extends Model
 {
-    use HasTags, ContentTrait, Searchable, ImageOptimizer, HasTitleValues, InteractsWithSiteSearch;
+    use HasTags, ContentTrait, Searchable, ImageOptimizer, HasTitleValues, InteractsWithSiteSearch, SoftDeletes;
 
     protected $guarded = ['id'];
+
+    protected $casts = [
+        'subtitles' => 'array',
+        'show_visits' => 'boolean',
+        'show_comments' => 'boolean',
+    ];
 
     protected static function boot()
     {
@@ -62,6 +73,40 @@ class News extends Model
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'category_news');
+    }
+
+    public function revisions()
+    {
+        return $this->hasMany(NewsRevision::class)->latest('created_at')->latest('id');
+    }
+
+    /**
+     * Resolve the public URL of an uploaded file, checking the same disks
+     * used by ContentTrait::getImageUrl(). Null-safe.
+     */
+    public function getFileUrl(?string $path): ?string
+    {
+        if (empty($path)) {
+            return null;
+        }
+
+        if (Storage::disk('public')->exists($path)) {
+            return Storage::disk('public')->url($path);
+        }
+
+        if (Storage::disk('media')->exists($path)) {
+            return Storage::disk('media')->url($path);
+        }
+
+        return null;
+    }
+
+    /**
+     * Public URL of the main audio/video file of the news item. Null-safe.
+     */
+    public function getMediaFileUrl(): ?string
+    {
+        return $this->getFileUrl($this->media_file);
     }
 
     public function data()

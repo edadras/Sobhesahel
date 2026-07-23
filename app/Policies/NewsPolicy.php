@@ -63,7 +63,7 @@ class NewsPolicy
      */
     public function forceDelete(User $user, $role): bool
     {
-        return $user->can('{{ ForceDelete }}');
+        return $user->can('delete_news');
     }
 
     /**
@@ -71,7 +71,7 @@ class NewsPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('{{ ForceDeleteAny }}');
+        return $user->can('delete_news');
     }
 
     /**
@@ -79,7 +79,7 @@ class NewsPolicy
      */
     public function restore(User $user, $role): bool
     {
-        return $user->can('{{ Restore }}');
+        return $user->can('delete_news');
     }
 
     /**
@@ -87,7 +87,7 @@ class NewsPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('{{ RestoreAny }}');
+        return $user->can('delete_news');
     }
 
     /**
