@@ -67,7 +67,25 @@ class NewsResource extends Resource implements HasShieldPermissions
                             ->output(TiptapOutput::Html)
                             ->maxContentWidth('5xl')
                             ->required()
-                            ->columnSpanFull()
+                            ->columnSpanFull(),
+                        Forms\Components\Repeater::make('subtitles')
+                            ->label('سوتیترها')
+                            ->simple(
+                                Forms\Components\TextInput::make('subtitle')
+                                    ->label('سوتیتر')
+                                    ->required(),
+                            )
+                            ->addActionLabel('افزودن سوتیتر')
+                            ->defaultItems(0)
+                            ->columnSpanFull(),
+                        Forms\Components\Textarea::make('pre_message')
+                            ->label('پیام ابتدای خبر')
+                            ->rows(2)
+                            ->columnSpanFull(),
+                        Forms\Components\Textarea::make('post_message')
+                            ->label('پیام انتهای خبر')
+                            ->rows(2)
+                            ->columnSpanFull(),
                     ])->columnSpan(8),
                     Forms\Components\Grid::make()->schema([
                         Forms\Components\FileUpload::make('image_original')
@@ -83,27 +101,50 @@ class NewsResource extends Resource implements HasShieldPermissions
                             ->helperText('با فعال کردن این گزینه، لوگوی صبح ساحل روی تصویر خبر درج می‌شود. فایل اصلی بدون واترمارک حفظ خواهد شد.')
                             ->default(false)
                             ->columnSpanFull(),
+                        Forms\Components\Section::make('رسانه‌های تکمیلی')->schema([
+                            Forms\Components\FileUpload::make('image_second')
+                                ->label('تصویر مکمل ۱')
+                                ->columnSpanFull()
+                                ->image()
+                                ->imageEditor(),
+                            Forms\Components\FileUpload::make('image_third')
+                                ->label('تصویر مکمل ۲')
+                                ->columnSpanFull()
+                                ->image()
+                                ->imageEditor(),
+                            Forms\Components\FileUpload::make('media_file')
+                                ->label('فایل صوتی/تصویری خبر')
+                                ->helperText('فایل mp3 یا mp4 — حداکثر ۱۰۰ مگابایت')
+                                ->acceptedFileTypes(['audio/mpeg', 'video/mp4'])
+                                ->maxSize(102400)
+                                ->columnSpanFull(),
+                        ])->collapsed(fn ($record) => $record === null || (blank($record->image_second) && blank($record->image_third) && blank($record->media_file))),
                         Forms\Components\Section::make('تنظیمات انتشار')->schema([
                             Forms\Components\Select::make('category')
                                 ->relationship('categories', 'title')
                                 ->label('دسته بندی')
                                 ->searchable()
                                 ->multiple(),
+                            Forms\Components\SpatieTagsInput::make('tags')
+                                ->label('برچسب‌ها')->type('fa'),
                             Forms\Components\ToggleButtons::make('status')
                                 ->options([
                                     'draft' => 'پیش نویس',
                                     'scheduled' => 'زمان بندی شده',
-                                    'published' => 'منتشر شده'
+                                    'published' => 'منتشر شده',
+                                    'suspended' => 'معلق',
                                 ])
                                 ->icons([
                                     'draft' => 'heroicon-o-pencil',
                                     'scheduled' => 'heroicon-o-clock',
                                     'published' => 'heroicon-o-check-circle',
+                                    'suspended' => 'heroicon-o-pause-circle',
                                 ])
                                 ->colors([
                                     'draft' => 'warning',
                                     'scheduled' => 'danger',
                                     'published' => 'success',
+                                    'suspended' => 'gray',
                                 ])
                                 ->label('وضعیت انتشار')
                                 ->inline()
@@ -156,6 +197,16 @@ class NewsResource extends Resource implements HasShieldPermissions
                                 })
                                 ->columns(3),
                         ]),
+                        Forms\Components\Section::make('تنظیمات نمایش')->schema([
+                            Forms\Components\ColorPicker::make('title_color')
+                                ->label('رنگ تیتر'),
+                            Forms\Components\Toggle::make('show_visits')
+                                ->label('نمایش تعداد بازدید')
+                                ->default(true),
+                            Forms\Components\Toggle::make('show_comments')
+                                ->label('نمایش دیدگاه‌ها')
+                                ->default(true),
+                        ])->description('نحوه نمایش خبر در سایت'),
                         Forms\Components\Section::make('نویسنده')->schema([
                             Forms\Components\Select::make('author_id')->options([78 => 'بدون نام'] + Author::where('id','!=',78)->pluck('name', 'id')->toArray())->label('')->searchable()->required(),
                         ])->description('محتوا با نام چه کسی در سایت منتشر شود؟'),
@@ -215,6 +266,20 @@ class NewsResource extends Resource implements HasShieldPermissions
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\RestoreAction::make()
+                        ->label('بازیابی'),
+                    Tables\Actions\ForceDeleteAction::make()
+                        ->label('حذف دائمی'),
+                    Tables\Actions\Action::make('history')
+                        ->label('تاریخچه')
+                        ->icon('heroicon-o-clock')
+                        ->color('gray')
+                        ->modalHeading(fn ($record) => 'تاریخچه تغییرات خبر ' . $record->id)
+                        ->modalContent(fn ($record) => view('filament.news-history', [
+                            'revisions' => $record->revisions()->with('user')->limit(50)->get(),
+                        ]))
+                        ->modalSubmitAction(false)
+                        ->modalCancelActionLabel('بستن'),
                     Tables\Actions\Action::make('copy_link')
                         ->label('لینک پست')
                         ->icon('heroicon-o-clipboard')
@@ -233,10 +298,24 @@ class NewsResource extends Resource implements HasShieldPermissions
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make()
+                        ->label('بازیابی'),
+                    Tables\Actions\ForceDeleteBulkAction::make()
+                        ->label('حذف دائمی'),
                 ]),
             ])
             ->defaultSort('id', 'DESC')
             ->poll('15s');
+    }
+
+    /**
+     * Include soft-deleted news so the "حذف‌شده" cartable and the
+     * restore/force-delete actions can reach trashed records.
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([SoftDeletingScope::class]);
     }
 
     public static function getRelations(): array

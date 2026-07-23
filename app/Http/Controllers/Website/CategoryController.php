@@ -24,6 +24,7 @@ class CategoryController extends Controller
         // Get posts with pagination (don't cache paginated results)
         $posts = News::orderBy('id', 'DESC')
             ->where('lang_id', 1)
+            ->where('is_published', true)
             ->whereHas('categories', function($query) use ($categoryIds) {
                 $query->whereIn('categories.id', $categoryIds);
             })

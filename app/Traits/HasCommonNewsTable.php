@@ -41,12 +41,14 @@ trait HasCommonNewsTable
                     'draft' => 'پیش نویس',
                     'scheduled' => 'زمان بندی شده',
                     'published' => 'منتشر شده',
+                    'suspended' => 'معلق',
                     default => 'نامشخص'
                 })
                 ->color(fn($state) => match ($state) {
                     'draft' => 'warning',
                     'scheduled' => 'danger',
                     'published' => 'success',
+                    'suspended' => 'gray',
                     default => 'gray'
                 })
                 ->description(function ($record) {

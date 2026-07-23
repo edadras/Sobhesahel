@@ -6,12 +6,13 @@ use App\Traits\ContentTrait;
 use App\Traits\InteractsWithSiteSearch;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Spatie\Tags\HasTags;
 
 class Podcast extends Model
 {
-    use HasTags,ContentTrait,Searchable,InteractsWithSiteSearch;
+    use HasTags,ContentTrait,Searchable,InteractsWithSiteSearch,SoftDeletes;
 
     protected $guarded = ['id'];
 

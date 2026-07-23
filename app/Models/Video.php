@@ -7,12 +7,13 @@ use App\Traits\HasTitleValues;
 use App\Traits\ImageOptimizer;
 use App\Traits\InteractsWithSiteSearch;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Spatie\Tags\HasTags;
 
 class Video extends Model
 {
-    use HasTags, ContentTrait, Searchable, ImageOptimizer, HasTitleValues, InteractsWithSiteSearch;
+    use HasTags, ContentTrait, Searchable, ImageOptimizer, HasTitleValues, InteractsWithSiteSearch, SoftDeletes;
 
     protected $guarded = ['id'];
 

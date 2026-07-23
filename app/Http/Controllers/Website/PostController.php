@@ -133,6 +133,7 @@ class PostController extends Controller
 
         $posts = $modelClass::orderBy('id', 'DESC')
             ->where('lang_id', 1)
+            ->where('is_published', true)
             ->paginate($type == 'podcast' ? 5 : 50)
             ->through(fn($item) => ContentMetaDataResource::make($item)->resolve());
 
