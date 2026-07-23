@@ -6,6 +6,7 @@ use App\Models\News;
 use App\Models\NewsRevision;
 use App\Services\SocialPublishService;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Cache;
 
 class NewsObserver
 {
@@ -83,7 +84,7 @@ class NewsObserver
         }
 
         if ($changes !== []) {
-            $this->record($news, $this->resolveAction($oldStatus, $newStatus), $changes);
+            $this->record($news, $this->resolveAction($oldStatus, $newStatus, $news), $changes);
         }
 
         // Workflow notifications (never block saving).
@@ -94,11 +95,14 @@ class NewsObserver
         }
 
         $news->workflowRejectReason = null;
+        $news->isAutoArchiving = false;
 
         // ارسال خودکار به شبکه‌های اجتماعی on the transition to published.
         if ($newStatus === 'published' && $oldStatus !== 'published') {
             $this->autoPublishToSocial($news);
         }
+
+        $this->clearSmartRelatedCache($news);
     }
 
     public function deleted(News $news): void
@@ -108,20 +112,29 @@ class NewsObserver
         }
 
         $this->record($news, 'deleted');
+
+        $this->clearSmartRelatedCache($news);
     }
 
     public function restored(News $news): void
     {
         $this->record($news, 'restored');
+
+        $this->clearSmartRelatedCache($news);
     }
 
     /**
      * Map a status transition onto a workflow action for the audit trail.
      */
-    protected function resolveAction(?string $oldStatus, ?string $newStatus): string
+    protected function resolveAction(?string $oldStatus, ?string $newStatus, ?News $news = null): string
     {
         if ($newStatus === null) {
             return 'updated';
+        }
+
+        // آرشیو خودکار — the cron marks the model before suspending it.
+        if ($newStatus === 'suspended' && $news?->isAutoArchiving) {
+            return 'auto_archived';
         }
 
         if ($newStatus === News::STATUS_PENDING_REVIEW) {
@@ -197,6 +210,20 @@ class NewsObserver
     {
         try {
             app(SocialPublishService::class)->autoPublish($news);
+        } catch (\Throwable $e) {
+            report($e);
+        }
+    }
+
+    /**
+     * اخبار مرتبط هوشمند — drop the cached smart related list of this item.
+     * (Lists of other items containing this one simply expire within 10
+     * minutes, matching the previous related-news behavior.)
+     */
+    protected function clearSmartRelatedCache(News $news): void
+    {
+        try {
+            Cache::forget("related_news_smart_{$news->id}");
         } catch (\Throwable $e) {
             report($e);
         }

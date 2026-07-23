@@ -27,6 +27,7 @@ class NewsRevision extends Model
         'submitted_for_review' => 'ارسال برای تأیید',
         'approved' => 'تأیید و انتشار',
         'rejected' => 'بازگشت برای اصلاح',
+        'auto_archived' => 'آرشیو خودکار',
     ];
 
     public const FIELD_LABELS = [
@@ -54,6 +55,7 @@ class NewsRevision extends Model
         'review_reason' => 'دلیل بازگشت برای اصلاح',
         'auto_send_telegram' => 'ارسال خودکار به تلگرام',
         'auto_send_whatsapp' => 'ارسال خودکار به واتساپ',
+        'archive_at' => 'زمان آرشیو خودکار',
     ];
 
     public const STATUS_LABELS = [

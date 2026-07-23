@@ -68,6 +68,22 @@ class PostController extends Controller
         // Prepare compact data
         $compact = ['post', 'seo' ,'latest','type'];
 
+        // اخبار مرتبط هوشمند — News only: shared tags first, then same
+        // category (News::relatedSmart via the News getRelated override).
+        if ($type === 'news') {
+            try {
+                $related = $post->getRelated(5)->toArray(request());
+
+                if (!empty($related)) {
+                    $related_title = 'اخبار مرتبط';
+
+                    $compact = array_merge($compact, ['related', 'related_title']);
+                }
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
+
         if ($type == 'podcast'){
             $episodes = $post->getLatest()->resolve();
 

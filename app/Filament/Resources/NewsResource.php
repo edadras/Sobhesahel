@@ -16,6 +16,7 @@ use App\Traits\HasCommonNewsTable;
 use App\Traits\HasContentField;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Carbon\Carbon;
+use App\Services\AiService;
 use App\Services\SocialPublishService;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -56,7 +57,7 @@ class NewsResource extends Resource implements HasShieldPermissions
                 Forms\Components\Grid::make(12)->schema([
                     Forms\Components\Grid::make()->schema([
                         Forms\Components\TextInput::make('sub_title')->label('رو تیتر')->columnSpanFull(),
-                        ...self::liveTitleAndSlugInputs(),
+                        ...self::titleAndSlugInputsWithAi(),
                         Forms\Components\RichEditor::make('short_description')->label('متن کوتاه')->columnSpanFull()->toolbarButtons([
                             'link',
                             'redo',
@@ -128,7 +129,10 @@ class NewsResource extends Resource implements HasShieldPermissions
                                 ->searchable()
                                 ->multiple(),
                             Forms\Components\SpatieTagsInput::make('tags')
-                                ->label('برچسب‌ها')->type('fa'),
+                                ->label('برچسب‌ها')->type('fa')
+                                // هوش مصنوعی — merge suggested Persian tags
+                                // into whatever the editor already typed.
+                                ->hintAction(self::aiSuggestTagsAction()),
                             Forms\Components\ToggleButtons::make('status')
                                 // گردش کار تحریریه: کاربران بدون مجوز publish_news فقط
                                 // پیش‌نویس و «در انتظار تأیید» را می‌بینند.
@@ -155,6 +159,11 @@ class NewsResource extends Resource implements HasShieldPermissions
                                 ->jalali()
                                 ->label('تاریخ انتشار')
                                 ->visible(fn($get) => in_array($get('status'), ['scheduled'])),
+                            Forms\Components\DateTimePicker::make('archive_at')
+                                ->jalali()
+                                ->label('زمان آرشیو خودکار')
+                                ->helperText('اختیاری — در این زمان خبر به‌صورت خودکار معلق (آرشیو) می‌شود. برای انتشار مجدد، این مقدار را پاک یا به‌روزرسانی کنید.')
+                                ->visible(fn($get) => in_array($get('status'), ['scheduled', 'published', 'suspended'])),
                             Forms\Components\Repeater::make('featured_news')
                                 ->label('اخبار ویژه')
                                 ->relationship('featuredNews')
@@ -228,7 +237,9 @@ class NewsResource extends Resource implements HasShieldPermissions
                         Forms\Components\Section::make('سئو')->schema([
                             Forms\Components\TextInput::make('seo_title')
                                 ->label('عنوان سئو')
-                                ->helperText('عنوان خبر به عنوان پیشفرض'),
+                                ->helperText('عنوان خبر به عنوان پیشفرض')
+                                // هوش مصنوعی — fills seo_title + meta_desc.
+                                ->hintAction(self::aiSuggestSeoAction()),
                             Forms\Components\Textarea::make('meta_desc')->label('کلمات کلیدی')
                         ])->description('تنظیمات خبر در گوگل')
                     ])->columnSpan(4),
@@ -475,5 +486,176 @@ class NewsResource extends Resource implements HasShieldPermissions
             ->title('خبر برای اصلاح بازگردانده شد')
             ->warning()
             ->send();
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | هوش مصنوعی — AI form helpers
+    |--------------------------------------------------------------------------
+    | All actions are visible only when config('ai.enabled') is true, run on
+    | explicit user click, show Persian notifications on failure and never
+    | block saving the news item.
+    */
+
+    /**
+     * The shared title/slug inputs with the "پیشنهاد تیتر" AI hint action
+     * attached to the title field (News only — the shared trait stays
+     * untouched for the other content types).
+     */
+    protected static function titleAndSlugInputsWithAi(): array
+    {
+        return array_map(function ($component) {
+            if ($component instanceof Forms\Components\TextInput && $component->getName() === 'title') {
+                $component->hintAction(self::aiSuggestHeadlinesAction());
+            }
+
+            return $component;
+        }, self::liveTitleAndSlugInputs());
+    }
+
+    /**
+     * "پیشنهاد برچسب با هوش مصنوعی" — merges suggested Persian tags into the
+     * current tags state.
+     */
+    protected static function aiSuggestTagsAction(): Forms\Components\Actions\Action
+    {
+        return Forms\Components\Actions\Action::make('aiSuggestTags')
+            ->label('پیشنهاد برچسب با هوش مصنوعی')
+            ->icon('heroicon-m-sparkles')
+            ->visible(fn () => (bool) config('ai.enabled'))
+            ->action(function (Forms\Get $get, Forms\Set $set) {
+                $tags = app(AiService::class)->suggestTags(
+                    (string) $get('title'),
+                    self::aiPlainText($get('body'))
+                );
+
+                if ($tags === []) {
+                    self::notifyAiFailure('پیشنهاد برچسب ناموفق بود');
+
+                    return;
+                }
+
+                $current = array_values(array_filter(
+                    (array) $get('tags'),
+                    fn ($tag) => is_string($tag) && trim($tag) !== ''
+                ));
+
+                $set('tags', array_values(array_unique(array_merge($current, $tags))));
+
+                Notification::make()
+                    ->title('برچسب‌های پیشنهادی افزوده شد')
+                    ->success()
+                    ->send();
+            });
+    }
+
+    /**
+     * "پیشنهاد سئو" — fills seo_title and meta_desc within length limits.
+     */
+    protected static function aiSuggestSeoAction(): Forms\Components\Actions\Action
+    {
+        return Forms\Components\Actions\Action::make('aiSuggestSeo')
+            ->label('پیشنهاد سئو')
+            ->icon('heroicon-m-sparkles')
+            ->visible(fn () => (bool) config('ai.enabled'))
+            ->action(function (Forms\Get $get, Forms\Set $set) {
+                $seo = app(AiService::class)->suggestSeo(
+                    (string) $get('title'),
+                    self::aiPlainText($get('body'))
+                );
+
+                if ($seo === []) {
+                    self::notifyAiFailure('پیشنهاد سئو ناموفق بود');
+
+                    return;
+                }
+
+                if (! empty($seo['seo_title'])) {
+                    $set('seo_title', $seo['seo_title']);
+                }
+
+                if (! empty($seo['meta_desc'])) {
+                    $set('meta_desc', $seo['meta_desc']);
+                }
+
+                Notification::make()
+                    ->title('پیشنهاد سئو اعمال شد')
+                    ->success()
+                    ->send();
+            });
+    }
+
+    /**
+     * "پیشنهاد تیتر" — modal with 3 alternative headlines as radio choices;
+     * the selected one replaces the title.
+     */
+    protected static function aiSuggestHeadlinesAction(): Forms\Components\Actions\Action
+    {
+        return Forms\Components\Actions\Action::make('aiSuggestHeadlines')
+            ->label('پیشنهاد تیتر')
+            ->icon('heroicon-m-sparkles')
+            ->visible(fn () => (bool) config('ai.enabled'))
+            ->modalHeading('پیشنهاد تیتر با هوش مصنوعی')
+            ->modalSubmitActionLabel('جایگزینی تیتر')
+            ->modalCancelActionLabel('انصراف')
+            ->form(function (Forms\Get $get) {
+                $headlines = app(AiService::class)->suggestHeadlines(
+                    (string) $get('title'),
+                    self::aiPlainText($get('body'))
+                );
+
+                if ($headlines === []) {
+                    return [
+                        Forms\Components\Placeholder::make('ai_headlines_failed')
+                            ->label('پیشنهاد تیتر')
+                            ->content('دریافت پیشنهاد تیتر ناموفق بود؛ سرویس هوش مصنوعی در دسترس نیست یا پاسخ معتبری نداد. خبر بدون مشکل قابل ذخیره است.'),
+                    ];
+                }
+
+                return [
+                    Forms\Components\Radio::make('headline')
+                        ->label('یکی از تیترهای پیشنهادی را انتخاب کنید')
+                        ->options(array_combine($headlines, $headlines))
+                        ->required(),
+                ];
+            })
+            ->action(function (array $data, Forms\Set $set) {
+                $headline = trim((string) ($data['headline'] ?? ''));
+
+                if ($headline === '') {
+                    return;
+                }
+
+                $set('title', $headline);
+
+                Notification::make()
+                    ->title('تیتر جایگزین شد')
+                    ->success()
+                    ->send();
+            });
+    }
+
+    /**
+     * Persian failure notification shared by the AI actions.
+     */
+    protected static function notifyAiFailure(string $title): void
+    {
+        Notification::make()
+            ->title($title)
+            ->body('سرویس هوش مصنوعی در دسترس نیست یا پاسخ معتبری نداد؛ خبر بدون مشکل قابل ذخیره است.')
+            ->danger()
+            ->send();
+    }
+
+    /**
+     * Editor state (Tiptap HTML or array) to bounded plain text for prompts.
+     */
+    protected static function aiPlainText($state): string
+    {
+        if (is_array($state)) {
+            $state = json_encode($state, JSON_UNESCAPED_UNICODE);
+        }
+
+        return strip_tags((string) $state);
     }
 }
