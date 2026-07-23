@@ -38,6 +38,19 @@ Route::get('qa','App\Http\Controllers\Website\QaController@index')->name('websit
 Route::post('qa','App\Http\Controllers\Website\QaController@store')->name('website.rtl.qa.store');
 Route::get('qa/{id}/{slug?}','App\Http\Controllers\Website\QaController@show')->name('website.rtl.qa.single')->where('id','[0-9]+');
 
+// درآمدزایی (monetization): رپورتاژ آگهی + اشتراک ویژه/دیجیتال — these must
+// stay registered BEFORE the catch-all {type} routes below.
+Route::get('reportage','App\Http\Controllers\Website\ReportageController@index')->name('website.rtl.reportage');
+Route::post('reportage','App\Http\Controllers\Website\ReportageController@store')->middleware('throttle:5,10')->name('website.rtl.reportage.store');
+Route::get('reportage/pay/{token}','App\Http\Controllers\Website\ReportageController@pay')->name('website.rtl.reportage.pay');
+Route::post('reportage/pay/{token}','App\Http\Controllers\Website\ReportageController@submitPayment')->middleware('throttle:10,10')->name('website.rtl.reportage.pay.submit');
+Route::get('subscribe','App\Http\Controllers\Website\SubscribeController@index')->name('website.rtl.subscribe');
+Route::post('subscribe','App\Http\Controllers\Website\SubscribeController@store')->middleware('throttle:5,10')->name('website.rtl.subscribe.store');
+Route::get('subscribe/pay/{token}','App\Http\Controllers\Website\SubscribeController@pay')->name('website.rtl.subscribe.pay');
+Route::post('subscribe/pay/{token}','App\Http\Controllers\Website\SubscribeController@submitPayment')->middleware('throttle:10,10')->name('website.rtl.subscribe.pay.submit');
+// Access-code unlock for the gated PDF archive (اشتراک دیجیتال نشریات).
+Route::post('pdf/access','App\Http\Controllers\Website\SubscribeController@archiveAccess')->middleware('throttle:10,10')->name('website.rtl.archive.access');
+
 //DONE
 Route::get('{type}/{code}/{slug}','App\Http\Controllers\Website\PostController@new_single')->name('website.rtl.single')->where('type','news|note|podcast|video|photo');
 
