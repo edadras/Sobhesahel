@@ -85,7 +85,7 @@ Route::get('ads/click/{id}','App\Http\Controllers\Website\AdvertiseController@in
 Route::get('ads/impression/{id}','App\Http\Controllers\Website\AdvertiseController@impression')->name('advertise_impression');
 Route::get('ads/vast/{id}','App\Http\Controllers\Website\AdvertiseController@vast')->name('advertise_vast');
 
-Route::post('{type}/{code}/{slug}','Website\NewsController@comment')->where('type','news|note|podcast|video|photo');
+Route::post('{type}/{code}/{slug}','App\Http\Controllers\Website\NewsController@comment')->where('type','news|note|podcast|video|photo');
 
 
 //DONE
