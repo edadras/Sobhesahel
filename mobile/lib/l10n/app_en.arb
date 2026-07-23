@@ -232,6 +232,14 @@
   "archiveReadPdf": "Read PDF",
   "archiveViewIssue": "View issue",
   "archiveAccessible": "Accessible",
+  "archiveLatestIssue": "Latest issue",
+  "archiveReadOnline": "Read online",
+  "archiveDownloadPdf": "Download PDF",
+  "archiveUnlockConfirm": "Unlock this issue for {cost} points?",
+  "@archiveUnlockConfirm": { "placeholders": { "cost": { "type": "String" } } },
+  "archiveUnlocked": "Issue unlocked successfully",
+  "archiveAccessGranted": "Access granted",
+  "archiveViewerNote": "You have full access to this issue. An in-app reader isn't available in this build yet — please open it from the web edition of Sobhe Sahel.",
 
   "libraryTitle": "My Library",
   "librarySubtitle": "Bookmarks, followed authors and continue reading",
@@ -252,6 +260,7 @@
   "tourismSubtitle": "An exclusive guide to Hormozgan's destinations",
   "tourismExplore": "Explore",
   "tourismReadMore": "Read more",
+  "tourismEmpty": "No tourism content has been published yet. The admin should populate the tourism service.",
 
   "notifTitle": "Notifications",
   "notifFilterAll": "All",
@@ -265,6 +274,9 @@
   "notifPrefPoints": "Points and level alerts",
   "notifPrefSubscription": "Subscription renewal and status",
   "notifPrefAnnouncements": "Announcements",
+  "notifWebPush": "Enable Web Push",
+  "notifWebPushDesc": "For breaking Hormozgan news and special offers",
+  "notifAllMarkedRead": "All notifications marked as read",
 
   "settingsTitle": "Account Settings",
   "settingsSubtitle": "Manage your profile, security, notifications and preferences",

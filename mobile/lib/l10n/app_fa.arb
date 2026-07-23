@@ -214,6 +214,13 @@
   "archiveReadPdf": "مطالعه PDF",
   "archiveViewIssue": "مشاهده شماره",
   "archiveAccessible": "قابل دسترس",
+  "archiveLatestIssue": "آخرین شماره",
+  "archiveReadOnline": "ورق زدن آنلاین",
+  "archiveDownloadPdf": "دانلود PDF",
+  "archiveUnlockConfirm": "این شماره با {cost} امتیاز باز شود؟",
+  "archiveUnlocked": "شماره با موفقیت باز شد",
+  "archiveAccessGranted": "دسترسی فعال شد",
+  "archiveViewerNote": "دسترسی شما به این شماره کامل است. نمایشگر درون‌برنامه‌ای هنوز در این نسخه در دسترس نیست؛ لطفاً از نسخه وب صبح ساحل استفاده کنید.",
 
   "libraryTitle": "مطالعات من",
   "librarySubtitle": "نشان‌شده‌ها، نویسندگان دنبال‌شده و ادامه مطالعه",
@@ -232,6 +239,7 @@
   "tourismSubtitle": "راهنمای اختصاصی مقاصد گردشگری هرمزگان",
   "tourismExplore": "کاوش",
   "tourismReadMore": "ادامه مطلب",
+  "tourismEmpty": "هنوز محتوایی برای گردشگری منتشر نشده است. لطفاً مدیریت سرویس گردشگری را تکمیل کند.",
 
   "notifTitle": "اعلان‌ها",
   "notifFilterAll": "همه",
@@ -244,6 +252,9 @@
   "notifPrefPoints": "اعلان امتیاز و سطح",
   "notifPrefSubscription": "تمدید و وضعیت اشتراک",
   "notifPrefAnnouncements": "اطلاعیه‌ها",
+  "notifWebPush": "فعال‌سازی اعلان مرورگر",
+  "notifWebPushDesc": "برای خبرهای فوری هرمزگان و پیشنهادهای ویژه",
+  "notifAllMarkedRead": "همه اعلان‌ها خوانده شد",
 
   "settingsTitle": "تنظیمات حساب",
   "settingsSubtitle": "اطلاعات شخصی، امنیت، اعلان‌ها و ترجیحات خود را مدیریت کن",
