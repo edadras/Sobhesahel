@@ -26,7 +26,6 @@ class DashboardScreen extends ConsumerWidget {
       appBar: GlassAppBar(
         title: t.appName,
         subtitle: t.appTagline,
-        automaticallyImplyLeading: false,
         actions: <Widget>[
           IconButton(
             onPressed: () => context.push('/notifications'),

@@ -35,7 +35,6 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
       appBar: GlassAppBar(
         title: t.shopTitle,
         subtitle: t.shopSubtitle,
-        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: <Widget>[

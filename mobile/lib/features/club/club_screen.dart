@@ -31,7 +31,6 @@ class ClubScreen extends ConsumerWidget {
       appBar: GlassAppBar(
         title: t.clubTitle,
         subtitle: t.clubSubtitle,
-        automaticallyImplyLeading: false,
       ),
       body: async.when(
         loading: () => const _ClubSkeleton(),

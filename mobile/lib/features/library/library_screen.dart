@@ -49,7 +49,6 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
       appBar: GlassAppBar(
         title: t.libraryTitle,
         subtitle: t.librarySubtitle,
-        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: <Widget>[

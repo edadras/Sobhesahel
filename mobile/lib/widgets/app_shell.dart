@@ -6,8 +6,9 @@ import '../theme/app_colors.dart';
 import '../theme/glass.dart';
 
 /// The primary-tab shell: a [GlassBottomNav] over an indexed stack of the five
-/// main branches (dashboard, club, shop, library, settings). Driven by
-/// go_router's [StatefulNavigationShell].
+/// news-first branches (Home, Services, Multimedia, Newspaper, Account). Driven
+/// by go_router's [StatefulNavigationShell]. The member area lives under the
+/// Account tab.
 class AppShell extends StatelessWidget {
   const AppShell({super.key, required this.navigationShell});
 
@@ -18,29 +19,29 @@ class AppShell extends StatelessWidget {
     final AppLocalizations t = AppLocalizations.of(context);
     final List<GlassNavItem> items = <GlassNavItem>[
       GlassNavItem(
+        icon: Icons.home_outlined,
+        activeIcon: Icons.home_rounded,
+        label: t.newsNavHome,
+      ),
+      GlassNavItem(
         icon: Icons.grid_view_outlined,
         activeIcon: Icons.grid_view_rounded,
-        label: t.navDashboard,
+        label: t.newsNavServices,
       ),
       GlassNavItem(
-        icon: Icons.card_giftcard_outlined,
-        activeIcon: Icons.card_giftcard_rounded,
-        label: t.navClub,
+        icon: Icons.play_circle_outline_rounded,
+        activeIcon: Icons.play_circle_fill_rounded,
+        label: t.newsNavMultimedia,
       ),
       GlassNavItem(
-        icon: Icons.shopping_bag_outlined,
-        activeIcon: Icons.shopping_bag_rounded,
-        label: t.navShop,
+        icon: Icons.menu_book_outlined,
+        activeIcon: Icons.menu_book_rounded,
+        label: t.newsNavNewspaper,
       ),
       GlassNavItem(
-        icon: Icons.local_library_outlined,
-        activeIcon: Icons.local_library_rounded,
-        label: t.navLibrary,
-      ),
-      GlassNavItem(
-        icon: Icons.settings_outlined,
-        activeIcon: Icons.settings_rounded,
-        label: t.navSettings,
+        icon: Icons.person_outline_rounded,
+        activeIcon: Icons.person_rounded,
+        label: t.newsNavAccount,
       ),
     ];
 

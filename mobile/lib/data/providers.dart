@@ -7,8 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../config.dart';
 import '../core/providers.dart';
 import 'api_client.dart';
+import 'mock/mock_news_repository.dart';
 import 'mock/mock_repositories.dart';
+import 'models/news_models.dart';
+import 'news_api_client.dart';
+import 'repositories/api_news_repository.dart';
 import 'repositories/api_repositories.dart';
+import 'repositories/news_repository.dart';
 import 'repositories/repositories.dart';
 import 'token_storage.dart';
 
@@ -18,6 +23,16 @@ final apiClientProvider = Provider<ApiClient>((ref) {
   final ApiClient client =
       ApiClient(tokenStorage: ref.watch(tokenStorageProvider));
   // Keep Accept-Language in sync with the active locale.
+  client.localeCode = ref.watch(localeProvider).languageCode;
+  ref.listen(localeProvider, (_, next) => client.localeCode = next.languageCode);
+  return client;
+});
+
+/// Public News-API client (base `/api/v1`). Shares the same token storage so a
+/// logged-in member gets `bookmarked` flags, but works fully anonymously.
+final newsApiClientProvider = Provider<NewsApiClient>((ref) {
+  final NewsApiClient client =
+      NewsApiClient(tokenStorage: ref.watch(tokenStorageProvider));
   client.localeCode = ref.watch(localeProvider).languageCode;
   ref.listen(localeProvider, (_, next) => client.localeCode = next.languageCode);
   return client;
@@ -100,9 +115,56 @@ final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
 });
 
 // ---------------------------------------------------------------------------
+// News layer
+// ---------------------------------------------------------------------------
+
+final newsRepositoryProvider = Provider<NewsRepository>((ref) {
+  return _mock
+      ? MockNewsRepository()
+      : ApiNewsRepository(ref.watch(newsApiClientProvider));
+});
+
+// ---------------------------------------------------------------------------
 // Convenience async providers used by the fully-implemented screens.
 // ---------------------------------------------------------------------------
 
 final dashboardProvider = FutureProvider.autoDispose((ref) {
   return ref.watch(dashboardRepositoryProvider).load();
+});
+
+/// The aggregated home payload.
+final homeProvider = FutureProvider.autoDispose<HomePayload>((ref) {
+  return ref.watch(newsRepositoryProvider).home();
+});
+
+/// The services/category navigation tree.
+final menuProvider = FutureProvider.autoDispose<List<MenuItem>>((ref) {
+  return ref.watch(newsRepositoryProvider).menu();
+});
+
+/// The public newspaper archive.
+final publicationsProvider =
+    FutureProvider.autoDispose<List<Publication>>((ref) {
+  return ref.watch(newsRepositoryProvider).publications();
+});
+
+/// Arguments for an article detail lookup.
+class ArticleRef {
+  const ArticleRef({required this.type, required this.code});
+  final String type;
+  final String code;
+
+  @override
+  bool operator ==(Object other) =>
+      other is ArticleRef && other.type == type && other.code == code;
+
+  @override
+  int get hashCode => Object.hash(type, code);
+}
+
+final articleProvider =
+    FutureProvider.autoDispose.family<ArticleDetail, ArticleRef>((ref, r) {
+  return ref
+      .watch(newsRepositoryProvider)
+      .articleDetail(type: r.type, code: r.code);
 });

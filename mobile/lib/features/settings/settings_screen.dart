@@ -154,7 +154,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       appBar: GlassAppBar(
         title: t.settingsTitle,
         subtitle: t.settingsSubtitle,
-        automaticallyImplyLeading: false,
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 104),
