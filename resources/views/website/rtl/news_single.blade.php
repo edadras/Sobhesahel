@@ -236,6 +236,10 @@
                                 </div>
                             @endif
 
+                            @if(!empty($post->id ?? null))
+                                @livewire('content-rating', ['post' => $post])
+                            @endif
+
                             @include('website.components.advertise-banner', ['position' => 'single_page_advertise_image'])
 
 {{--                            @if(count($post['tags']) != 0)--}}
