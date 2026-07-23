@@ -144,9 +144,11 @@
                                     <p>{{ \Morilog\Jalali\Jalalian::now()->format('Y') }}</p>
                                 </div>
                             </div>
+                            {{-- Live indicator: self-querying component, renders nothing unless a stream is live --}}
+                            @includeIf('website.components.live-indicator')
                         </div>
 
-                     
+
 
                         <div class="hdrTopLeft">
                             <div class="selctTheme selctTheme1 position-relative">

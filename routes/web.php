@@ -3,6 +3,30 @@
 use App\Models\News;
 use Illuminate\Support\Facades\Route;
 
+/*
+|--------------------------------------------------------------------------
+| صبح ساحل تی‌وی — TV subdomain (زیر دامنه تی‌وی)
+|--------------------------------------------------------------------------
+| Video-first TV site served on config('app.tv_domain'), falling back to
+| "tv." + host of config('app.url') (guarded helper — never breaks on odd
+| app.url values). Registered BEFORE the main-domain routes so the TV host
+| wins route matching; main-domain requests fail the domain check and fall
+| through to the regular site routes below.
+| The TV home is ALSO aliased at /tv on the main domain (route tv.alias.home)
+| so it stays reachable before any DNS record for the subdomain exists.
+*/
+Route::domain(\App\Http\Controllers\Tv\TvController::tvDomain())->group(function () {
+    Route::get('/', 'App\Http\Controllers\Tv\TvController@home')->name('tv.home');
+    Route::get('videos', 'App\Http\Controllers\Tv\TvController@videos')->name('tv.videos');
+    Route::get('video/{code}/{slug?}', 'App\Http\Controllers\Tv\TvController@single')->name('tv.single')->where('code', '[0-9]+');
+    Route::get('live', 'App\Http\Controllers\Tv\TvController@live')->name('tv.live');
+});
+// Main-domain alias so the TV home works without DNS setup for the subdomain.
+Route::get('tv', 'App\Http\Controllers\Tv\TvController@home')->name('tv.alias.home');
+
+// پخش زنده — public live streams page on the main domain.
+Route::get('live', 'App\Http\Controllers\Website\LiveController@index')->name('website.rtl.live');
+
 Route::get('/','App\Http\Controllers\Website\IndexController@newIndex')->name('website.home');
 //Route::get('en','Website\IndexController@enIndex')->name('website.ltr.home');
 
