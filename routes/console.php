@@ -27,6 +27,14 @@ Schedule::command('app:backup --only-files')
     ->withoutOverlapping()
     ->onOneServer();
 
+// News source crawler (WP-13 — رصد و پایش منابع خبری): fetches due RSS/Atom
+// sources (each source honors its own fetch_interval_minutes) and prunes
+// stale fetched items per config/crawler.php.
+Schedule::command('app:crawl-sources')
+    ->everyFifteenMinutes()
+    ->withoutOverlapping()
+    ->onOneServer();
+
 // Refresh market prices (ارز، طلا، سکه) from the configured provider.
 // Skipped entirely in "manual" mode, where editors maintain prices by hand.
 if (config('prices.provider') !== 'manual') {
