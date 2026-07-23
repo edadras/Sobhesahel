@@ -18,7 +18,9 @@ and settings.
   live in the ARB files (`lib/l10n/app_*.arb`).
 - **Vazirmatn** font bundled (7 weights, 100–900).
 - **Persian digits** for user-facing numbers via `lib/core/persian.dart`.
-- **Runs with no backend** — see the mock mode below.
+- **Reads real data from the live API** — public news from `/api/v1` and the
+  member area from `/api/member` on `https://sobhesahel.com` (default). An
+  optional offline demo mode is available — see the mock toggle below.
 
 ## Running
 
@@ -37,18 +39,32 @@ flutter run
 
 | Constant | Default | Meaning |
 |---|---|---|
-| `AppConfig.useMock` | `true` | Run against bundled Persian **mock data** (no backend needed). Set to `false` to hit the real API. |
-| `AppConfig.baseUrl` | `https://api.sobhesahel.ir` | API host; every request is prefixed with `/api/member`. |
+| `AppConfig.useMock` | `false` | Read **real data from the live API**. Flip to `true` for the bundled offline demo data (no backend needed). |
+| `AppConfig.baseUrl` | `https://sobhesahel.com` | Live site origin. Public news requests are prefixed with `/api/v1`, member requests with `/api/member`. |
 | `AppConfig.otpLength` | `5` | OTP code length (matches the site's login template). |
 | `AppConfig.otpResendSeconds` | `119` | Resend countdown (API rate limit is 1 SMS / 2 min). |
 
-### Mock mode (default)
+### Live API (default)
 
-With `useMock = true` the app is fully demoable offline: every repository
-returns realistic Persian sample data (`lib/data/mock/`). In mock mode **any OTP
-code is accepted** and any email/password logs you in. Flip `useMock` to `false`
-and set `baseUrl` to run against the real Laravel/Sanctum backend described in
-`docs/MEMBER_API.md`.
+With `useMock = false` (the default) the app talks to the real Laravel/Sanctum
+backend at `AppConfig.baseUrl`:
+
+- **Public news** (`/api/v1/*`) — home, menu, content lists & detail, category,
+  tag, search, authors, publications, prices, live streams, comments. Anonymous
+  by default; the stored bearer token is attached when a member is logged in.
+- **Member area** (`/api/member/*`) — OTP/password auth, dashboard, points,
+  club, badges, shop, subscription, archive, library, tourism, notifications and
+  settings. Requests carry `Authorization: Bearer <token>`; the token is issued
+  by `/api/member/auth/otp/verify` and persisted in secure storage.
+
+See `docs/NEWS_API.md` and `docs/MEMBER_API.md` for the endpoint contracts.
+
+### Offline demo mode (dev toggle)
+
+Flip `useMock = true` in `lib/config.dart` to run fully offline: every
+repository returns realistic Persian sample data (`lib/data/mock/`), **any OTP
+code is accepted** and any email/password logs you in. Intended only for local
+demos without a backend.
 
 ## Architecture
 
