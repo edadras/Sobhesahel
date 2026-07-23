@@ -304,7 +304,7 @@
                     <div class="col-12">
                         <div class="homPgTitle">
                             <span></span>
-                            <strong>ویدئو ها</strong>
+                            <strong>{{ $setting['video']['title'] ?? 'ویدئو ها' }}</strong>
                         </div>
                         <div class="videoSecBx">
                             <div class="videoList">
@@ -425,7 +425,7 @@
                     <div class="col-12">
                         <div class="homPgTitle">
                             <span></span>
-                            <strong>عکس ها</strong>
+                            <strong>{{ $setting['photos']['title'] ?? 'عکس ها' }}</strong>
                         </div>
                         <div class="imagSecBx">
                             <div class="top">
@@ -478,7 +478,7 @@
                         <div class="col-12">
                             <div class="homPgTitle">
                                 <span></span>
-                                <strong>خبرهای حوزه خلیج فارس</strong>
+                                <strong>{{ $setting['rows']['row_3']['title'] ?? 'خبرهای حوزه خلیج فارس' }}</strong>
 
                             </div>
                             <div class="gulfNewsBox">
