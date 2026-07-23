@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تنظیمات | صبح ساحل</title>
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+  .set-wrap { display:grid; grid-template-columns:220px 1fr; gap:22px; align-items:start; }
+  .set-menu { position:sticky; top:calc(var(--header-h) + 24px); }
+  .set-menu .card { padding:8px; }
+  .set-menu a { display:flex; align-items:center; gap:10px; padding:11px 13px; border-radius:var(--r-md); color:var(--text-muted); font-weight:600; font-size:14px; cursor:pointer; }
+  .set-menu a svg { width:18px; height:18px; }
+  .set-menu a:hover { background:var(--surface-2); color:var(--text); }
+  .set-menu a.active { background:var(--brand-soft); color:var(--brand); }
+  .panel { display:none; }
+  .panel.active { display:block; }
+  .set-sec { margin-bottom:20px; }
+  .set-sec .sh { font-size:13px; font-weight:700; color:var(--text-faint); margin-bottom:12px; }
+  .row2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .pref { display:flex; align-items:center; gap:12px; padding:14px 0; border-bottom:1px solid var(--border); }
+  .pref:last-child{border-bottom:none;}
+  .pref .pt { font-weight:600; font-size:14px; }
+  .pref .pd { font-size:12.5px; color:var(--text-muted); margin-top:2px; }
+  .avatar-edit { display:flex; align-items:center; gap:16px; margin-bottom:8px; }
+  .session { display:flex; align-items:center; gap:12px; padding:13px 0; border-bottom:1px solid var(--border); }
+  .session:last-child{border-bottom:none;}
+  .session .si{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--surface-2);color:var(--text-muted);}
+  .session .si svg{width:18px;height:18px;}
+  .theme-opts { display:flex; gap:12px; flex-wrap:wrap; }
+  .theme-opt { flex:1; min-width:130px; border:2px solid var(--border); border-radius:var(--r-md); padding:14px; cursor:pointer; text-align:center; font-weight:700; font-size:13.5px; }
+  .theme-opt.sel { border-color:var(--brand); color:var(--brand); background:var(--brand-soft); }
+  .theme-opt .sw { height:34px; border-radius:8px; margin-bottom:10px; display:flex; overflow:hidden; }
+  .danger { border:1px solid color-mix(in srgb,var(--accent-red) 35%,transparent); background:color-mix(in srgb,var(--accent-red) 6%,var(--surface)); }
+  @media(max-width:820px){ .set-wrap{grid-template-columns:1fr;} .set-menu{position:static;} .set-menu .card{display:flex;overflow-x:auto;} .set-menu a{white-space:nowrap;} .row2{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="breadcrumb"><a href="dashboard.html">داشبورد</a> ‹ <span>تنظیمات</span></div>
+  <div class="page-head"><h1>تنظیمات حساب</h1><p>اطلاعات شخصی، امنیت، اعلان‌ها و ترجیحات خود را مدیریت کن</p></div>
+
+  <div class="set-wrap">
+    <div class="set-menu">
+      <div class="card" id="menu"></div>
+    </div>
+
+    <div>
+      <!-- حساب کاربری -->
+      <div class="panel active" data-p="account">
+        <div class="card pad set-sec">
+          <div class="sh">عکس پروفایل</div>
+          <div class="avatar-edit">
+            <span class="avatar xl">س‌م</span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-plum btn-sm" data-toast="انتخاب تصویر جدید">تغییر عکس</button>
+              <button class="btn btn-ghost btn-sm" data-toast="عکس حذف شد">حذف</button>
+            </div>
+          </div>
+        </div>
+        <div class="card pad set-sec">
+          <div class="sh">اطلاعات شخصی</div>
+          <div class="row2">
+            <div class="field"><label>نام</label><input class="input" value="سحر"></div>
+            <div class="field"><label>نام خانوادگی</label><input class="input" value="موسوی"></div>
+            <div class="field"><label>شماره موبایل</label><input class="input tnum" value="۰۹۱۲ ۳۴۵ ۶۷۸۹" dir="ltr" style="text-align:right"></div>
+            <div class="field"><label>ایمیل</label><input class="input" value="sahar@example.com" dir="ltr" style="text-align:right"></div>
+            <div class="field"><label>شهر</label>
+              <select class="input"><option>بندرعباس</option><option>قشم</option><option>کیش</option><option>میناب</option><option>بندرلنگه</option></select>
+            </div>
+            <div class="field"><label>تاریخ تولد</label><input class="input tnum" value="۱۳۷۰/۰۳/۱۵" dir="ltr" style="text-align:right"></div>
+          </div>
+          <div class="field"><label>درباره من</label><textarea class="input" rows="3">علاقه‌مند به اخبار اقتصادی و گردشگری هرمزگان.</textarea></div>
+          <div style="display:flex;gap:10px"><button class="btn btn-brand" data-toast="تغییرات ذخیره شد ✓">ذخیره تغییرات</button><button class="btn btn-ghost">انصراف</button></div>
+          <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px">
+            <span class="pill pill-gold" id="pf-pts"></span><span style="font-size:13px;color:var(--text-muted)">تکمیل پروفایل ۵۰ امتیاز جایزه دارد</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- امنیت -->
+      <div class="panel" data-p="security">
+        <div class="card pad set-sec">
+          <div class="sh">تغییر رمز عبور</div>
+          <div class="field"><label>رمز فعلی</label><input class="input" type="password" placeholder="••••••••" dir="ltr"></div>
+          <div class="row2">
+            <div class="field"><label>رمز جدید</label><input class="input" type="password" placeholder="••••••••" dir="ltr"></div>
+            <div class="field"><label>تکرار رمز جدید</label><input class="input" type="password" placeholder="••••••••" dir="ltr"></div>
+          </div>
+          <button class="btn btn-brand" data-toast="رمز عبور با موفقیت تغییر کرد ✓">به‌روزرسانی رمز</button>
+        </div>
+        <div class="card pad set-sec">
+          <div class="sh">ورود دو مرحله‌ای</div>
+          <div class="pref"><div style="flex:1"><div class="pt">تأیید پیامکی هنگام ورود</div><div class="pd">برای امنیت بیشتر، کد یک‌بارمصرف به موبایل ارسال می‌شود</div></div><button class="switch on" data-sw></button></div>
+          <div class="pref"><div style="flex:1"><div class="pt">اعلام ورود از دستگاه ناشناس</div><div class="pd">اطلاع‌رسانی هنگام ورود از دستگاه جدید</div></div><button class="switch on" data-sw></button></div>
+        </div>
+        <div class="card pad set-sec">
+          <div class="sh">دستگاه‌های فعال</div>
+          <div id="sessions"></div>
+        </div>
+      </div>
+
+      <!-- اعلان‌ها -->
+      <div class="panel" data-p="notif">
+        <div class="card pad set-sec">
+          <div class="sh">ترجیحات اعلان</div>
+          <div id="notifprefs"></div>
+        </div>
+        <div class="card pad" style="display:flex;gap:13px;align-items:center;flex-wrap:wrap">
+          <span class="ic ic-brand" style="width:42px;height:42px;border-radius:12px" id="push-ic"></span>
+          <div style="flex:1;min-width:180px"><div style="font-weight:700">اعلان فوری مرورگر</div><div style="font-size:12.5px;color:var(--text-muted)">برای خبرهای فوری هرمزگان</div></div>
+          <button class="btn btn-brand btn-sm" data-toast="Web Push فعال شد ✓">فعال‌سازی</button>
+        </div>
+      </div>
+
+      <!-- اشتراک و پرداخت -->
+      <div class="panel" data-p="billing">
+        <div class="card pad set-sec">
+          <div class="sh">اشتراک فعلی</div>
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+            <span class="tier-badge tier-gold" id="bplan"></span>
+            <div style="flex:1"><div style="font-weight:700">پلن طلایی ماهانه</div><div style="font-size:12.5px;color:var(--text-muted)">تمدید خودکار: ۴ تیر ۱۴۰۵ — ۸۹٬۰۰۰ تومان/ماه</div></div>
+            <a class="btn btn-plum btn-sm" href="subscription.html">تغییر پلن</a>
+          </div>
+          <div class="pref" style="margin-top:8px"><div style="flex:1"><div class="pt">تمدید خودکار</div><div class="pd">اشتراک به‌صورت خودکار تمدید می‌شود</div></div><button class="switch on" data-sw></button></div>
+        </div>
+        <div class="card pad set-sec">
+          <div class="sh">روش‌های پرداخت</div>
+          <div class="session"><span class="si" id="card-ic"></span><div style="flex:1"><div class="pt tnum">کارت بانک ملت ···· ۸۲۳۱</div><div class="pd">پیش‌فرض</div></div><button class="btn btn-ghost btn-sm" data-toast="حذف شد">حذف</button></div>
+          <button class="btn btn-ghost btn-sm" style="margin-top:12px" data-toast="افزودن کارت جدید" id="addcard"></button>
+        </div>
+        <div class="card pad set-sec">
+          <div class="sh">فاکتورها و تاریخچه پرداخت</div>
+          <table class="tbl" id="invoices"></table>
+        </div>
+      </div>
+
+      <!-- ظاهر و زبان -->
+      <div class="panel" data-p="appearance">
+        <div class="card pad set-sec">
+          <div class="sh">حالت نمایش</div>
+          <div class="theme-opts" id="themes"></div>
+        </div>
+        <div class="card pad set-sec">
+          <div class="sh">زبان و منطقه</div>
+          <div class="row2">
+            <div class="field"><label>زبان</label><select class="input"><option>فارسی</option><option>English</option><option>العربية</option></select></div>
+            <div class="field"><label>تقویم</label><select class="input"><option>شمسی (هجری خورشیدی)</option><option>میلادی</option><option>قمری</option></select></div>
+          </div>
+        </div>
+        <div class="card pad set-sec danger">
+          <div class="sh" style="color:var(--accent-red)">منطقه خطر</div>
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <div style="flex:1;min-width:180px"><div style="font-weight:700">حذف حساب کاربری</div><div style="font-size:12.5px;color:var(--text-muted)">تمام داده‌ها، امتیازها و خریدها برای همیشه حذف می‌شوند</div></div>
+            <button class="btn btn-sm" style="background:var(--accent-red);color:#fff" data-toast="برای حذف حساب با پشتیبانی تماس بگیرید">حذف حساب</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/shell.js"></script>
+<script>
+  const I = SS.icon;
+  const menu = [['account','user','حساب کاربری'],['security','settings','امنیت'],['notif','bell','اعلان‌ها'],['billing','crown','اشتراک و پرداخت'],['appearance','eye','ظاهر و زبان']];
+  document.getElementById('menu').innerHTML = menu.map((m,i)=>`<a class="${i===0?'active':''}" data-go="${m[0]}">${I(m[1])}<span>${m[2]}</span></a>`).join('');
+  document.querySelectorAll('#menu a').forEach(a=>a.onclick=()=>{
+    document.querySelectorAll('#menu a').forEach(x=>x.classList.remove('active')); a.classList.add('active');
+    document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.dataset.p===a.dataset.go));
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+
+  document.getElementById('pf-pts').innerHTML = I('coins')+' +۵۰ امتیاز';
+  document.getElementById('push-ic').innerHTML = I('bell');
+  document.getElementById('bplan').innerHTML = I('crown')+' طلایی';
+  document.getElementById('card-ic').innerHTML = I('crown');
+  document.getElementById('addcard').innerHTML = I('plus')+' افزودن کارت جدید';
+
+  document.getElementById('sessions').innerHTML = [
+    ['این دستگاه — کروم، ویندوز','بندرعباس · همین حالا فعال',true],
+    ['اپلیکیشن موبایل — اندروید','بندرعباس · ۲ روز پیش',false],
+    ['سافاری — آیفون','تهران · ۱ هفته پیش',false],
+  ].map(s=>`<div class="session"><span class="si">${I('phone')}</span><div style="flex:1"><div class="pt">${s[0]}</div><div class="pd">${s[1]}</div></div>${s[2]?'<span class="pill pill-green">فعال</span>':'<button class="btn btn-ghost btn-sm" data-toast="خروج از این دستگاه">خروج</button>'}</div>`).join('');
+
+  const np = [['اعلان امتیاز و سطح',1],['تمدید و وضعیت اشتراک',1],['کتاب و محصول جدید',1],['ماموریت و چرخ شانس',1],['مطالب نویسندگان دنبال‌شده',1],['خبرنامه هفتگی ایمیلی',0],['پیشنهادهای تبلیغاتی',0]];
+  document.getElementById('notifprefs').innerHTML = np.map(p=>`<div class="pref"><div style="flex:1"><div class="pt">${p[0]}</div></div><button class="switch ${p[1]?'on':''}" data-sw></button></div>`).join('');
+
+  const inv = [['۴ خرداد ۱۴۰۵','اشتراک طلایی ماهانه','۸۹٬۰۰۰','پرداخت‌شده'],['۴ اردیبهشت ۱۴۰۵','اشتراک طلایی ماهانه','۸۹٬۰۰۰','پرداخت‌شده'],['۱۵ فروردین ۱۴۰۵','کتاب «تاریخ بنادر»','۸۵٬۰۰۰','پرداخت‌شده']];
+  document.getElementById('invoices').innerHTML = '<thead><tr><th>تاریخ</th><th>مورد</th><th>مبلغ (تومان)</th><th>وضعیت</th><th></th></tr></thead><tbody>'+
+    inv.map(r=>`<tr><td class="tnum" style="color:var(--text-muted)">${r[0]}</td><td style="font-weight:600">${r[1]}</td><td class="tnum">${r[2]}</td><td><span class="pill pill-green">${r[3]}</span></td><td><a href="#" data-toast="دانلود فاکتور" style="color:var(--brand);font-weight:600;font-size:13px">دانلود</a></td></tr>`).join('')+'</tbody>';
+
+  function paintThemes(){
+    const cur = document.documentElement.getAttribute('data-theme');
+    document.getElementById('themes').innerHTML = [
+      ['light','روشن','linear-gradient(90deg,#fff 50%,#f1f1f2 50%)'],
+      ['dark','تیره','linear-gradient(90deg,#16131b 50%,#262030 50%)'],
+    ].map(t=>`<div class="theme-opt ${cur===t[0]?'sel':''}" data-theme-set="${t[0]}"><div class="sw" style="background:${t[2]};border:1px solid var(--border)"></div>${t[1]}</div>`).join('');
+    document.querySelectorAll('[data-theme-set]').forEach(o=>o.onclick=()=>{ SS.applyTheme(o.dataset.themeSet); paintThemes(); });
+  }
+  paintThemes();
+
+  SS.mount({ active: 'settings' });
+</script>
+</body>
+</html>

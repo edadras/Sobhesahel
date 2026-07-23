@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>داشبورد | صبح ساحل</title>
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+  .welcome { background: linear-gradient(150deg, var(--plum), var(--brand)); color:#fff; border-radius: var(--r-xl); padding: 26px 28px; position: relative; overflow: hidden; margin-bottom: 22px; }
+  .welcome::before { content:""; position:absolute; inset:0; background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.06) 0 2px, transparent 2px 12px);}
+  .welcome .row { position: relative; display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+  .welcome h1 { font-size: 23px; }
+  .welcome p { opacity:.9; margin-top:6px; }
+  .welcome .acts { margin-inline-start:auto; display:flex; gap:10px; flex-wrap:wrap; }
+  .welcome .btn-ghost { color:#fff; border-color: rgba(255,255,255,.5); }
+  .welcome .btn-ghost:hover { background: rgba(255,255,255,.14); }
+  .grid2 { display:grid; grid-template-columns: 1fr 340px; gap: 22px; align-items:start; }
+  .news-item { display:flex; gap:14px; padding:14px 0; border-bottom:1px solid var(--border); }
+  .news-item:last-child { border-bottom:none; }
+  .news-thumb { width:104px; height:74px; border-radius:var(--r-md); flex:none; }
+  .news-item h4 { font-size:15px; line-height:1.5; }
+  .news-item .meta { color:var(--text-faint); font-size:12px; margin-top:6px; display:flex; gap:10px; }
+  .news-item .meta span { display:flex; align-items:center; gap:4px; }
+  .news-item .meta svg { width:13px; height:13px; }
+  .mission { display:flex; align-items:center; gap:12px; padding:11px 0; }
+  .mission .mi { width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;}
+  .mission .done { color:#1f9d57; }
+  .ring { --p:72; width:96px;height:96px;border-radius:50%; flex:none;
+    background: conic-gradient(var(--brand) calc(var(--p)*1%), var(--surface-2) 0);
+    display:grid; place-items:center; position:relative;}
+  .ring::before{content:"";position:absolute;inset:9px;border-radius:50%;background:var(--surface);}
+  .ring b{position:relative;font-size:22px;font-weight:800;}
+  .order-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+  .order-row:last-child{border-bottom:none;}
+  .order-row .oi{width:42px;height:54px;border-radius:7px;flex:none;}
+  @media(max-width:880px){.grid2{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="welcome">
+    <div class="row">
+      <div>
+        <h1>سلام سحر، صبح‌ات به‌خیر ☀️</h1>
+        <p>امروز ۱۷ خرداد ۱۴۰۵ — با ورود امروز <b>۵ امتیاز</b> گرفتی. ۳ خبر تازه هرمزگان منتظر توست.</p>
+      </div>
+      <div class="acts">
+        <a class="btn btn-ghost" href="archive.html" id="a-pdf"></a>
+        <a class="btn btn-gold" href="club.html" id="a-spin"></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="stat-grid" style="margin-bottom:22px">
+    <div class="stat"><div class="ic ic-gold" id="s1"></div><div class="num tnum">۷٬۲۴۰</div><div class="cap">امتیاز کل</div></div>
+    <div class="stat"><div class="ic ic-brand" id="s2"></div><div class="num">طلایی</div><div class="cap">سطح عضویت</div></div>
+    <div class="stat"><div class="ic ic-plum" id="s3"></div><div class="num tnum">۱۸ روز</div><div class="cap">اشتراک فعال باقی‌مانده</div></div>
+    <div class="stat"><div class="ic ic-green" id="s4"></div><div class="num tnum">۲۴</div><div class="cap">اخبار ذخیره‌شده</div></div>
+  </div>
+
+  <div class="grid2">
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div class="card pad">
+        <div class="card-h"><span class="ic ic-brand" style="width:34px;height:34px;border-radius:9px" id="r-ic"></span><h3>پیشنهاد هوشمند برای تو</h3><a class="more" href="#">بر اساس علاقه‌مندی‌ها</a></div>
+        <div id="reco"></div>
+      </div>
+
+      <div class="card pad">
+        <div class="card-h"><span class="ic ic-gold" style="width:34px;height:34px;border-radius:9px" id="m-ic"></span><h3>ماموریت‌های امروز</h3><a class="more" href="club.html">باشگاه مشتریان</a></div>
+        <div id="missions"></div>
+        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px">
+          <span class="pill pill-gold" id="m-rew"></span>
+          <span style="color:var(--text-muted);font-size:13px">با تکمیل هر سه ماموریت دریافت می‌شود</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div class="card pad">
+        <div class="card-h"><h3>اشتراک من</h3></div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div class="ring" style="--p:60"><b class="tnum">۱۸</b></div>
+          <div>
+            <span class="tier-badge tier-gold" id="plan-badge"></span>
+            <p style="margin-top:8px;color:var(--text-muted);font-size:13px">پلن طلایی ماهانه<br>تمدید: ۴ تیر ۱۴۰۵</p>
+          </div>
+        </div>
+        <a class="btn btn-plum btn-block" href="subscription.html" style="margin-top:16px">تمدید / ارتقای اشتراک</a>
+      </div>
+
+      <div class="card pad">
+        <div class="card-h"><h3>پیشرفت تا سطح بعد</h3></div>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px">تا <b style="color:var(--tier-platinum)">پلاتینیوم</b> فقط ۲٬۷۶۰ امتیاز مانده</p>
+        <div class="progress"><i style="width:72%"></i></div>
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-muted);margin-top:6px"><span class="tnum">۷٬۲۴۰</span><span class="tnum">۱۰٬۰۰۰</span></div>
+        <a class="btn btn-ghost btn-block btn-sm" href="points.html" style="margin-top:14px">راه‌های کسب امتیاز</a>
+      </div>
+
+      <div class="card pad">
+        <div class="card-h"><h3>آخرین خریدها</h3><a class="more" href="shop.html">فروشگاه</a></div>
+        <div id="orders"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/shell.js"></script>
+<script>
+  const I = SS.icon;
+  document.getElementById('a-pdf').innerHTML = I('download') + ' دانلود PDF امروز';
+  document.getElementById('a-spin').innerHTML = I('gift') + ' چرخ شانس روزانه';
+  document.getElementById('s1').innerHTML = I('coins');
+  document.getElementById('s2').innerHTML = I('crown');
+  document.getElementById('s3').innerHTML = I('clock');
+  document.getElementById('s4').innerHTML = I('bookmark');
+  document.getElementById('r-ic').innerHTML = I('target');
+  document.getElementById('m-ic').innerHTML = I('gift');
+  document.getElementById('plan-badge').innerHTML = I('crown') + ' پلن طلایی';
+  document.getElementById('m-rew').innerHTML = I('coins') + ' جایزه: ۲۰ امتیاز';
+
+  const reco = [
+    ['اقتصادی','رشد ۲۰ درصدی صادرات از بندر شهید رجایی در بهار امسال','۲ ساعت پیش','۱٬۲۴۰'],
+    ['گردشگری','جزیره هرمز؛ مقصد نوروزی که امسال رکورد زد','۵ ساعت پیش','۸۹۰'],
+    ['محلی هرمزگان','افتتاح فاز جدید آب‌شیرین‌کن بندرعباس تا پایان تیر','دیروز','۲٬۱۰۰'],
+  ];
+  document.getElementById('reco').innerHTML = reco.map(r=>`
+    <a class="news-item" href="#">
+      <div class="news-thumb ph"></div>
+      <div>
+        <span class="pill pill-red">${r[0]}</span>
+        <h4 style="margin-top:7px">${r[1]}</h4>
+        <div class="meta"><span>${I('clock')}${r[2]}</span><span>${I('eye')}${SS.toFa(r[3])} بازدید</span></div>
+      </div>
+    </a>`).join('');
+
+  const missions = [['۳ خبر بخوان','done','۳ از ۳'],['۱ نظر ثبت کن','done','انجام شد'],['۱ خبر به اشتراک بگذار','todo','۰ از ۱']];
+  document.getElementById('missions').innerHTML = missions.map(m=>`
+    <div class="mission">
+      <span class="mi ${m[1]==='done'?'ic-green done':'ic-plum'}">${I(m[1]==='done'?'check':'share')}</span>
+      <div style="flex:1"><div style="font-weight:600">${m[0]}</div></div>
+      <span style="font-size:12.5px;color:var(--text-muted)">${m[2]}</span>
+    </div>`).join('');
+
+  const orders = [['کتاب الکترونیکی','تاریخ بنادر جنوب ایران','۳۰۰ امتیاز'],['PDF آرشیو','روزنامه صبح ساحل — اسفند ۱۴۰۳','۵۰ امتیاز'],['گزارش اقتصادی','چشم‌انداز تجارت هرمزگان ۱۴۰۵','۱۲۰٬۰۰۰ تومان']];
+  document.getElementById('orders').innerHTML = orders.map(o=>`
+    <div class="order-row">
+      <div class="oi ph"></div>
+      <div style="flex:1;min-width:0"><div style="font-size:13px;color:var(--text-faint)">${o[0]}</div><div style="font-weight:600;font-size:13.5px">${o[1]}</div></div>
+      <span style="font-size:12px;font-weight:700;color:var(--gold);white-space:nowrap">${o[2]}</span>
+    </div>`).join('');
+
+  SS.mount({ active: 'dashboard' });
+</script>
+</body>
+</html>

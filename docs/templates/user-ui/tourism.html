@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>گردشگری هرمزگان | صبح ساحل</title>
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+  .hero-t { border-radius:var(--r-xl); overflow:hidden; position:relative; min-height:260px; display:flex; align-items:flex-end; color:#fff; margin-bottom:24px; }
+  .hero-t .ph { position:absolute; inset:0; }
+  .hero-t .ov { position:relative; padding:28px; background:linear-gradient(0deg, rgba(40,15,30,.82), transparent); width:100%; }
+  .hero-t h1 { font-size:28px; }
+  .hero-t p { opacity:.92; margin-top:8px; max-width:50ch; }
+  .seg { display:inline-flex; background:var(--surface-2); border:1px solid var(--border); border-radius:999px; padding:5px; gap:4px; margin-bottom:22px; flex-wrap:wrap; }
+  .seg button { border:none; background:transparent; padding:9px 16px; border-radius:999px; font-weight:700; font-size:13.5px; color:var(--text-muted); display:flex; align-items:center; gap:6px; }
+  .seg button svg{width:16px;height:16px;}
+  .seg button.active { background:var(--surface); color:var(--brand); box-shadow:var(--shadow-sm); }
+  .tgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  .tcard { background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; transition:transform .12s,box-shadow .15s; }
+  .tcard:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);}
+  .tcard .cover { aspect-ratio:16/10; position:relative; }
+  .tcard .tag { position:absolute; top:10px; inset-inline-end:10px; }
+  .tcard .rate { position:absolute; bottom:10px; inset-inline-start:10px; background:rgba(0,0,0,.6); color:#fff; padding:3px 9px; border-radius:99px; font-size:12px; font-weight:700; display:flex; align-items:center; gap:4px; }
+  .tcard .rate svg{width:13px;height:13px;color:var(--gold);}
+  .tcard .body { padding:15px; display:flex; flex-direction:column; flex:1; }
+  .tcard h3 { font-size:16px; }
+  .tcard .loc { color:var(--text-faint); font-size:12.5px; margin-top:4px; display:flex; align-items:center; gap:5px; }
+  .tcard .loc svg{width:13px;height:13px;}
+  .tcard .desc { color:var(--text-muted); font-size:13px; margin-top:10px; flex:1; }
+  .tcard .foot { margin-top:14px; display:flex; align-items:center; gap:8px; }
+  .perk { background:linear-gradient(135deg,var(--gold-soft),var(--surface)); border:1px solid color-mix(in srgb,var(--gold) 30%,transparent); border-radius:var(--r-lg); padding:18px; display:flex; gap:13px; align-items:center; }
+  .perk .pi{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex:none;}
+  .perks { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
+  @media(max-width:880px){.tgrid{grid-template-columns:1fr 1fr;} .perks{grid-template-columns:1fr;}}
+  @media(max-width:560px){.tgrid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="breadcrumb"><a href="dashboard.html">داشبورد</a> ‹ <span>گردشگری هرمزگان</span></div>
+
+  <div class="hero-t">
+    <div class="ph"></div>
+    <div class="ov">
+      <span class="pill" style="background:var(--brand);color:#fff">ویژه اعضای صبح ساحل</span>
+      <h1>راهنمای سفر به هرمزگان</h1>
+      <p>جاذبه‌ها، هتل‌ها، رستوران‌ها و تورهای استان — با تخفیف‌ها و فایل‌های راهنمای اختصاصی برای اعضا.</p>
+    </div>
+  </div>
+
+  <div class="perks" id="perks"></div>
+
+  <div class="seg" id="seg">
+    <button class="active" data-t="all" id="b-all"></button>
+    <button data-t="جاذبه" id="b-1"></button>
+    <button data-t="هتل" id="b-2"></button>
+    <button data-t="رستوران" id="b-3"></button>
+    <button data-t="تور" id="b-4"></button>
+  </div>
+
+  <div class="tgrid" id="grid"></div>
+</div>
+
+<script src="assets/shell.js"></script>
+<script>
+  const I = SS.icon;
+  document.getElementById('perks').innerHTML = [
+    ['download','فایل راهنمای سفر','با ۱۵۰ امتیاز دانلود کن'],
+    ['ticket','کد تخفیف هتل','تا ۲۵٪ تخفیف برای اعضای طلایی'],
+    ['gift','جشنواره‌های گردشگری','شرکت رایگان اعضا'],
+  ].map(p=>`<div class="perk"><span class="pi ic-gold">${I(p[0])}</span><div><div style="font-weight:700;font-size:14px">${p[1]}</div><div style="font-size:12.5px;color:var(--text-muted)">${p[2]}</div></div></div>`).join('');
+
+  document.getElementById('b-all').innerHTML = I('grid')+' همه';
+  document.getElementById('b-1').innerHTML = I('pin')+' جاذبه‌ها';
+  document.getElementById('b-2').innerHTML = I('crown')+' هتل‌ها';
+  document.getElementById('b-3').innerHTML = I('heart')+' رستوران‌ها';
+  document.getElementById('b-4').innerHTML = I('ticket')+' تورها';
+
+  // [type, title, location, rate, desc, action]
+  const T = [
+    ['جاذبه','جزیره هرمز و دره رنگین‌کمان','هرمزگان — جزیره هرمز','۴٫۹','خاک‌های رنگی و ساحل خیره‌کننده؛ مقصد شماره یک گردشگری استان.','مسیر پیشنهادی'],
+    ['جاذبه','تنگه چاهکوه قشم','قشم — ژئوپارک جهانی','۴٫۸','شاهکار فرسایش آب و باد در دل سنگ‌ها، ثبت یونسکو.','راهنمای بازدید'],
+    ['هتل','هتل خلیج‌فارس بندرعباس','بندرعباس — بلوار ساحلی','۴٫۵','اقامت لوکس رو‌به‌دریا، ۲۵٪ تخفیف ویژه اعضای طلایی.','رزرو با تخفیف'],
+    ['رستوران','رستوران سنتی صید روز','بندرعباس — بازار ماهی','۴٫۷','غذاهای دریایی اصیل جنوب؛ قلیه ماهی و میگو سرشار.','مشاهده منو'],
+    ['تور','تور یک‌روزه جنگل حرا','قشم — خلیج خوران','۴٫۶','قایق‌سواری میان جنگل‌های حرا و تماشای پرندگان مهاجر.','رزرو تور'],
+    ['جاذبه','ساحل مرجانی کیش‌نما هنگام','جزیره هنگام','۴٫۸','دلفین‌های دوست‌داشتنی و ساحل صدفی؛ غروبی فراموش‌نشدنی.','مسیر پیشنهادی'],
+    ['هتل','اقامتگاه بوم‌گردی لافت','قشم — روستای لافت','۴٫۴','تجربه زندگی محلی در بادگیرهای تاریخی لافت.','رزرو با تخفیف'],
+    ['رستوران','کافه‌رستوران غروب ساحل','بندرعباس — پارک دباغیان','۴٫۳','چشم‌انداز دریا و دمنوش‌های محلی هرمزگان.','مشاهده منو'],
+    ['تور','تور عکاسی جزیره هرمز','هرمزگان — جزیره هرمز','۴٫۹','کارگاه عکاسی حرفه‌ای از خاک‌های رنگی با راهنمای محلی.','رزرو تور'],
+  ];
+  function render(f){
+    const list = f==='all'?T:T.filter(x=>x[0]===f);
+    document.getElementById('grid').innerHTML = list.map(t=>`
+      <div class="tcard">
+        <div class="cover ph"><span class="pill pill-red tag">${t[0]}</span><span class="rate">${I('star')}<span class="tnum">${t[3]}</span></span></div>
+        <div class="body">
+          <h3>${t[1]}</h3>
+          <div class="loc">${I('pin')}${t[2]}</div>
+          <p class="desc">${t[4]}</p>
+          <div class="foot"><button class="btn btn-plum btn-sm" data-go="${t[1]}">${t[5]}</button><button class="icon-btn" data-save title="ذخیره">${I('bookmark')}</button></div>
+        </div>
+      </div>`).join('');
+    document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>SS.toast('«'+b.dataset.go+'» — جزئیات و رزرو'));
+    document.querySelectorAll('[data-save]').forEach(b=>b.onclick=()=>{b.style.color='var(--brand)';SS.toast('در مطالعات من ذخیره شد');});
+  }
+  render('all');
+  document.querySelectorAll('#seg button').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('#seg button').forEach(x=>x.classList.remove('active')); b.classList.add('active'); render(b.dataset.t);
+  });
+
+  SS.mount({ active: 'tourism' });
+</script>
+</body>
+</html>

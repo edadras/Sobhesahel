@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مطالعات من | صبح ساحل</title>
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+  .seg { display:inline-flex; background:var(--surface-2); border:1px solid var(--border); border-radius:999px; padding:5px; gap:4px; margin-bottom:22px; }
+  .seg button { border:none; background:transparent; padding:9px 18px; border-radius:999px; font-weight:700; font-size:14px; color:var(--text-muted); }
+  .seg button.active { background:var(--surface); color:var(--brand); box-shadow:var(--shadow-sm); }
+  .save-item { display:flex; gap:14px; padding:14px; border:1px solid var(--border); border-radius:var(--r-md); margin-bottom:12px; align-items:center; }
+  .save-item .th { width:120px; height:80px; border-radius:var(--r-sm); flex:none; }
+  .save-item h4 { font-size:15.5px; line-height:1.5; }
+  .save-item .meta { color:var(--text-faint); font-size:12px; margin-top:6px; display:flex; gap:12px; flex-wrap:wrap; }
+  .save-item .meta span{display:flex;align-items:center;gap:4px;}
+  .save-item .meta svg{width:13px;height:13px;}
+  .save-item .rm { margin-inline-start:auto; }
+  .authors { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .author { border:1px solid var(--border); border-radius:var(--r-lg); padding:18px; text-align:center; background:var(--surface); }
+  .author .name { font-weight:700; margin-top:10px; }
+  .author .role { color:var(--text-faint); font-size:12.5px; }
+  .author .stat2 { display:flex; justify-content:center; gap:18px; margin:12px 0; font-size:12.5px; color:var(--text-muted); }
+  .author .stat2 b{display:block;color:var(--text);font-size:15px;}
+  .hide{display:none!important;}
+  @media(max-width:760px){.authors{grid-template-columns:1fr 1fr;}}
+  @media(max-width:480px){.authors{grid-template-columns:1fr;} .save-item .th{width:88px;height:64px;}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="breadcrumb"><a href="dashboard.html">داشبورد</a> ‹ <span>مطالعات من</span></div>
+  <div class="page-head"><h1>مطالعات من</h1><p>اخبار و کتاب‌های ذخیره‌شده، علاقه‌مندی‌ها و نویسندگانی که دنبال می‌کنی</p></div>
+
+  <div class="seg" id="seg">
+    <button class="active" data-t="news">اخبار ذخیره‌شده <span class="tnum">(۲۴)</span></button>
+    <button data-t="books">کتاب‌ها <span class="tnum">(۷)</span></button>
+    <button data-t="authors">نویسندگان <span class="tnum">(۵)</span></button>
+  </div>
+
+  <div id="pane-news"></div>
+  <div id="pane-books" class="hide"></div>
+  <div id="pane-authors" class="hide"><div class="authors" id="authors"></div></div>
+</div>
+
+<script src="assets/shell.js"></script>
+<script>
+  const I = SS.icon;
+  const news = [
+    ['اقتصادی','رشد ۲۰ درصدی صادرات از بندر شهید رجایی','۲ ساعت پیش','۱٬۲۴۰'],
+    ['گردشگری','جزیره هرمز؛ مقصد نوروزی که رکورد زد','دیروز','۸۹۰'],
+    ['محلی','افتتاح فاز جدید آب‌شیرین‌کن بندرعباس','۳ روز پیش','۲٬۱۰۰'],
+    ['ورزشی','صعود فولاد هرمزگان به لیگ برتر','هفته پیش','۳٬۴۵۰'],
+    ['فرهنگی','جشنواره صنایع‌دستی قشم آغاز شد','هفته پیش','۷۶۰'],
+  ];
+  document.getElementById('pane-news').innerHTML = '<div class="card pad">'+news.map(n=>`
+    <div class="save-item">
+      <div class="th ph"></div>
+      <div style="flex:1;min-width:0"><span class="pill pill-red">${n[0]}</span><h4 style="margin-top:6px">${n[1]}</h4>
+        <div class="meta"><span>${I('clock')}${n[2]}</span><span>${I('eye')}${SS.toFa(n[3])}</span></div></div>
+      <button class="icon-btn rm" data-rm title="حذف از ذخیره">${I('bookmark')}</button>
+    </div>`).join('')+'</div>';
+
+  const books = [
+    ['تاریخ بنادر جنوب ایران','دکتر احمد دریانورد','۶۵٪ خوانده شده',65],
+    ['صیادان خلیج؛ رمان','نازنین بحرینی','۱۲٪ خوانده شده',12],
+    ['راهنمای گردشگری جزیره هرمز','واحد گردشگری','تکمیل‌شده',100],
+  ];
+  document.getElementById('pane-books').innerHTML = '<div class="card pad">'+books.map(b=>`
+    <div class="save-item">
+      <div class="th ph" style="width:64px;height:88px"></div>
+      <div style="flex:1;min-width:0"><h4>${b[0]}</h4><div class="meta"><span>${I('user')}${b[1]}</span><span>${I('book')}${b[2]}</span></div>
+      <div class="progress" style="margin-top:10px;max-width:260px"><i style="width:${b[3]}%"></i></div></div>
+      <a class="btn btn-soft btn-sm rm" href="#" data-toast="ادامه مطالعه «${b[0]}»">ادامه مطالعه</a>
+    </div>`).join('')+'</div>';
+
+  const authors = [
+    ['ر. دریانورد','سردبیر اقتصادی','۱۴۲','۸٬۹۰۰',true],
+    ['م. رئیسی','گزارشگر گردشگری','۹۸','۵٬۲۰۰',true],
+    ['ن. بحرینی','نویسنده فرهنگی','۷۶','۳٬۱۰۰',false],
+    ['ع. کمالی','تحلیلگر بازار','۵۴','۲٬۴۰۰',true],
+    ['س. هرمزی','عکاس خبری','۲۱۰','۱۲٬۴۰۰',false],
+  ];
+  document.getElementById('authors').innerHTML = authors.map(a=>`
+    <div class="author">
+      <span class="avatar lg" style="margin:0 auto">${a[0].split(' ')[0]}</span>
+      <div class="name">${a[0]}</div><div class="role">${a[1]}</div>
+      <div class="stat2"><div><b class="tnum">${a[2]}</b>مطلب</div><div><b class="tnum">${SS.toFa(a[3])}</b>دنبال‌کننده</div></div>
+      <button class="btn ${a[4]?'btn-soft':'btn-plum'} btn-block btn-sm" data-follow>${a[4]?'دنبال می‌کنی ✓':'دنبال کردن'}</button>
+    </div>`).join('');
+
+  document.querySelectorAll('#seg button').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('#seg button').forEach(x=>x.classList.remove('active')); b.classList.add('active');
+    ['news','books','authors'].forEach(t=>document.getElementById('pane-'+t).classList.toggle('hide',t!==b.dataset.t));
+  });
+  document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{b.closest('.save-item').style.opacity='.4';SS.toast('از ذخیره‌ها حذف شد');});
+  document.querySelectorAll('[data-follow]').forEach(b=>b.onclick=()=>{
+    const on=b.textContent.includes('✓'); b.textContent=on?'دنبال کردن':'دنبال می‌کنی ✓';
+    b.classList.toggle('btn-soft',!on); b.classList.toggle('btn-plum',on); SS.toast(on?'دنبال کردن لغو شد':'با موفقیت دنبال شد + اعلان مطالب جدید');
+  });
+
+  SS.mount({ active: 'library' });
+</script>
+</body>
+</html>

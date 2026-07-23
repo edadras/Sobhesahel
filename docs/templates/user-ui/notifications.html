@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>اعلان‌ها | صبح ساحل</title>
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+  .grid2 { display:grid; grid-template-columns:1fr 320px; gap:22px; align-items:start; }
+  .n-item { display:flex; gap:13px; padding:15px 16px; border-bottom:1px solid var(--border); position:relative; transition:background .15s; }
+  .n-item:hover { background:var(--surface-2); }
+  .n-item.unread { background:color-mix(in srgb,var(--brand) 5%,var(--surface)); }
+  .n-item.unread::before { content:""; position:absolute; inset-inline-end:7px; top:22px; width:7px; height:7px; border-radius:50%; background:var(--brand); }
+  .n-item .ni { width:42px;height:42px;border-radius:12px;display:grid;place-items:center;flex:none; }
+  .n-item .nt { font-weight:600; font-size:14.5px; line-height:1.5; }
+  .n-item .ns { color:var(--text-muted); font-size:13px; margin-top:2px; }
+  .n-item .ntime { color:var(--text-faint); font-size:11.5px; margin-top:5px; }
+  .pref { display:flex; align-items:center; gap:12px; padding:13px 0; border-bottom:1px solid var(--border); }
+  .pref:last-child{border-bottom:none;}
+  .pref .pt { font-weight:600; font-size:14px; }
+  .pref .pd { font-size:12px; color:var(--text-muted); }
+  .day-sep { padding:14px 16px 6px; font-size:12.5px; font-weight:700; color:var(--text-faint); }
+  @media(max-width:880px){.grid2{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="breadcrumb"><a href="dashboard.html">داشبورد</a> ‹ <span>اعلان‌ها</span></div>
+  <div class="page-head" style="display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap">
+    <div><h1>اعلان‌ها</h1><p>به‌روزرسانی‌های امتیاز، اشتراک و مطالب تازه</p></div>
+    <button class="btn btn-ghost btn-sm" id="readall" style="margin-inline-start:auto">علامت‌گذاری همه به‌عنوان خوانده‌شده</button>
+  </div>
+
+  <div class="grid2">
+    <div class="card" style="overflow:hidden">
+      <div class="day-sep">امروز</div>
+      <div id="today"></div>
+      <div class="day-sep">دیروز</div>
+      <div id="yesterday"></div>
+    </div>
+
+    <div class="card pad">
+      <div class="card-h"><span class="ic ic-plum" style="width:34px;height:34px;border-radius:9px" id="p-ic"></span><h3>تنظیمات اعلان</h3></div>
+      <div id="prefs"></div>
+      <div style="margin-top:16px;padding:14px;border-radius:var(--r-md);background:var(--brand-soft)">
+        <div style="font-weight:700;font-size:13.5px;color:var(--brand)">اعلان فوری مرورگر</div>
+        <p style="font-size:12.5px;color:var(--text-muted);margin:6px 0 10px">برای خبرهای فوری هرمزگان و پیشنهادهای ویژه</p>
+        <button class="btn btn-brand btn-sm btn-block" id="push">فعال‌سازی Web Push</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/shell.js"></script>
+<script>
+  const I = SS.icon;
+  document.getElementById('p-ic').innerHTML=I('settings');
+
+  // [icon, color, title, sub, time, unread]
+  const today = [
+    ['coins','ic-gold','۵۰ امتیاز جدید دریافت کردی','بابت دعوت از دوستت «مریم رئیسی»','۱۰ دقیقه پیش',true],
+    ['news','ic-brand','کتاب جدید منتشر شد','«آشنایی با صنایع‌دستی هرمزگان» در فروشگاه موجود شد','۲ ساعت پیش',true],
+    ['award','ic-plum','نشان «سحرخیز» را گرفتی!','۱۰ ورود قبل از ۷ صبح کامل شد (+۳۰ امتیاز)','۵ ساعت پیش',true],
+  ];
+  const yest = [
+    ['crown','ic-brand','اشتراک شما رو به اتمام است','۳ روز تا پایان پلن طلایی باقی مانده — همین حالا تمدید کن','دیروز ۱۸:۳۰',false],
+    ['gift','ic-gold','چرخ شانس روزانه‌ات آماده است','شانس امروزت را از دست نده','دیروز ۰۹:۰۰',false],
+    ['pin','ic-green','مطلب تازه از نویسنده‌ای که دنبال می‌کنی','«م. رئیسی» گزارش جدید گردشگری منتشر کرد','دیروز ۰۸:۱۵',false],
+  ];
+  const tpl = a=>`<div class="n-item ${a[5]?'unread':''}">
+      <span class="ni ${a[1]}">${I(a[0])}</span>
+      <div style="flex:1"><div class="nt">${a[2]}</div><div class="ns">${a[3]}</div><div class="ntime">${a[4]}</div></div>
+    </div>`;
+  document.getElementById('today').innerHTML = today.map(tpl).join('');
+  document.getElementById('yesterday').innerHTML = yest.map(tpl).join('');
+
+  const prefs = [['اعلان امتیاز و سطح',1],['تمدید و وضعیت اشتراک',1],['کتاب و محصول جدید',1],['ماموریت و چرخ شانس',1],['مطالب نویسندگان دنبال‌شده',1],['خبرنامه هفتگی',0]];
+  document.getElementById('prefs').innerHTML = prefs.map((p,i)=>`
+    <div class="pref"><div style="flex:1"><div class="pt">${p[0]}</div></div>
+      <button class="switch ${p[1]?'on':''}" data-sw aria-label="${p[0]}"></button></div>`).join('');
+  document.querySelectorAll('[data-sw]').forEach(s=>s.onclick=()=>{s.classList.toggle('on');SS.toast(s.classList.contains('on')?'اعلان فعال شد':'اعلان غیرفعال شد');});
+  document.getElementById('readall').onclick=()=>{document.querySelectorAll('.n-item').forEach(n=>n.classList.remove('unread'));SS.toast('همه اعلان‌ها خوانده شد');};
+  document.getElementById('push').onclick=()=>SS.toast('اعلان فوری مرورگر فعال شد ✓');
+
+  SS.mount({ active: 'notifications' });
+</script>
+</body>
+</html>

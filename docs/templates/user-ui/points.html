@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>امتیازها و سطوح | صبح ساحل</title>
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+  .pts-hero { background:linear-gradient(150deg,var(--plum),var(--brand)); color:#fff; border-radius:var(--r-xl); padding:28px; display:flex; gap:26px; align-items:center; flex-wrap:wrap; position:relative; overflow:hidden; margin-bottom:22px; }
+  .pts-hero::before{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.06) 0 2px,transparent 2px 12px);}
+  .pts-hero .big { position:relative; }
+  .pts-hero .big .n { font-size:48px; font-weight:900; line-height:1; letter-spacing:-2px; display:flex; align-items:center; gap:10px; }
+  .pts-hero .big .n svg{width:36px;height:36px;}
+  .pts-hero .big .c { opacity:.85; margin-top:6px; }
+  .pts-hero .mini { position:relative; margin-inline-start:auto; display:flex; gap:26px; }
+  .pts-hero .mini div .v{font-size:22px;font-weight:800;}
+  .pts-hero .mini div .l{opacity:.8;font-size:12.5px;}
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:22px; align-items:start; }
+  .earn-row,.spend-row { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); }
+  .earn-row:last-child,.spend-row:last-child{border-bottom:none;}
+  .earn-row .ei{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex:none;}
+  .earn-row .pv{margin-inline-start:auto;font-weight:800;color:#1f9d57;white-space:nowrap;}
+  .spend-row .pv{margin-inline-start:auto;font-weight:800;color:var(--brand);white-space:nowrap;}
+  .levels { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+  .lvl { border:1px solid var(--border); border-radius:var(--r-lg); padding:18px; background:var(--surface); position:relative; }
+  .lvl.cur { border-width:2px; }
+  .lvl .lh { display:flex; align-items:center; gap:9px; font-weight:800; font-size:16px; }
+  .lvl .lh svg{width:20px;height:20px;}
+  .lvl .rng { font-size:12.5px; color:var(--text-muted); margin:8px 0 12px; }
+  .lvl ul{display:flex;flex-direction:column;gap:7px;}
+  .lvl li{font-size:12.5px;display:flex;gap:7px;align-items:flex-start;}
+  .lvl li svg{width:14px;height:14px;color:#1f9d57;flex:none;margin-top:2px;}
+  .lvl .now{position:absolute;top:14px;inset-inline-end:14px;}
+  @media(max-width:880px){.grid2{grid-template-columns:1fr;} .levels{grid-template-columns:repeat(2,1fr);} .pts-hero .mini{width:100%;margin:0;}}
+  @media(max-width:520px){.levels{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="breadcrumb"><a href="dashboard.html">داشبورد</a> ‹ <span>امتیازها و سطوح</span></div>
+  <div class="pts-hero">
+    <div class="big">
+      <div class="n" id="bal"></div>
+      <div class="c">موجودی امتیاز تو</div>
+    </div>
+    <div class="mini">
+      <div><div class="v tnum">+۳۸۵</div><div class="l">این ماه</div></div>
+      <div><div class="v">طلایی</div><div class="l">سطح فعلی</div></div>
+      <div><div class="v tnum">۲٬۷۶۰</div><div class="l">تا پلاتینیوم</div></div>
+    </div>
+  </div>
+
+  <div class="card pad" style="margin-bottom:22px">
+    <div class="sec-title">سطوح کاربری</div>
+    <div class="levels" id="levels"></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card pad">
+      <div class="card-h"><span class="ic ic-green" style="width:34px;height:34px;border-radius:9px" id="e-ic"></span><h3>راه‌های کسب امتیاز</h3></div>
+      <div id="earn"></div>
+    </div>
+    <div class="card pad">
+      <div class="card-h"><span class="ic ic-brand" style="width:34px;height:34px;border-radius:9px" id="sp-ic"></span><h3>خرج کردن امتیاز</h3></div>
+      <div id="spend"></div>
+    </div>
+  </div>
+
+  <div class="card pad" style="margin-top:22px">
+    <div class="card-h"><h3>تاریخچه تراکنش امتیاز</h3><a class="more" href="#">دانلود گزارش</a></div>
+    <table class="tbl" id="hist"></table>
+  </div>
+</div>
+
+<script src="assets/shell.js"></script>
+<script>
+  const I = SS.icon;
+  document.getElementById('bal').innerHTML = I('coins') + '<span class="tnum">۷٬۲۴۰</span>';
+  document.getElementById('e-ic').innerHTML = I('coins');
+  document.getElementById('sp-ic').innerHTML = I('gift');
+
+  const levels = [
+    ['bronze','star','برنزی','۰ تا ۱٬۰۰۰',['کسب امتیاز پایه','ذخیره اخبار']],
+    ['silver','star','نقره‌ای','۱٬۰۰۰ تا ۵٬۰۰۰',['۵٪ تخفیف فروشگاه','امتیاز ۱.۲ برابر']],
+    ['gold','crown','طلایی','۵٬۰۰۰ تا ۱۰٬۰۰۰',['۱۵٪ تخفیف فروشگاه','محتوای ویژه','امتیاز ۱.۵ برابر'],true],
+    ['platinum','crown','پلاتینیوم','۱۰٬۰۰۰ به بالا',['۲۵٪ تخفیف','دسترسی زودهنگام','امتیاز ۲ برابر','هدیه تولد']],
+  ];
+  document.getElementById('levels').innerHTML = levels.map(l=>{
+    const benefits = l[4];
+    const cur = l[5] === true;
+    return `<div class="lvl ${cur?'cur':''}" style="${cur?'border-color:var(--tier-'+l[0]+')':''}">
+      ${cur?'<span class="pill pill-gold now">سطح تو</span>':''}
+      <div class="lh" style="color:var(--tier-${l[0]})">${I(l[1])} ${l[2]}</div>
+      <div class="rng tnum">${l[3]} امتیاز</div>
+      <ul>${benefits.map(b=>`<li>${I('check')}<span>${b}</span></li>`).join('')}</ul>
+    </div>`;
+  }).join('');
+
+  const earn = [['user','ثبت‌نام','۵۰'],['edit','تکمیل پروفایل','۵۰'],['clock','ورود روزانه','۵'],['eye','مطالعه خبر','۲'],['book','مطالعه کامل مقاله','۵'],['share','اشتراک‌گذاری خبر','۱۰'],['heart','ثبت نظر','۵'],['crown','خرید اشتراک','۱۰۰'],['bag','خرید از فروشگاه','۱۰ / هر ۱۰۰هزار تومان'],['gift','دعوت دوستان','۵۰']];
+  document.getElementById('earn').innerHTML = earn.map(e=>`
+    <div class="earn-row"><span class="ei ic-green">${I(e[0])}</span><span style="font-weight:600">${e[1]}</span><span class="pv">+${SS.toFa(e[2])}</span></div>`).join('');
+
+  const spend = [['crown','۱ روز اشتراک ویژه','۱۰۰'],['crown','۱ هفته اشتراک','۵۰۰'],['news','PDF روزنامه','۵۰'],['book','کتاب الکترونیکی','۳۰۰'],['bag','کد تخفیف فروشگاه','۲۰۰'],['ticket','شرکت در قرعه‌کشی','۱۰۰']];
+  document.getElementById('spend').innerHTML = spend.map(s=>`
+    <div class="spend-row"><span class="ei ic-brand">${I(s[0])}</span><span style="font-weight:600">${s[1]}</span><span class="pv">${SS.toFa(s[2])} <button class="btn btn-soft btn-sm" data-redeem="${s[1]}" style="margin-inline-start:8px">خرج کن</button></span></div>`).join('');
+  document.querySelectorAll('[data-redeem]').forEach(b=>b.onclick=()=>SS.toast('«'+b.dataset.redeem+'» با موفقیت دریافت شد ✓'));
+
+  const hist = [['ورود روزانه','+۵','۱۷ خرداد','earn'],['مطالعه کامل مقاله اقتصادی','+۵','۱۷ خرداد','earn'],['خرید کتاب «تاریخ بنادر»','−۳۰۰','۱۵ خرداد','spend'],['اشتراک‌گذاری خبر گردشگری','+۱۰','۱۴ خرداد','earn'],['دعوت دوست (مریم ر.)','+۵۰','۱۲ خرداد','earn'],['شرکت در قرعه‌کشی ماهانه','−۱۰۰','۱۰ خرداد','spend']];
+  document.getElementById('hist').innerHTML = '<thead><tr><th>فعالیت</th><th>تاریخ</th><th>امتیاز</th></tr></thead><tbody>'+
+    hist.map(h=>`<tr><td style="font-weight:600">${h[0]}</td><td style="color:var(--text-muted)" class="tnum">${h[2]}</td><td style="font-weight:800;color:${h[3]==='earn'?'#1f9d57':'var(--brand)'}" class="tnum">${h[1]}</td></tr>`).join('')+'</tbody>';
+
+  SS.mount({ active: 'points' });
+</script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ورود و ثبت‌نام | صبح ساحل</title>
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+  body { background: var(--canvas); }
+  .auth { min-height: 100dvh; display: grid; grid-template-columns: 1.05fr .95fr; }
+  .auth-brand {
+    position: relative; overflow: hidden; color: #fff; padding: 54px 56px;
+    background: linear-gradient(150deg, var(--plum-deep), var(--brand-deep) 75%);
+    display: flex; flex-direction: column;
+  }
+  .auth-brand::before { content:""; position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.05) 0 2px, transparent 2px 12px); }
+  .auth-brand .word { font-size: 42px; font-weight: 900; position: relative; }
+  .auth-brand .sub { opacity: .85; margin-top: 6px; position: relative; }
+  .auth-brand .head { margin-top: auto; position: relative; }
+  .auth-brand .head h2 { font-size: 30px; line-height: 1.45; font-weight: 800; }
+  .auth-brand .head p { opacity: .82; margin-top: 12px; max-width: 38ch; }
+  .benefits { position: relative; margin-top: 30px; display: flex; flex-direction: column; gap: 14px; }
+  .benefits li { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+  .benefits .bi { width: 38px; height: 38px; border-radius: 11px; background: rgba(255,255,255,.16); display: grid; place-items: center; flex: none; }
+  .benefits .bi svg { width: 20px; height: 20px; }
+
+  .auth-form { display: grid; place-items: center; padding: 40px 24px; }
+  .auth-card { width: 100%; max-width: 420px; }
+  .tabs { display: flex; background: var(--surface-2); border-radius: 999px; padding: 5px; margin-bottom: 26px; }
+  .tabs button { flex: 1; border: none; background: transparent; padding: 11px; border-radius: 999px; font-weight: 700; font-size: 14px; color: var(--text-muted); display:flex; align-items:center; justify-content:center; gap:7px; }
+  .tabs button svg { width: 17px; height: 17px; }
+  .tabs button.active { background: var(--surface); color: var(--brand); box-shadow: var(--shadow-sm); }
+  .otp-row { display: flex; gap: 10px; direction: ltr; justify-content: center; margin: 6px 0 4px; }
+  .otp-row input { width: 52px; height: 60px; text-align: center; font-size: 24px; font-weight: 800; border-radius: var(--r-md); border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); }
+  .otp-row input:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-soft); }
+  .divider { display: flex; align-items: center; gap: 12px; color: var(--text-faint); font-size: 12.5px; margin: 22px 0; }
+  .divider::before, .divider::after { content:""; flex: 1; height: 1px; background: var(--border); }
+  .social { display: grid; gap: 10px; }
+  .social button { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; border-radius: var(--r-md); border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); font-weight: 600; font-size: 14px; transition: background .15s; }
+  .social button:hover { background: var(--surface-2); }
+  .social .g { width: 19px; height: 19px; }
+  .muted-link { text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 13.5px; }
+  .muted-link a { color: var(--brand); font-weight: 700; }
+  .corner-theme { position: fixed; top: 16px; inset-inline-start: 16px; z-index: 10; }
+  .hide { display: none !important; }
+  .resend { text-align:center; font-size:13px; color: var(--text-muted); margin-top:14px; }
+  @media (max-width: 880px) { .auth { grid-template-columns: 1fr; } .auth-brand { display: none; } }
+</style>
+</head>
+<body>
+  <button class="icon-btn corner-theme" id="ss-theme" aria-label="تغییر تم"></button>
+  <div class="auth">
+    <div class="auth-brand">
+      <div>
+        <div class="word">صبح ساحل</div>
+        <div class="sub">پایگاه خبری استان هرمزگان</div>
+      </div>
+      <div class="head">
+        <h2>به باشگاه اعضای صبح ساحل بپیوندید</h2>
+        <p>اخبار اختصاصی هرمزگان، آرشیو کامل روزنامه، امتیاز و جوایز روزانه — همه در یک حساب.</p>
+        <ul class="benefits" id="benefits"></ul>
+      </div>
+    </div>
+
+    <div class="auth-form">
+      <div class="auth-card">
+        <h1 style="font-size:24px; margin-bottom:6px;">ورود / ثبت‌نام</h1>
+        <p style="color:var(--text-muted); margin-bottom:22px;">برای ادامه، شماره موبایل یا ایمیل خود را وارد کنید.</p>
+
+        <div class="tabs">
+          <button class="active" id="tab-phone" data-m="phone"></button>
+          <button id="tab-email" data-m="email"></button>
+        </div>
+
+        <!-- phone -->
+        <div id="pane-phone">
+          <div id="phone-step">
+            <div class="field">
+              <label>شماره موبایل</label>
+              <input class="input tnum" id="phone" inputmode="tel" placeholder="۰۹۱۲ ۰۰۰ ۰۰۰۰" dir="ltr" style="text-align:right">
+            </div>
+            <button class="btn btn-plum btn-block btn-lg" id="send-otp">ارسال کد تأیید</button>
+          </div>
+          <div id="otp-step" class="hide">
+            <p style="font-size:13.5px; color:var(--text-muted); text-align:center; margin-bottom:14px;">
+              کد ۵ رقمی به شماره <b id="otp-phone" class="tnum"></b> ارسال شد.
+            </p>
+            <div class="otp-row" id="otp">
+              <input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric">
+            </div>
+            <div class="resend">ارسال مجدد کد تا <b class="tnum" id="timer">۰۱:۵۹</b></div>
+            <button class="btn btn-brand btn-block btn-lg" id="verify" style="margin-top:16px">تأیید و ورود</button>
+            <p class="muted-link"><a href="#" id="change-num">تغییر شماره موبایل</a></p>
+          </div>
+        </div>
+
+        <!-- email -->
+        <div id="pane-email" class="hide">
+          <div class="field"><label>ایمیل</label><input class="input" type="email" placeholder="you@example.com" dir="ltr" style="text-align:right"></div>
+          <div class="field"><label>رمز عبور</label><input class="input" type="password" placeholder="••••••••" dir="ltr" style="text-align:right"></div>
+          <button class="btn btn-plum btn-block btn-lg" id="email-login">ورود</button>
+        </div>
+
+        <div class="divider">یا ادامه با</div>
+        <div class="social">
+          <button data-social="گوگل"><svg class="g" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.5-.2-2.3H12v4.5h5.9a5 5 0 0 1-2.2 3.3v2.7h3.5c2-1.9 3.3-4.7 3.3-8.2Z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.5-2.7c-1 .7-2.3 1.1-3.8 1.1-2.9 0-5.4-2-6.3-4.6H2v2.8A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.7 14.1a6.6 6.6 0 0 1 0-4.2V7.1H2a11 11 0 0 0 0 9.8l3.7-2.8Z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3 .6 4.2 1.7l3.1-3.1A11 11 0 0 0 2 7.1l3.7 2.8C6.6 7.3 9.1 5.4 12 5.4Z"/></svg> ورود با گوگل</button>
+          <button data-social="اپل"><svg class="g" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1.5c.1 1-.3 2-.9 2.7-.7.8-1.7 1.4-2.7 1.3-.1-1 .4-2 1-2.6.6-.8 1.7-1.3 2.6-1.4Zm3 16.6c-.5 1.2-.8 1.7-1.4 2.7-.9 1.4-2.2 3.1-3.8 3.1-1.4 0-1.8-.9-3.7-.9s-2.4.9-3.7.9c-1.6 0-2.8-1.5-3.7-2.9C1.4 18 1.1 13.6 2.8 11c.9-1.4 2.4-2.2 3.9-2.2 1.5 0 2.4.9 3.7.9 1.2 0 2-.9 3.7-.9 1.3 0 2.7.7 3.7 2-3.2 1.7-2.7 6.3.5 7.3Z"/></svg> ورود با اپل</button>
+          <button data-social="شبکه‌های اجتماعی">ورود با حساب شبکه‌های اجتماعی</button>
+        </div>
+
+        <p class="muted-link">با ورود، <a href="#">قوانین و حریم خصوصی</a> صبح ساحل را می‌پذیرید.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/shell.js"></script>
+  <script>
+    SS.mountBare();
+    const I = SS.icon;
+    document.getElementById('benefits').innerHTML = [
+      ['crown','دسترسی کامل به اخبار و آرشیو روزنامه'],
+      ['coins','کسب امتیاز و سطح‌بندی کاربری'],
+      ['gift','چرخ شانس، ماموریت روزانه و قرعه‌کشی'],
+      ['pin','راهنمای گردشگری اختصاصی هرمزگان'],
+    ].map(b => `<li><span class="bi">${I(b[0])}</span>${b[1]}</li>`).join('');
+    document.getElementById('tab-phone').innerHTML = I('phone') + ' موبایل';
+    document.getElementById('tab-email').innerHTML = I('mail') + ' ایمیل';
+
+    // tabs
+    document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
+      document.querySelectorAll('.tabs button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      const m = b.dataset.m;
+      document.getElementById('pane-phone').classList.toggle('hide', m!=='phone');
+      document.getElementById('pane-email').classList.toggle('hide', m!=='email');
+    });
+
+    // OTP flow
+    document.getElementById('send-otp').onclick = () => {
+      const p = document.getElementById('phone').value || '۰۹۱۲ ۳۴۵ ۶۷۸۹';
+      document.getElementById('otp-phone').textContent = p;
+      document.getElementById('phone-step').classList.add('hide');
+      document.getElementById('otp-step').classList.remove('hide');
+      document.querySelector('#otp input').focus();
+      SS.toast('کد تأیید ارسال شد (۱۲۳۴۵)');
+      startTimer();
+    };
+    document.getElementById('change-num').onclick = (e) => { e.preventDefault();
+      document.getElementById('otp-step').classList.add('hide');
+      document.getElementById('phone-step').classList.remove('hide');
+    };
+    const otp = [...document.querySelectorAll('#otp input')];
+    otp.forEach((inp,i) => {
+      inp.addEventListener('input', () => { inp.value = inp.value.replace(/\D/g,'').slice(0,1); if(inp.value && i<4) otp[i+1].focus(); });
+      inp.addEventListener('keydown', e => { if(e.key==='Backspace' && !inp.value && i>0) otp[i-1].focus(); });
+    });
+    document.getElementById('verify').onclick = () => { SS.toast('خوش آمدید! در حال ورود…'); setTimeout(()=>location.href='dashboard.html', 800); };
+    document.getElementById('email-login').onclick = () => { SS.toast('در حال ورود…'); setTimeout(()=>location.href='dashboard.html', 700); };
+    document.querySelectorAll('[data-social]').forEach(b => b.onclick = () => { SS.toast('اتصال به '+b.dataset.social+'…'); setTimeout(()=>location.href='dashboard.html', 900); });
+
+    function startTimer(){ let t=119; const el=document.getElementById('timer');
+      const id=setInterval(()=>{ t--; const m=String(Math.floor(t/60)).padStart(2,'0'), s=String(t%60).padStart(2,'0');
+        el.textContent=SS.toFa(m+':'+s); if(t<=0) clearInterval(id); },1000); }
+  </script>
+</body>
+</html>

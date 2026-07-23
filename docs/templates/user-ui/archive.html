@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>نسخه دیجیتال روزنامه | صبح ساحل</title>
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+  .feat { display:grid; grid-template-columns:230px 1fr; gap:24px; align-items:center; }
+  .paper { aspect-ratio:1/1.4; border-radius:var(--r-md); box-shadow:var(--shadow-lg); position:relative; overflow:hidden; }
+  .paper .masthead { position:absolute; top:0; left:0; right:0; background:var(--surface); padding:10px; text-align:center; border-bottom:2px solid var(--brand); }
+  .paper .masthead .w{color:var(--brand);font-weight:900;font-size:18px;}
+  .paper .masthead .d{font-size:9px;color:var(--text-faint);}
+  .feat h2 { font-size:22px; }
+  .feat .acts { display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
+
+  .flip-stage { background:var(--canvas); border:1px solid var(--border); border-radius:var(--r-lg); padding:24px; display:flex; flex-direction:column; align-items:center; gap:16px; }
+  .flip-paper { width:340px; max-width:100%; aspect-ratio:1/1.38; background:var(--surface); border-radius:6px; box-shadow:var(--shadow-lg); position:relative; overflow:hidden; }
+  .flip-paper .pmast { padding:12px; text-align:center; border-bottom:2px solid var(--brand); }
+  .flip-paper .pmast .w{color:var(--brand);font-weight:900;font-size:22px;}
+  .flip-paper .pmast .d{font-size:10px;color:var(--text-faint);margin-top:2px;}
+  .flip-lines { padding:14px; display:flex; flex-direction:column; gap:9px; }
+  .flip-lines .lead { height:64px; border-radius:6px; }
+  .flip-lines .ln { height:9px; border-radius:4px; background:var(--surface-2); }
+  .flip-lines .ln.s{width:70%;} .flip-lines .ln.m{width:90%;}
+  .flip-headline { font-weight:900; font-size:15px; padding:0 14px; color:var(--text); }
+  .flip-nav { display:flex; align-items:center; gap:16px; }
+  .flip-nav button { width:44px; height:44px; border-radius:50%; border:1px solid var(--border-strong); background:var(--surface); color:var(--text); display:grid; place-items:center; }
+  .flip-nav button:hover{background:var(--surface-2);}
+  .flip-nav .pg{font-weight:700;font-size:14px;min-width:90px;text-align:center;}
+
+  .filter-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+  .arch-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:16px; }
+  .arch { background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); overflow:hidden; box-shadow:var(--shadow-sm); transition:transform .12s; }
+  .arch:hover{transform:translateY(-3px);}
+  .arch .c { aspect-ratio:1/1.38; position:relative; }
+  .arch .c .lock{position:absolute;inset:0;background:rgba(20,12,20,.55);display:grid;place-items:center;color:#fff;}
+  .arch .c .lock svg{width:26px;height:26px;}
+  .arch .b { padding:10px 12px; }
+  .arch .b .dt{font-weight:700;font-size:13px;} .arch .b .iss{font-size:11px;color:var(--text-faint);}
+  @media(max-width:980px){.arch-grid{grid-template-columns:repeat(3,1fr);}}
+  @media(max-width:700px){.feat{grid-template-columns:1fr;} .feat .paper{max-width:200px;margin:0 auto;}}
+  @media(max-width:520px){.arch-grid{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="breadcrumb"><a href="dashboard.html">داشبورد</a> ‹ <span>نسخه دیجیتال روزنامه</span></div>
+  <div class="page-head"><h1>نسخه دیجیتال روزنامه صبح ساحل</h1><p>روزنامه امروز، نسخه قابل ورق‌زدن و آرشیو کامل PDF</p></div>
+
+  <div class="card pad" style="margin-bottom:22px">
+    <div class="feat">
+      <div class="paper ph"><div class="masthead"><div class="w">صبح ساحل</div><div class="d">دوشنبه ۱۷ خرداد ۱۴۰۵ — شماره ۴٬۲۸۱</div></div></div>
+      <div>
+        <span class="pill pill-red">نسخه امروز</span>
+        <h2 style="margin-top:10px">روزنامه دوشنبه ۱۷ خرداد ۱۴۰۵</h2>
+        <p style="color:var(--text-muted);margin-top:8px">۱۶ صفحه — اخبار استان هرمزگان، اقتصاد، گردشگری و ورزش. به‌عنوان عضو طلایی به همه صفحات دسترسی داری.</p>
+        <div class="acts">
+          <button class="btn btn-brand" id="read">ورق زدن آنلاین</button>
+          <button class="btn btn-plum" id="dl">دانلود PDF</button>
+          <button class="btn btn-ghost" data-toast="با ۵۰ امتیاز دریافت شد">دریافت با ۵۰ امتیاز</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card pad" style="margin-bottom:22px">
+    <div class="sec-title">نسخه تحت وب (Flipbook)</div>
+    <div class="flip-stage">
+      <div class="flip-paper" id="paper">
+        <div class="pmast"><div class="w">صبح ساحل</div><div class="d">دوشنبه ۱۷ خرداد ۱۴۰۵ — شماره ۴٬۲۸۱</div></div>
+        <div class="flip-headline" id="headline" style="margin-top:12px"></div>
+        <div class="flip-lines">
+          <div class="lead ph"></div>
+          <div class="ln m"></div><div class="ln"></div><div class="ln s"></div>
+          <div class="ln m"></div><div class="ln"></div><div class="ln s"></div>
+        </div>
+      </div>
+      <div class="flip-nav">
+        <button id="prev" aria-label="قبلی"></button>
+        <span class="pg tnum" id="pg">صفحه ۱ از ۱۶</span>
+        <button id="next" aria-label="بعدی"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card pad">
+    <div class="card-h"><span class="ic ic-plum" style="width:34px;height:34px;border-radius:9px" id="a-ic"></span><h3>آرشیو نسخه‌های PDF</h3></div>
+    <div class="filter-row" id="years"></div>
+    <div class="arch-grid" id="archive"></div>
+  </div>
+</div>
+
+<script src="assets/shell.js"></script>
+<script>
+  const I = SS.icon;
+  document.getElementById('a-ic').innerHTML=I('news');
+  document.getElementById('prev').innerHTML=I('chevR');
+  document.getElementById('next').innerHTML=I('chevL');
+  document.getElementById('read').innerHTML=I('book')+' ورق زدن آنلاین';
+  document.getElementById('dl').innerHTML=I('download')+' دانلود PDF';
+
+  const headlines = ['ورزش فولاد هرمزگان در مسیر افتخارآفرینی','رشد صادرات از بندر شهید رجایی','جزیره هرمز رکورد گردشگری نوروز را شکست','افتتاح فاز جدید آب‌شیرین‌کن بندرعباس'];
+  let pg=1; const total=16;
+  function paint(){
+    document.getElementById('pg').textContent = SS.toFa('صفحه '+pg+' از '+total);
+    document.getElementById('headline').textContent = headlines[(pg-1)%headlines.length];
+    const p=document.getElementById('paper'); p.style.transform='rotateY(8deg)'; setTimeout(()=>p.style.transform='none',180);
+  }
+  document.getElementById('paper').style.transition='transform .18s';
+  paint();
+  document.getElementById('next').onclick=()=>{ if(pg<total){pg++;paint();} else SS.toast('آخرین صفحه'); };
+  document.getElementById('prev').onclick=()=>{ if(pg>1){pg--;paint();} else SS.toast('صفحه اول'); };
+  document.getElementById('read').onclick=()=>{ document.getElementById('paper').scrollIntoView; SS.toast('در حال باز کردن نسخه تعاملی…'); };
+  document.getElementById('dl').onclick=()=>SS.toast('دانلود PDF نسخه امروز آغاز شد');
+
+  // archive
+  const years=['۱۴۰۵','۱۴۰۴','۱۴۰۳','۱۴۰۲'];
+  document.getElementById('years').innerHTML=years.map((y,i)=>`<button class="chip ${i===0?'active':''}" data-y="${y}">${y}</button>`).join('');
+  const months=['خرداد','اردیبهشت','فروردین','اسفند','بهمن','دی','آذر','آبان','مهر','شهریور'];
+  function buildArch(y){
+    document.getElementById('archive').innerHTML = months.map((m,i)=>{
+      const locked = i>5 && y!=='۱۴۰۵';
+      return `<div class="arch">
+        <div class="c ph"><div style="position:absolute;top:0;left:0;right:0;background:var(--surface);padding:6px;text-align:center;border-bottom:2px solid var(--brand)"><div style="color:var(--brand);font-weight:900;font-size:11px">صبح ساحل</div></div>
+          ${locked?'<div class="lock">'+I('crown')+'</div>':''}</div>
+        <div class="b"><div class="dt">${m} ${y}</div><div class="iss tnum">${SS.toFa(28-i)} شماره</div></div>
+      </div>`;
+    }).join('');
+    document.querySelectorAll('#archive .arch').forEach(a=>a.onclick=()=>{
+      const lk=a.querySelector('.lock'); SS.toast(lk?'این آرشیو ویژه اعضای طلایی است':'باز کردن آرشیو '+a.querySelector('.dt').textContent);
+    });
+  }
+  buildArch('۱۴۰۵');
+  document.querySelectorAll('#years .chip').forEach(c=>c.onclick=()=>{
+    document.querySelectorAll('#years .chip').forEach(x=>x.classList.remove('active')); c.classList.add('active'); buildArch(c.dataset.y);
+  });
+
+  SS.mount({ active: 'archive' });
+</script>
+</body>
+</html>

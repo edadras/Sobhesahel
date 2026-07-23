@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>اشتراک | صبح ساحل</title>
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+  .bill-toggle { display:inline-flex; background:var(--surface-2); border:1px solid var(--border); border-radius:999px; padding:5px; gap:4px; }
+  .bill-toggle button { border:none; background:transparent; padding:9px 20px; border-radius:999px; font-weight:700; font-size:14px; color:var(--text-muted); }
+  .bill-toggle button.active { background:var(--surface); color:var(--brand); box-shadow:var(--shadow-sm); }
+  .bill-toggle .save { font-size:11px; color:#1f9d57; font-weight:700; margin-inline-start:6px; }
+  .plans { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; align-items:stretch; }
+  .plan { background:var(--surface); border:1px solid var(--border); border-radius:var(--r-xl); padding:24px 22px; display:flex; flex-direction:column; box-shadow:var(--shadow-sm); position:relative; }
+  .plan.feat { border-color:var(--brand); box-shadow:0 10px 32px color-mix(in srgb,var(--brand) 16%,transparent); }
+  .plan.feat::before { content:"محبوب‌ترین"; position:absolute; top:-12px; inset-inline-start:50%; transform:translateX(50%); background:var(--brand); color:#fff; font-size:12px; font-weight:700; padding:4px 14px; border-radius:999px; }
+  .plan .tname { font-size:18px; font-weight:800; display:flex; align-items:center; gap:8px; }
+  .plan .tname svg { width:20px; height:20px; }
+  .plan .price { margin:16px 0 4px; font-size:30px; font-weight:900; letter-spacing:-1px; }
+  .plan .price small { font-size:14px; font-weight:600; color:var(--text-muted); }
+  .plan .pdesc { color:var(--text-muted); font-size:13px; min-height:38px; }
+  .plan ul { margin:18px 0; display:flex; flex-direction:column; gap:11px; flex:1; }
+  .plan li { display:flex; gap:9px; font-size:13.5px; align-items:flex-start; }
+  .plan li svg { width:17px; height:17px; flex:none; margin-top:2px; color:#1f9d57; }
+  .plan li.off { color:var(--text-faint); }
+  .plan li.off svg { color:var(--text-faint); }
+  .plan .cur { position:absolute; top:18px; inset-inline-end:18px; }
+  .cmp-wrap { overflow-x:auto; }
+  @media(max-width:980px){ .plans{grid-template-columns:repeat(2,1fr);} }
+  @media(max-width:560px){ .plans{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="breadcrumb"><a href="dashboard.html">داشبورد</a> ‹ <span>اشتراک</span></div>
+  <div class="page-head" style="display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap">
+    <div><h1>پلن اشتراک خود را انتخاب کنید</h1><p>دسترسی کامل به اخبار، آرشیو روزنامه و مزایای ویژه اعضا</p></div>
+    <div class="bill-toggle" id="bill" style="margin-inline-start:auto">
+      <button class="active" data-b="month">ماهانه</button>
+      <button data-b="year">سالانه<span class="save">۲ ماه رایگان</span></button>
+    </div>
+  </div>
+
+  <div class="plans" id="plans"></div>
+
+  <div class="card pad" style="margin-top:26px">
+    <div class="sec-title">مقایسه کامل امکانات</div>
+    <div class="cmp-wrap">
+      <table class="tbl" id="cmp"></table>
+    </div>
+  </div>
+
+  <div class="card pad" style="margin-top:22px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:linear-gradient(135deg,var(--gold-soft),var(--surface))">
+    <span class="ic ic-gold" style="width:46px;height:46px;border-radius:13px" id="pts-ic"></span>
+    <div style="flex:1;min-width:200px"><div style="font-weight:800;font-size:16px">با امتیازهایت اشتراک بخر!</div><p style="color:var(--text-muted);font-size:13.5px">۱ هفته اشتراک ویژه فقط با ۵۰۰ امتیاز. موجودی تو: <b class="tnum" style="color:var(--gold)">۷٬۲۴۰</b> امتیاز</p></div>
+    <button class="btn btn-gold" id="buy-pts">خرید با امتیاز</button>
+  </div>
+</div>
+
+<script src="assets/shell.js"></script>
+<script>
+  const I = SS.icon;
+  const PLANS = [
+    { key:'free', icon:'star', name:'رایگان', m:'۰', y:'۰', unit:'تومان', desc:'برای شروع و آشنایی با صبح ساحل',
+      f:[['۵ خبر ویژه در ماه',1],['ذخیره خبر',1],['کسب امتیاز',1],['حذف تبلیغات',0],['دانلود PDF روزنامه',0],['آرشیو کامل',0]] },
+    { key:'silver', icon:'star', name:'نقره‌ای', m:'۴۹٬۰۰۰', y:'۴۹۰٬۰۰۰', unit:'تومان / ماه', desc:'دسترسی کامل بدون تبلیغات',
+      f:[['دسترسی کامل به اخبار',1],['حذف کامل تبلیغات',1],['دانلود PDF روزنامه روز',1],['کسب امتیاز دوبرابر',1],['آرشیو کامل روزنامه',0],['تخفیف فروشگاه',0]] },
+    { key:'gold', icon:'crown', name:'طلایی', m:'۸۹٬۰۰۰', y:'۸۹۰٬۰۰۰', unit:'تومان / ماه', desc:'کامل‌ترین تجربه عضویت', feat:true, current:true,
+      f:[['همه امکانات نقره‌ای',1],['آرشیو کامل روزنامه',1],['PDF نسخه‌های قدیمی',1],['شرکت در قرعه‌کشی‌ها',1],['تخفیف ویژه فروشگاه',1],['راهنمای گردشگری هرمزگان',1]] },
+    { key:'org', icon:'grid', name:'سازمانی', m:'تماس', y:'تماس', unit:'ویژه شرکت‌ها', desc:'مناسب شرکت‌ها و سازمان‌ها',
+      f:[['چند کاربر هم‌زمان',1],['پنل مدیریت سازمان',1],['فاکتور رسمی',1],['گزارش‌های اقتصادی ویژه',1],['پشتیبانی اختصاصی',1],['همه امکانات طلایی',1]] },
+  ];
+  document.getElementById('pts-ic').innerHTML = I('coins');
+
+  function render(b){
+    document.getElementById('plans').innerHTML = PLANS.map(p=>{
+      const price = b==='year'?p.y:p.m;
+      const isNum = /[۰-۹]/.test(price) && price!=='۰';
+      const unit = p.key==='org' ? p.unit : (price==='۰'?'برای همیشه':(b==='year'?'تومان / سال':p.unit));
+      const cur = p.current ? '<span class="pill pill-green cur">'+I('check')+' پلن فعلی</span>' : '';
+      const btn = p.key==='org' ? '<button class="btn btn-ghost btn-block" data-plan="'+p.name+'">درخواست مشاوره</button>'
+                : p.current ? '<button class="btn btn-soft btn-block" data-plan="'+p.name+'">مدیریت اشتراک</button>'
+                : '<button class="btn '+(p.feat?'btn-brand':'btn-plum')+' btn-block" data-plan="'+p.name+'">انتخاب پلن</button>';
+      return `<div class="plan ${p.feat?'feat':''}">
+        ${cur}
+        <div class="tname ${p.key==='gold'?'':''}" style="color:${p.key==='gold'?'var(--gold)':p.key==='silver'?'var(--tier-silver)':'var(--text)'}">${I(p.icon)} ${p.name}</div>
+        <div class="price">${price}${isNum?'<small> '+(b==='year'?'تومان/سال':'تومان/ماه')+'</small>':(price==='۰'?'<small> رایگان</small>':'')}</div>
+        <div class="pdesc">${p.desc}</div>
+        <ul>${p.f.map(x=>`<li class="${x[1]?'':'off'}">${I(x[1]?'check':'x')}<span>${x[0]}</span></li>`).join('')}</ul>
+        ${btn}
+      </div>`;
+    }).join('');
+    document.querySelectorAll('[data-plan]').forEach(b=>b.onclick=()=>SS.toast('پلن «'+b.dataset.plan+'» انتخاب شد — انتقال به پرداخت'));
+  }
+  render('month');
+  document.querySelectorAll('#bill button').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('#bill button').forEach(x=>x.classList.remove('active')); b.classList.add('active'); render(b.dataset.b);
+  });
+
+  const rows = [['دسترسی به اخبار روز','۵ خبر/ماه','کامل','کامل','کامل'],['حذف تبلیغات','—','✓','✓','✓'],['دانلود PDF روزنامه','—','✓','✓','✓'],['آرشیو کامل','—','—','✓','✓'],['شرکت در قرعه‌کشی','—','—','✓','✓'],['تخفیف فروشگاه','—','—','۱۵٪','۲۵٪'],['چند کاربر / فاکتور رسمی','—','—','—','✓']];
+  document.getElementById('cmp').innerHTML = '<thead><tr><th>امکانات</th><th>رایگان</th><th>نقره‌ای</th><th style="color:var(--gold)">طلایی</th><th>سازمانی</th></tr></thead><tbody>'+
+    rows.map(r=>`<tr><td style="font-weight:600">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td style="color:var(--gold);font-weight:700">${r[3]}</td><td>${r[4]}</td></tr>`).join('')+'</tbody>';
+  document.getElementById('buy-pts').onclick=()=>SS.toast('۱ هفته اشتراک ویژه با ۵۰۰ امتیاز فعال شد ✓');
+
+  SS.mount({ active: 'subscription' });
+</script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>باشگاه مشتریان | صبح ساحل</title>
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+  .grid2 { display:grid; grid-template-columns:1.1fr .9fr; gap:22px; align-items:start; }
+  .mission-card { display:flex; align-items:center; gap:14px; padding:14px; border:1px solid var(--border); border-radius:var(--r-md); margin-bottom:10px; }
+  .mission-card.done { background:color-mix(in srgb,#1f9d57 7%,var(--surface)); border-color:color-mix(in srgb,#1f9d57 28%,transparent); }
+  .mission-card .mi { width:42px;height:42px;border-radius:12px;display:grid;place-items:center;flex:none; }
+  .mission-card .mt { font-weight:700; }
+  .mission-card .ms { font-size:12.5px; color:var(--text-muted); margin-top:2px; }
+  .mission-card .mr { margin-inline-start:auto; text-align:center; }
+
+  .wheel-wrap { display:flex; flex-direction:column; align-items:center; gap:18px; padding:8px 0; }
+  .wheel-stage { position:relative; width:300px; height:300px; }
+  .wheel-pointer { position:absolute; top:-6px; inset-inline-start:50%; transform:translateX(50%); z-index:3; color:var(--brand); filter:drop-shadow(0 2px 3px rgba(0,0,0,.25)); }
+  .wheel-pointer svg { width:34px; height:34px; }
+  .wheel { width:300px; height:300px; border-radius:50%; position:relative; transition:transform 4.2s cubic-bezier(.17,.67,.2,1); border:8px solid var(--surface); box-shadow:0 0 0 4px var(--brand), var(--shadow-lg);
+    background:conic-gradient(
+      var(--brand) 0 45deg, var(--plum) 45deg 90deg, var(--gold) 90deg 135deg,
+      var(--brand-deep) 135deg 180deg, var(--plum-deep) 180deg 225deg, var(--brand) 225deg 270deg,
+      var(--gold) 270deg 315deg, var(--plum) 315deg 360deg); }
+  .wheel-lbl { position:absolute; inset:0; }
+  .wheel-lbl span { position:absolute; top:50%; inset-inline-start:50%; color:#fff; font-weight:800; font-size:12.5px; transform-origin:0 0; white-space:nowrap; }
+  .wheel-hub { position:absolute; top:50%; inset-inline-start:50%; transform:translate(50%,-50%); width:64px; height:64px; border-radius:50%; background:var(--surface); display:grid; place-items:center; box-shadow:var(--shadow-md); z-index:2; font-weight:800; color:var(--brand); font-size:12px; text-align:center; }
+
+  .lottery { background:linear-gradient(150deg,var(--plum-deep),var(--brand-deep)); color:#fff; border-radius:var(--r-xl); padding:24px; position:relative; overflow:hidden; }
+  .lottery::before{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.06) 0 2px,transparent 2px 12px);}
+  .lottery > * { position:relative; }
+  .lottery .prizes { display:flex; gap:10px; flex-wrap:wrap; margin:16px 0; }
+  .lottery .prize { background:rgba(255,255,255,.14); border-radius:var(--r-md); padding:10px 14px; font-size:13px; font-weight:600; display:flex; align-items:center; gap:7px; }
+  .lottery .prize svg{width:16px;height:16px;}
+  .streak { display:flex; gap:6px; margin-top:8px; }
+  .streak .d { flex:1; height:40px; border-radius:9px; background:var(--surface-2); display:grid; place-items:center; font-weight:700; font-size:12px; color:var(--text-faint); border:1px solid var(--border); }
+  .streak .d svg { width:18px; height:18px; }
+  .streak .d.on { background:var(--brand-soft); color:var(--brand); border-color:var(--brand); }
+  .streak .d.today { background:var(--brand); color:#fff; }
+  @media(max-width:880px){.grid2{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="breadcrumb"><a href="dashboard.html">داشبورد</a> ‹ <span>باشگاه مشتریان</span></div>
+  <div class="page-head"><h1>باشگاه مشتریان صبح ساحل</h1><p>ماموریت روزانه انجام بده، چرخ شانس بچرخان و در قرعه‌کشی ماهانه شرکت کن</p></div>
+
+  <div class="card pad" style="margin-bottom:22px">
+    <div class="card-h"><span class="ic ic-gold" style="width:34px;height:34px;border-radius:9px" id="fire"></span><h3>زنجیره ورود روزانه</h3><span class="pill pill-gold" style="margin-inline-start:auto" id="streak-pts"></span></div>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:10px">۶ روز پیاپی وارد شدی! با ۳۰ روز متوالی نشان «عضو وفادار» را بگیر.</p>
+    <div class="streak" id="streak"></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card pad">
+      <div class="card-h"><span class="ic ic-brand" style="width:34px;height:34px;border-radius:9px" id="t-ic"></span><h3>ماموریت‌های امروز</h3></div>
+      <div id="missions"></div>
+      <div style="margin-top:14px;display:flex;align-items:center;gap:12px;padding:14px;border-radius:var(--r-md);background:var(--gold-soft)">
+        <span class="ic ic-gold" style="width:38px;height:38px;border-radius:11px" id="rew-ic"></span>
+        <div style="flex:1"><b>جایزه تکمیل: ۲۰ امتیاز</b><div style="font-size:12.5px;color:var(--text-muted)">۲ از ۳ ماموریت انجام شده</div></div>
+        <button class="btn btn-gold btn-sm" id="claim">دریافت جایزه</button>
+      </div>
+    </div>
+
+    <div class="card pad">
+      <div class="card-h"><span class="ic ic-plum" style="width:34px;height:34px;border-radius:9px" id="w-ic"></span><h3>چرخ شانس روزانه</h3></div>
+      <div class="wheel-wrap">
+        <div class="wheel-stage">
+          <div class="wheel-pointer" id="ptr"></div>
+          <div class="wheel" id="wheel"><div class="wheel-lbl" id="wlbl"></div></div>
+          <div class="wheel-hub">صبح<br>ساحل</div>
+        </div>
+        <button class="btn btn-brand btn-lg" id="spin">بچرخان (رایگان)</button>
+        <p style="font-size:12.5px;color:var(--text-muted)">روزی یک‌بار رایگان — دفعه بعد: ۲۰ امتیاز</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="lottery" style="margin-top:22px">
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <span class="ic" style="width:50px;height:50px;border-radius:14px;background:rgba(255,255,255,.18);color:#fff" id="lot-ic"></span>
+      <div style="flex:1;min-width:200px">
+        <div style="font-size:19px;font-weight:800">قرعه‌کشی بزرگ خرداد ۱۴۰۵</div>
+        <p style="opacity:.9;font-size:13.5px">با هر ۱۰۰ امتیاز یک شانس برنده شدن. تا قرعه‌کشی: <b class="tnum">۹ روز</b></p>
+      </div>
+      <div style="text-align:center"><div class="tnum" style="font-size:24px;font-weight:900">۱٬۸۴۲</div><div style="opacity:.8;font-size:12px">شرکت‌کننده</div></div>
+    </div>
+    <div class="prizes" id="prizes"></div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <button class="btn btn-gold" id="enter-lot">شرکت با ۱۰۰ امتیاز</button>
+      <span style="opacity:.85;font-size:13px">شانس‌های تو: <b class="tnum" id="myticks">۳</b></span>
+    </div>
+  </div>
+</div>
+
+<script src="assets/shell.js"></script>
+<script>
+  const I = SS.icon;
+  document.getElementById('fire').innerHTML = I('fire');
+  document.getElementById('t-ic').innerHTML = I('target');
+  document.getElementById('rew-ic').innerHTML = I('gift');
+  document.getElementById('w-ic').innerHTML = I('gift');
+  document.getElementById('lot-ic').innerHTML = I('ticket');
+  document.getElementById('ptr').innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22 4 8h16Z"/></svg>';
+  document.getElementById('streak-pts').innerHTML = I('coins') + ' +۵ امروز';
+
+  // streak
+  const days = ['ش','ی','د','س','چ','پ','ج'];
+  document.getElementById('streak').innerHTML = days.map((d,i)=>`<div class="d ${i<5?'on':i===5?'today':''}">${i<6?I('check'):d}</div>`).join('');
+
+  // missions
+  const M = [['۳ خبر بخوان',1,'eye','۳ از ۳'],['۱ نظر ثبت کن',1,'heart','انجام شد'],['۱ خبر به اشتراک بگذار',0,'share','۰ از ۱']];
+  document.getElementById('missions').innerHTML = M.map(m=>`
+    <div class="mission-card ${m[1]?'done':''}">
+      <span class="mi ${m[1]?'ic-green':'ic-plum'}">${I(m[1]?'check':m[2])}</span>
+      <div><div class="mt">${m[0]}</div><div class="ms">${m[3]}</div></div>
+      <div class="mr">${m[1]?'<span class="pill pill-green">انجام شد</span>':'<button class="btn btn-soft btn-sm" data-do>انجام بده</button>'}</div>
+    </div>`).join('');
+  document.querySelectorAll('[data-do]').forEach(b=>b.onclick=()=>SS.toast('برو به صفحه اخبار برای انجام ماموریت'));
+  document.getElementById('claim').onclick=()=>SS.toast('ابتدا هر سه ماموریت را کامل کن');
+
+  // wheel labels
+  const prizes = ['۵۰ امتیاز','۱ روز ویژه','۱۰ امتیاز','کد تخفیف','۱۰۰ امتیاز','پوچ','۲۰ امتیاز','۵۰۰ امتیاز'];
+  const wl = document.getElementById('wlbl');
+  wl.innerHTML = prizes.map((p,i)=>{
+    const ang = i*45 + 22.5;
+    return `<span style="transform:rotate(${ang}deg) translateY(-118px) rotate(90deg)">${p}</span>`;
+  }).join('');
+
+  let spun=false, rot=0;
+  document.getElementById('spin').onclick=()=>{
+    if(spun){ SS.toast('فردا دوباره برگرد یا با ۲۰ امتیاز بچرخان'); return; }
+    spun=true;
+    const idx=Math.floor(Math.random()*8);
+    const target = 360*5 + (360 - (idx*45 + 22.5));
+    rot += target;
+    document.getElementById('wheel').style.transform=`rotate(${rot}deg)`;
+    document.getElementById('spin').textContent='در حال چرخش…';
+    setTimeout(()=>{ SS.toast('🎉 برنده شدی: '+prizes[idx]); document.getElementById('spin').textContent='فردا دوباره'; }, 4300);
+  };
+
+  document.getElementById('prizes').innerHTML = [['crown','اشتراک سالانه طلایی'],['book','بسته کتاب الکترونیکی'],['ticket','کارت هدیه ۵ میلیونی']].map(p=>`<span class="prize">${I(p[0])} ${p[1]}</span>`).join('');
+  let ticks=3;
+  document.getElementById('enter-lot').onclick=()=>{ ticks++; document.getElementById('myticks').textContent=SS.toFa(ticks); SS.toast('یک شانس جدید ثبت شد! موفق باشی'); };
+
+  SS.mount({ active: 'club' });
+</script>
+</body>
+</html>

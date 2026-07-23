@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>فروشگاه دیجیتال | صبح ساحل</title>
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+  .shop-head { display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-bottom:20px; }
+  .search-box { flex:1; min-width:220px; position:relative; }
+  .search-box svg { position:absolute; inset-inline-start:14px; top:50%; transform:translateY(-50%); width:18px; height:18px; color:var(--text-faint); }
+  .search-box input { padding-inline-start:42px; }
+  .pgrid { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+  .product { background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; transition:transform .12s, box-shadow .15s; }
+  .product:hover { transform:translateY(-3px); box-shadow:var(--shadow-md); }
+  .product .cover { aspect-ratio:3/4; position:relative; }
+  .product .cat { position:absolute; top:10px; inset-inline-end:10px; }
+  .product .save { position:absolute; top:10px; inset-inline-start:10px; width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,.92); display:grid; place-items:center; color:var(--text); border:none; }
+  [data-theme="dark"] .product .save{background:rgba(20,16,24,.8);color:#fff;}
+  .product .body { padding:14px; display:flex; flex-direction:column; flex:1; }
+  .product .ptitle { font-weight:700; font-size:14.5px; line-height:1.45; }
+  .product .pauthor { color:var(--text-faint); font-size:12px; margin-top:3px; }
+  .product .prow { margin-top:auto; padding-top:12px; display:flex; align-items:center; gap:8px; }
+  .product .price { font-weight:800; font-size:15px; }
+  .product .ppts { font-size:11.5px; color:var(--gold); font-weight:700; }
+  .product .add { margin-inline-start:auto; width:38px; height:38px; border-radius:11px; background:var(--brand); color:#fff; border:none; display:grid; place-items:center; }
+  .product .add svg{width:18px;height:18px;}
+  .promo { background:linear-gradient(135deg,var(--plum),var(--brand-deep)); color:#fff; border-radius:var(--r-xl); padding:24px 26px; display:flex; gap:18px; align-items:center; flex-wrap:wrap; margin-bottom:22px; position:relative; overflow:hidden; }
+  .promo::before{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.06) 0 2px,transparent 2px 12px);}
+  .promo > * { position:relative; }
+  @media(max-width:980px){.pgrid{grid-template-columns:repeat(3,1fr);}}
+  @media(max-width:760px){.pgrid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:420px){.pgrid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="breadcrumb"><a href="dashboard.html">داشبورد</a> ‹ <span>فروشگاه دیجیتال</span></div>
+
+  <div class="promo">
+    <span class="ic" style="width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,.18);color:#fff" id="promo-ic"></span>
+    <div style="flex:1;min-width:200px">
+      <div style="font-weight:800;font-size:18px">با امتیاز خرید کن، تا ۱۰۰٪ تخفیف بگیر</div>
+      <p style="opacity:.9;font-size:13.5px;margin-top:4px">می‌توانی کل مبلغ یا بخشی از آن را با امتیاز پرداخت کنی. موجودی تو: <b class="tnum">۷٬۲۴۰</b> امتیاز</p>
+    </div>
+    <span class="pill" style="background:rgba(255,255,255,.18);color:#fff">تخفیف عضو طلایی: ۲۵٪</span>
+  </div>
+
+  <div class="page-head"><h1>فروشگاه دیجیتال</h1><p>کتاب الکترونیکی، آرشیو PDF روزنامه، گزارش‌های تخصصی و نقشه‌های گردشگری هرمزگان</p></div>
+
+  <div class="shop-head">
+    <div class="search-box" id="sb"><input class="input" placeholder="جستجوی کتاب، گزارش، نقشه…"></div>
+    <button class="btn btn-ghost btn-sm">مرتب‌سازی: جدیدترین</button>
+  </div>
+
+  <div class="chip-row" id="cats" style="margin-bottom:22px"></div>
+
+  <div class="pgrid" id="grid"></div>
+</div>
+
+<script src="assets/shell.js"></script>
+<script>
+  const I = SS.icon;
+  document.getElementById('promo-ic').innerHTML = I('coins');
+  document.getElementById('sb').insertAdjacentHTML('afterbegin', I('search'));
+
+  const cats = ['همه','تاریخ','اقتصاد','گردشگری','کسب‌وکار','رمان','آموزشی','PDF روزنامه','نقشه‌ها'];
+  document.getElementById('cats').innerHTML = cats.map((c,i)=>`<button class="chip ${i===0?'active':''}" data-cat="${c}">${c}</button>`).join('');
+
+  const products = [
+    ['کتاب','تاریخ بنادر جنوب ایران','دکتر احمد دریانورد','۸۵٬۰۰۰','۳۰۰','تاریخ'],
+    ['نقشه','نقشه گردشگری جزیره هرمز','واحد گردشگری صبح ساحل','۴۵٬۰۰۰','۱۵۰','گردشگری'],
+    ['گزارش','چشم‌انداز اقتصاد هرمزگان ۱۴۰۵','گروه اقتصادی صبح ساحل','۱۲۰٬۰۰۰','۴۰۰','اقتصاد'],
+    ['PDF','آرشیو روزنامه — اسفند ۱۴۰۳','روزنامه صبح ساحل','۲۰٬۰۰۰','۵۰','PDF روزنامه'],
+    ['کتاب','راهنمای سرمایه‌گذاری در منطقه آزاد','مهندس سارا کمالی','۹۵٬۰۰۰','۳۲۰','کسب‌وکار'],
+    ['کتاب','صیادان خلیج؛ رمان','نازنین بحرینی','۷۰٬۰۰۰','۲۸۰','رمان'],
+    ['مجله','ماهنامه فرهنگی ساحل — شماره ۱۲','تحریریه صبح ساحل','۳۵٬۰۰۰','۱۲۰','آموزشی'],
+    ['نقشه','مسیرهای بوم‌گردی قشم','واحد گردشگری صبح ساحل','۵۵٬۰۰۰','۱۸۰','گردشگری'],
+    ['کتاب','آشنایی با صنایع‌دستی هرمزگان','مریم رئیسی','۶۰٬۰۰۰','۲۲۰','تاریخ'],
+    ['گزارش','تحلیل بازار صادرات خرما','گروه اقتصادی صبح ساحل','۹۰٬۰۰۰','۳۰۰','اقتصاد'],
+    ['آموزش','دوره عکاسی از طبیعت هرمزگان','استودیو ساحل','۱۵۰٬۰۰۰','۵۰۰','آموزشی'],
+    ['PDF','آرشیو ویژه نوروز ۱۴۰۴','روزنامه صبح ساحل','۲۵٬۰۰۰','۶۰','PDF روزنامه'],
+  ];
+
+  function render(filter){
+    const list = filter==='همه'?products:products.filter(p=>p[5]===filter);
+    document.getElementById('grid').innerHTML = list.map(p=>`
+      <div class="product">
+        <div class="cover ph">
+          <span class="pill pill-red cat">${p[0]}</span>
+          <button class="save" data-save="${p[1]}">${I('bookmark')}</button>
+        </div>
+        <div class="body">
+          <div class="ptitle">${p[1]}</div>
+          <div class="pauthor">${p[2]}</div>
+          <div class="prow">
+            <div><div class="price tnum">${p[3]} <small style="font-size:11px;font-weight:600;color:var(--text-muted)">تومان</small></div><div class="ppts tnum">یا ${p[4]} امتیاز</div></div>
+            <button class="add" data-add="${p[1]}">${I('plus')}</button>
+          </div>
+        </div>
+      </div>`).join('');
+    document.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>SS.toast('«'+b.dataset.add+'» به سبد اضافه شد'));
+    document.querySelectorAll('[data-save]').forEach(b=>b.onclick=()=>{b.style.color='var(--brand)';SS.toast('در علاقه‌مندی‌ها ذخیره شد');});
+  }
+  render('همه');
+
+  document.querySelectorAll('#cats .chip').forEach(c=>c.onclick=()=>{
+    document.querySelectorAll('#cats .chip').forEach(x=>x.classList.remove('active')); c.classList.add('active'); render(c.dataset.cat);
+  });
+
+  SS.mount({ active: 'shop' });
+</script>
+</body>
+</html>

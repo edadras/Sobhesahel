@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>نشان‌ها | صبح ساحل</title>
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+  .badge-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+  .badge { border:1px solid var(--border); border-radius:var(--r-lg); padding:22px 18px; text-align:center; background:var(--surface); position:relative; transition:transform .12s; }
+  .badge:hover { transform:translateY(-3px); }
+  .badge.locked { opacity:.62; }
+  .badge .disc { width:84px; height:84px; border-radius:50%; margin:0 auto 14px; display:grid; place-items:center; font-size:34px; position:relative; }
+  .badge .disc svg { width:38px; height:38px; }
+  .badge.locked .disc { background:var(--surface-2)!important; color:var(--text-faint)!important; }
+  .badge .bt { font-weight:800; font-size:15px; }
+  .badge .bd { color:var(--text-muted); font-size:12.5px; margin-top:5px; min-height:34px; }
+  .badge .prog { margin-top:12px; }
+  .badge .got { position:absolute; top:14px; inset-inline-end:14px; }
+  .badge .lock { position:absolute; top:14px; inset-inline-end:14px; color:var(--text-faint); }
+  .badge .lock svg{width:16px;height:16px;}
+  .summary { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:22px; }
+  .summary .s { flex:1; min-width:150px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); padding:18px; display:flex; align-items:center; gap:13px; box-shadow:var(--shadow-sm); }
+  .summary .s .si{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex:none;}
+  .summary .s .n{font-size:22px;font-weight:800;}
+  .summary .s .c{font-size:12.5px;color:var(--text-muted);}
+  @media(max-width:880px){.badge-grid{grid-template-columns:repeat(3,1fr);}}
+  @media(max-width:600px){.badge-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="breadcrumb"><a href="dashboard.html">داشبورد</a> ‹ <span>نشان‌ها</span></div>
+  <div class="page-head"><h1>نشان‌ها و دستاوردها</h1><p>با فعالیت در صبح ساحل نشان بگیر و امتیاز جایزه دریافت کن</p></div>
+
+  <div class="summary">
+    <div class="s"><span class="si ic-gold" id="su1"></span><div><div class="n tnum">۸</div><div class="c">نشان کسب‌شده</div></div></div>
+    <div class="s"><span class="si ic-plum" id="su2"></span><div><div class="n tnum">۱۴</div><div class="c">کل نشان‌ها</div></div></div>
+    <div class="s"><span class="si ic-green" id="su3"></span><div><div class="n tnum">۵۷٪</div><div class="c">پیشرفت کلی</div></div></div>
+    <div class="s"><span class="si ic-brand" id="su4"></span><div><div class="n tnum">۴۸۰</div><div class="c">امتیاز از نشان‌ها</div></div></div>
+  </div>
+
+  <div class="badge-grid" id="grid"></div>
+</div>
+
+<script src="assets/shell.js"></script>
+<script>
+  const I = SS.icon;
+  document.getElementById('su1').innerHTML=I('award');
+  document.getElementById('su2').innerHTML=I('star');
+  document.getElementById('su3').innerHTML=I('target');
+  document.getElementById('su4').innerHTML=I('coins');
+
+  // [emoji, title, desc, color, unlocked, progress(0-100 or null)]
+  const B = [
+    ['📰','خبرنگار فعال','۱۰۰ خبر مطالعه شده','var(--brand)',true,null],
+    ['📚','کتاب‌خوان حرفه‌ای','۱۰ کتاب خریداری شده','var(--plum)',true,null],
+    ['🔥','عضو وفادار','۳۰ روز ورود متوالی','var(--gold)',false,20],
+    ['💬','منتقد فعال','۵۰ نظر ثبت‌شده','var(--tier-silver)',true,null],
+    ['🤝','سفیر صبح ساحل','۱۰ دوست دعوت‌شده','var(--brand)',false,40],
+    ['🏝','کاشف هرمزگان','۲۰ مطلب گردشگری خوانده','var(--tier-platinum)',true,null],
+    ['💎','عضو طلایی','اشتراک طلایی فعال','var(--gold)',true,null],
+    ['🌅','سحرخیز','۱۰ ورود قبل از ۷ صبح','var(--plum)',true,null],
+    ['🎯','ماموریت‌شناس','۳۰ ماموریت تکمیل‌شده','var(--brand)',false,73],
+    ['🛍','خریدار حرفه‌ای','۲۰ خرید از فروشگاه','var(--plum)',false,55],
+    ['🏆','برنده خوش‌شانس','برنده یک قرعه‌کشی','var(--gold)',false,0],
+    ['📈','تحلیلگر اقتصادی','۵۰ گزارش اقتصادی خوانده','var(--tier-silver)',true,null],
+    ['📸','هوادار عکس','۱۰۰ گالری دیده‌شده','var(--tier-platinum)',false,82],
+    ['👑','اسطوره صبح ساحل','رسیدن به سطح پلاتینیوم','var(--brand)',false,72],
+  ];
+  document.getElementById('grid').innerHTML = B.map(b=>`
+    <div class="badge ${b[4]?'':'locked'}">
+      ${b[4]?'<span class="pill pill-green got">'+I('check')+'</span>':'<span class="lock">'+I('award')+'</span>'}
+      <div class="disc" style="background:color-mix(in srgb,${b[3]} 16%, transparent);color:${b[3]}">${b[0]}</div>
+      <div class="bt">${b[1]}</div>
+      <div class="bd">${b[2]}</div>
+      ${b[4]?'<span class="pill pill-gold" style="margin-top:6px">کسب شد</span>':
+        '<div class="prog"><div class="progress"><i style="width:'+b[5]+'%;background:'+b[3]+'"></i></div><div style="font-size:11px;color:var(--text-muted);margin-top:5px" class="tnum">'+SS.toFa(b[5])+'٪</div></div>'}
+    </div>`).join('');
+
+  SS.mount({ active: 'badges' });
+</script>
+</body>
+</html>
