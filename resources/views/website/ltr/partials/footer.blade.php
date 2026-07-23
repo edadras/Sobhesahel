@@ -14,7 +14,12 @@
                     </a>
                     <ul class="fotrSocial">
                         @php
-                            $social = \App\Models\AppSetting::getWebsiteSocial();
+                            // Same settings source as the RTL pages; 'x' holds the Twitter/X link.
+                            $social = array_merge(
+                                ['telegram' => null, 'linkedin' => null, 'x' => null, 'twitter' => null, 'youtube' => null, 'instagram' => null],
+                                (array) (\App\Helpers\SettingHelper::getWebsiteSocial() ?? [])
+                            );
+                            $social['twitter'] = $social['twitter'] ?? $social['x'];
                         @endphp
                         @if($social['telegram'])
                             <li>
@@ -61,9 +66,9 @@
                     <ul class="fotrLinks" style="margin-bottom: 0">
                         @foreach($categories as $category)
                             <li>
-                                <a href="{{ route('website.rtl.category',['slug' => $category['slug']]) }}"
+                                <a href="{{ route('website.ltr.category',['slug' => $category['slug']]) }}"
                                    class="transitionCls">
-                                    {{ $category['en_name'] }}
+                                    {{ $category['en_title'] ?? $category['title'] }}
                                 </a>
                             </li>
                         @endforeach

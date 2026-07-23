@@ -26,6 +26,8 @@ use Illuminate\Support\Str;
 
 class IndexController extends Controller
 {
+    use \App\Http\Controllers\Website\Concerns\RendersEnglishSite;
+
     public function newIndex()
     {
         $cacheKey = 'website_index_page';
@@ -390,78 +392,147 @@ class IndexController extends Controller
         }, $items);
     }
 
+    /**
+     * English home page (en) — mirrors newIndex() with English lang-filtered
+     * queries and the LTR home view. Any failure renders the clean English
+     * "coming soon" page instead of a 500 (WP-15 — چندزبانه).
+     */
     public function enIndex()
     {
-        $lang_id = 2;
+        try {
+            $lang_id = \App\Models\Language::contentLangId('en');
 
-        $setting = AppSetting::getFirstPageItems($lang_id);
+            // Same default layout as the RTL home, with English column titles.
+            $setting = [
+                'rows' => [
+                    'row_1' => [
+                        'is_active' => true,
+                        'columns' => [
+                            'col_1_1' => ['title' => $this->enCategoryTitle(4, 'Politics'), 'type' => 'category', 'id' => 4, 'count' => 6],
+                            'col_1_2' => ['title' => $this->enCategoryTitle(9, 'Economy'), 'type' => 'category', 'id' => 9, 'count' => 6],
+                            'col_1_3' => ['title' => $this->enCategoryTitle(7, 'Society'), 'type' => 'category', 'id' => 7, 'count' => 6],
+                        ],
+                    ],
+                    'row_2' => [
+                        'is_active' => true,
+                        'columns' => [
+                            'col_2_1' => ['title' => $this->enCategoryTitle(10, 'Culture & Art'), 'type' => 'category', 'id' => 10, 'count' => 6],
+                            'col_2_2' => ['title' => $this->enCategoryTitle(1, 'Sports'), 'type' => 'category', 'id' => 1, 'count' => 6],
+                            'col_2_3' => ['title' => $this->enCategoryTitle(12, 'Counties'), 'type' => 'category', 'id' => 12, 'count' => 6],
+                        ],
+                    ],
+                    'row_3' => [
+                        'is_active' => true,
+                        'columns' => [
+                            'col_3_1' => ['title' => $this->enCategoryTitle(2, 'News'), 'type' => 'category', 'id' => 2, 'count' => 4],
+                        ],
+                    ],
+                ],
+                'photos' => ['is_active' => true],
+                'video' => ['is_active' => true],
+                'top_row' => ['is_active' => true],
+            ];
 
-        $posts = [];
+            $posts = [];
 
-        $pdf = $this->getPost('archive',null,$lang_id);
-
-        $latest = $this->getLatest('news',$lang_id,9);
-
-        $compact = ['setting', 'posts', 'pdf', 'latest'];
-
-        foreach ($setting['rows'] as $row) {
-            if (!$row['is_active']) {
-                continue;
-            }
-
-            foreach ($row['columns'] as $name => $value) {
-                if ($value['type'] == 'category') {
-                    $posts[$name] = $this->getPost('news', $value['id'], $lang_id, $value['count']);
+            foreach ($setting['rows'] as $row) {
+                foreach ($row['columns'] as $name => $value) {
+                    $posts[$name] = collect($this->getEnPosts(News::class, $lang_id, $value['count'], $value['id']));
                 }
             }
+
+            $pdf = Archive::where('lang_id', $lang_id)
+                ->where('is_published', true)
+                ->orderBy('id', 'DESC')
+                ->take(5)
+                ->get()
+                ->map(fn ($item) => [
+                    'image_large' => $item->getImageUrl(),
+                    'archive_number' => $item->archive_number,
+                    'archive_category' => $item->archive_category->slug ?? '',
+                ])
+                ->all();
+
+            $latest = collect($this->getEnPosts(News::class, $lang_id, 9));
+
+            $notes = collect($this->getEnPosts(Note::class, $lang_id, 11))->map(function ($note) {
+                $author = null;
+
+                try {
+                    $author = AuthorProfileResource::make(
+                        ($note['author_id'] ?? null) === null ? User::find($note['user_id'] ?? null) : Author::find($note['author_id'])
+                    )->resolve();
+                } catch (\Throwable $e) {
+                    // keep defaults below
+                }
+
+                $note['author'] = ($author ?: []) + [
+                    'avatar' => '/asset/img/user05.png',
+                    'first_name' => '',
+                    'last_name' => '',
+                    'nik_name' => '',
+                ];
+
+                return $note;
+            });
+
+            $podcast = collect($this->getEnPosts(Podcast::class, $lang_id, 1));
+
+            $photos = collect($this->getEnPosts(Gallery::class, $lang_id, 11));
+
+            $video = collect($this->getEnPosts(Video::class, $lang_id, 6))->map(function ($item) {
+                $item['video'] = ['video' => $item['embed'] ?? ''];
+
+                return $item;
+            });
+
+            $website_title = $this->enBrandName();
+
+            return $this->ltrView('website.ltr.index', compact(
+                'setting', 'posts', 'pdf', 'latest', 'notes', 'podcast', 'photos', 'video', 'website_title'
+            ));
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            report($e);
+
+            return $this->comingSoon();
         }
-
-        if ($setting['photos']['is_active']) {
-            $photos = $this->getPost('image',null,2);
-
-            $compact = array_merge($compact,['photos']);
-        }
-
-        if ($setting['video']['is_active']) {
-            $video = $this->getPost('video',null,2);
-
-            $compact = array_merge($compact,['video']);
-        }
-
-
-        if ($setting['top_row']['is_active']) {
-            $notes = $this->getPost('note',null,$lang_id,11);
-
-            $podcast = $this->getPost('podcast',null,$lang_id,1);
-
-            $compact = array_merge($compact,['notes','podcast']);
-        }
-
-        return view('website.ltr.index', compact($compact));
     }
 
-    private function getPost($post_type, $category_id = null, $lang_id = 1, $count = 6)
+    /**
+     * English title of a category (falls back to the given English label).
+     */
+    private function enCategoryTitle(int $id, string $fallback): string
     {
-        if ($category_id != null){
-            $query = News::orderBy('id', 'DESC')->where('lang_id', $lang_id)->whereHas('categories', function ($query) use ($category_id) {
-                $query->where('categories.id', $category_id);
-            });
-        }else{
-            $query = News::orderBy('id', 'DESC')
-                ->where('lang_id', $lang_id)->where('post_type', $post_type);
-        }
+        try {
+            $category = Category::find($id);
 
-        return $query->limit($count)
-            ->get()
-            ->map(function ($item) {
-                return $item->getPostTotallyForWebsite(1);
-            });
+            return $category?->en_title ?: ($category?->title ?: $fallback);
+        } catch (\Throwable $e) {
+            return $fallback;
+        }
     }
 
-    private function getLatest($post_type, $lang_id = 1, $count = 6){
-        return News::getLatestPosts($count,$lang_id,$post_type)->map(function ($item) {
-            return $item->getPostTotallyForWebsite(1);
-        });
+    /**
+     * Published English rows of a content model as LTR-ready arrays
+     * (optionally limited to one category — News only).
+     */
+    private function getEnPosts(string $modelClass, int $lang_id, int $count, ?int $category_id = null): array
+    {
+        $query = $modelClass::orderBy('id', 'DESC')
+            ->where('lang_id', $lang_id)
+            ->where('is_published', true);
+
+        if ($category_id !== null && $modelClass === News::class) {
+            $query->whereHas('categories', function ($q) use ($category_id) {
+                $q->where('categories.id', $category_id);
+            });
+        }
+
+        return $this->normalizeLtrItems(
+            ContentMetaDataResource::collection($query->take($count)->get())->resolve()
+        );
     }
 
     public function advertise_click($id)

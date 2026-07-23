@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
+    use \App\Http\Controllers\Website\Concerns\RendersEnglishSite;
+
     public function index()
     {
         $website_title = 'تماس با ما | ' . (setting('general.fa_brand_name') ?? 'گروه رسانه‌ای صبح‌ساحل');
@@ -24,9 +26,21 @@ class ContactController extends Controller
         return view('website.rtl.contact', compact('website_title', 'seo'));
     }
 
+    /**
+     * English contact page (en/contact-us) — mirrors index() (WP-15).
+     */
     public function en_index()
     {
-        return view('website.ltr.contact');
+        $website_title = 'Contact Us | ' . $this->enBrandName();
+
+        $seo = [
+            'title' => 'Contact Us',
+            'description' => 'How to reach the Sobhe Sahel Media Group newsroom and office',
+            'type' => 'website',
+            'url' => url()->current(),
+        ];
+
+        return $this->ltrView('website.ltr.contact', compact('website_title', 'seo'), 'Contact Us');
     }
 
     public function message(Request $request)
@@ -73,10 +87,22 @@ class ContactController extends Controller
         return view('website.rtl.about-us',compact('about','website_title','seo'));
     }
 
+    /**
+     * English about page (en/about-us) — mirrors about_index() (WP-15).
+     */
     public function en_about_index()
     {
-        $about = AppSetting::get_value('en_about')['text'] ?? '';
+        $about = setting('about.en') ?? '';
 
-        return view('website.ltr.about-us',compact('about'));
+        $website_title = 'About Us | ' . $this->enBrandName();
+
+        $seo = [
+            'title' => 'About Us',
+            'description' => trim((string) strip_tags($about)) ?: 'About the Sobhe Sahel Media Group, the news website of Hormozgan province',
+            'type' => 'website',
+            'url' => url()->current(),
+        ];
+
+        return $this->ltrView('website.ltr.about-us', compact('about', 'website_title', 'seo'), 'About Us');
     }
 }

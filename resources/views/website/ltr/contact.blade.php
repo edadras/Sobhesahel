@@ -44,10 +44,11 @@
                             <div class="through">
 
                                 @php
-                                    $contact = \App\Models\AppSetting::getContactData();
+                                    // Same settings source as the RTL contact page (fa_* keys there, en_* keys here).
+                                    $contact = (array) (setting('contact') ?? []);
                                 @endphp
                                 <div class="right">
-                                    <a href="{{ $contact['en_whatsapp_link'] }}" class="smallBx box transitionCls">
+                                    <a href="{{ $contact['en_whatsapp'] ?? $contact['fa_whatsapp'] ?? '#' }}" class="smallBx box transitionCls">
                                         <div class="flex-end">
                                             <p>Whatsapp</p>
                                             <i>Click...</i>
@@ -58,7 +59,7 @@
                                         <div class="flex-end">
                                             <p>Address</p>
                                             <i>
-                                               {{ $contact['en_address'] }}
+                                               {{ $contact['en_address'] ?? '' }}
                                             </i>
                                         </div>
                                         <span class="icon-Location-1"></span>
@@ -67,7 +68,7 @@
                                         <div class="flex-end">
                                             <p>Phone number</p>
                                             <i>
-                                                {{ $contact['en_number'] }}
+                                                {{ $contact['en_phone'] ?? $contact['en_number'] ?? '' }}
                                             </i>
                                         </div>
                                         <span class="icon-Call-1"></span>
@@ -76,7 +77,7 @@
                                         <div class="flex-end">
                                             <p>Email</p>
                                             <i>
-                                                {{ $contact['en_email'] }}
+                                                {{ $contact['en_email'] ?? '' }}
                                             </i>
                                         </div>
                                         <span class="icon-mail-2"></span>
@@ -85,7 +86,12 @@
                                 <div class="left">
                                     <ul>
                                         @php
-                                            $social = \App\Models\AppSetting::getWebsiteSocial();
+                                            // Same settings source as the RTL pages; 'x' holds the Twitter/X link.
+                                            $social = array_merge(
+                                                ['telegram' => null, 'linkedin' => null, 'x' => null, 'twitter' => null, 'youtube' => null, 'instagram' => null],
+                                                (array) (\App\Helpers\SettingHelper::getWebsiteSocial() ?? [])
+                                            );
+                                            $social['twitter'] = $social['twitter'] ?? $social['x'];
                                         @endphp
                                         @if($social['telegram'])
                                             <li>

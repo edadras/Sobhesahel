@@ -28,7 +28,7 @@
                                     </p>
                                 </div>
                                 @guest
-                                    <a href="{{ route('profile.login') }}" class="follow transitionCls">
+                                    <a href="{{ route('profile') }}" class="follow transitionCls">
                                         <span class="icon-Group-2330"></span>
                                         <i>دنبال کنید</i>
                                     </a>

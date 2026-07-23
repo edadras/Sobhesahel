@@ -37,7 +37,7 @@
                                     @endauth
 
                                     @guest
-                                        <a href="{{ route('profile.login') }}">
+                                        <a href="{{ route('profile') }}">
                                             <button class="btn transitionCls">
                                                 <span class="icon-Group-2334"></span>
                                                 <i>Follow</i>

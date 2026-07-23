@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Storage;
 
 class ArchiveController extends Controller
 {
+    use \App\Http\Controllers\Website\Concerns\RendersEnglishSite;
+
     public function index()
     {
         $posts = Archive::getLatest()->resolve();
@@ -29,16 +31,40 @@ class ArchiveController extends Controller
         return view('website.rtl.archive', compact('posts', 'website_title', 'seo'));
     }
 
+    /**
+     * English newspaper archive (en/pdf) — mirrors index() with English
+     * lang-filtered archives and the LTR archive view (WP-15).
+     */
     public function en_index()
     {
-        $posts = Post::orderBy('id', 'DESC')
-            ->where('lang_id', 2)->where('post_type', 'archive')
-            ->paginate(12)
-            ->through(function ($item) {
-                return $item->getPostTotallyForWebsite(1);
-            });
+        try {
+            $posts = \App\Http\Resources\ContentMetaDataResource::collection(
+                Archive::where('lang_id', $this->englishLangId())
+                    ->where('is_published', true)
+                    ->orderBy('id', 'DESC')
+                    ->take(12)
+                    ->get()
+            )->resolve();
 
-        return view('website.ltr.archive', compact('posts'));
+            $posts = $this->normalizeLtrItems($posts);
+
+            $website_title = 'Newspaper Archive | ' . $this->enBrandName();
+
+            $seo = [
+                'title' => 'Newspaper Archive',
+                'description' => 'PDF archive of the Sobhe Sahel newspaper',
+                'type' => 'website',
+                'url' => url()->current(),
+            ];
+
+            return $this->ltrView('website.ltr.archive', compact('posts', 'website_title', 'seo'), 'Newspaper Archive');
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            report($e);
+
+            return $this->comingSoon('Newspaper Archive');
+        }
     }
 
     public function get_data(Request $request)
