@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>{{ $website_title ?? \App\Models\AppSetting::get_setting('en_page_title') }}</title>
+    <title>{{ $website_title ?? (setting('general.en_brand_name') ?? 'Sobhe Sahel Media Group') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">

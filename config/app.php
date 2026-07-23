@@ -86,6 +86,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | English Site (چندزبانه — WP-15)
+    |--------------------------------------------------------------------------
+    |
+    | Force-enables the English (en/...) front-end routes regardless of the
+    | languages table. The English site is also enabled when the languages
+    | table marks the "en" language as active (see Language::isEnglishEnabled).
+    |
+    */
+
+    'enable_english' => (bool) env('APP_ENABLE_ENGLISH', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Encryption Key
     |--------------------------------------------------------------------------
     |

@@ -12,6 +12,8 @@ use Spatie\Tags\Tag;
 
 class TagController extends Controller
 {
+    use \App\Http\Controllers\Website\Concerns\RendersEnglishSite;
+
     public function index($name)
     { 
         abort(503);
@@ -59,30 +61,13 @@ class TagController extends Controller
         return view('website.rtl.article', compact('posts', 'page_title', 'related', 'related_title', 'most_visited'));
     }
 
+    /**
+     * English tag listing (en/tag/{name}). The RTL tag page is currently
+     * disabled (index() aborts 503), so the English side renders the clean
+     * "coming soon" page instead of mirroring a broken listing (WP-15).
+     */
     public function en_index($name)
     {
-        $tag = Tag::where('name', $name)->where('lang_id',2)->firstOrFail();
-
-        $page_title = "#$name";
-
-        $related =  Post::getLatestPostsForWebsite('news',5,2);
-
-        $related_title = 'Latest News';
-
-        $most_visited = Post::getMostVisited(2,null,3)->map(function ($item) {
-            return $item->getPostTotallyForWebsite(1);
-        });
-
-        $posts = Post::orderBy('id', 'DESC')
-            ->where('lang_id', 2)
-            ->whereHas('tags', function($query) use ($tag) {
-                $query->where('tags.id', $tag->id);
-            })
-            ->paginate(20)
-            ->through(function ($item) {
-                return $item->getPostTotallyForWebsite(1);
-            });
-
-        return view('website.ltr.article',compact('posts','page_title','related','related_title','most_visited'));
+        return $this->comingSoon("#$name");
     }
 }

@@ -81,7 +81,7 @@
                                         </li>
                                         <li>
                                             @guest
-                                                <a href="{{ route('profile.login') }}" target="_blank"
+                                                <a href="{{ route('profile') }}" target="_blank"
                                                    class="transitionCls">
                                                     <small class="icon-Group-2344"></small>
                                                 </a>

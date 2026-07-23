@@ -14,7 +14,12 @@
                             </div>
                             <ul class="hdrTopLnks">
                                 @php
-                                    $social = \App\Models\AppSetting::getWebsiteSocial();
+                                    // Same settings source as the RTL pages; 'x' holds the Twitter/X link.
+                                    $social = array_merge(
+                                        ['telegram' => null, 'linkedin' => null, 'x' => null, 'twitter' => null, 'youtube' => null, 'instagram' => null],
+                                        (array) (\App\Helpers\SettingHelper::getWebsiteSocial() ?? [])
+                                    );
+                                    $social['twitter'] = $social['twitter'] ?? $social['x'];
                                 @endphp
                                 @if($social['telegram'])
                                     <li>
@@ -66,31 +71,34 @@
                                     <span class="icon-Group-2122"></span> </label
                                 ><br />
                             </div>
-                            <div class="langDrop">
-                                <div class="dropSel">
-                                    <div class="select">
-                                        <div class="dropSelDiv">
+                            {{-- Language switcher (چندزبانه — WP-15): built from Language::active(), shown only when more than one language is active. --}}
+                            @php
+                                $switcherLanguages = \App\Models\Language::active();
+                            @endphp
+                            @if($switcherLanguages->count() > 1)
+                                <div class="langDrop">
+                                    <div class="dropSel">
+                                        <div class="select">
+                                            <div class="dropSelDiv">
                           <span>
-                            <p>Farsi</p>
+                            <p>English</p>
                           </span>
-                                            <i class="icon-Vector11"></i>
+                                                <i class="icon-Vector11"></i>
+                                            </div>
                                         </div>
+                                        <input type="hidden" />
+                                        <ul class="dropdown-mnu">
+                                            @foreach($switcherLanguages as $language)
+                                                <li class="{{ $language->direction === 'rtl' ? 'faDirction' : '' }}">
+                                                    <a href="{{ $language->homeUrl() }}">
+                                                        <p>{{ $language->native_name }}</p>
+                                                    </a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
                                     </div>
-                                    <input type="hidden" />
-                                    <ul class="dropdown-mnu">
-                                        <li>
-                                            <a href="{{ route('website.ltr.home') }}">
-                                                <p>English</p>
-                                            </a>
-                                        </li>
-                                        <li class="faDirction">
-                                            <a href="{{ route('website.home') }}">
-                                                <p>Farsi</p>
-                                            </a>
-                                        </li>
-                                    </ul>
                                 </div>
-                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -181,7 +189,7 @@
                             type="text"
                             class="form-control rounded-2"
                             placeholder="Search..."
-                            name="query"
+                            name="q"
                         />
                         <button type="submit" class="btn rounded-2">
                             <span class="icon-Group-2358"></span>
@@ -195,15 +203,15 @@
                         @foreach($categories as $category)
                             <div class="catCol text-start">
                                 <a href="{{ route('website.ltr.category',['slug' => $category['slug']]) }}">
-                                    <strong>{{ $category['en_name'] }}</strong>
+                                    <strong>{{ $category['en_title'] ?? $category['title'] }}</strong>
                                 </a>
 
                                 @if(count($category['children_recursive']) != 0)
                                     <ul>
                                         @foreach($category['children_recursive'] as $child)
                                             <li>
-                                                <a href="{{ route('website.rtl.category',['slug' => $child['slug']]) }}">
-                                                    {{ $child['en_name'] }}
+                                                <a href="{{ route('website.ltr.category',['slug' => $child['slug']]) }}">
+                                                    {{ $child['en_title'] ?? $child['title'] }}
                                                 </a>
                                             </li>
                                         @endforeach

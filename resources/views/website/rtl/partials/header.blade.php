@@ -161,32 +161,34 @@
                                     <span class="icon-Group-2122"></span></label
                                 ><br/>
                             </div>
-                            <div class="langDrop">
-                                <div class="dropSel">
-                                    <div class="select">
-                                        <div class="dropSelDiv">
+                            {{-- سوییچر زبان (چندزبانه — WP-15): از Language::active() ساخته می‌شود و فقط وقتی بیش از یک زبان فعال باشد نمایش داده می‌شود. --}}
+                            @php
+                                $switcherLanguages = \App\Models\Language::active();
+                            @endphp
+                            @if($switcherLanguages->count() > 1)
+                                <div class="langDrop">
+                                    <div class="dropSel">
+                                        <div class="select">
+                                            <div class="dropSelDiv">
                           <span>
-                            <p>Farsi</p>
+                            <p>فارسی</p>
                           </span>
-                                            <i class="icon-Vector11"></i>
+                                                <i class="icon-Vector11"></i>
+                                            </div>
                                         </div>
+                                        <input type="hidden"/>
+                                        <ul class="dropdown-mnu">
+                                            @foreach($switcherLanguages as $language)
+                                                <li class="{{ $language->direction === 'rtl' ? 'faDirction' : '' }}">
+                                                    <a href="{{ $language->homeUrl() }}">
+                                                        <p>{{ $language->native_name }}</p>
+                                                    </a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
                                     </div>
-                                    <input type="hidden"/>
-                                    <ul class="dropdown-mnu">
-                                        <li>
-{{--                                            <a href="{{ route('website.ltr.home') }}">--}}
-                                            <a href="#">
-                                                <p>English</p>
-                                            </a>
-                                        </li>
-                                        <li class="faDirction">
-                                            <a href="{{ route('website.home') }}">
-                                                <p>Farsi</p>
-                                            </a>
-                                        </li>
-                                    </ul>
                                 </div>
-                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>

@@ -26,6 +26,8 @@ use Morilog\Jalali\Jalalian;
 
 class PostController extends Controller
 {
+    use \App\Http\Controllers\Website\Concerns\RendersEnglishSite;
+
     //New
     public function new_single($type,$code,$slug)
     {
@@ -161,39 +163,64 @@ class PostController extends Controller
         return view($view_name, compact('posts', 'page_title', 'website_title', 'most_visited', 'related', 'related_title', 'poll', 'seo'));
     }
 
+    /**
+     * English content listing (en/{type}) — mirrors index() with English
+     * lang-filtered queries and LTR views (WP-15 — چندزبانه).
+     */
     public function en_index($type)
     {
         if ($type == 'photo') {
             $type = 'image';
         }
 
-        $posts = Post::orderBy('id', 'DESC')
-            ->where('lang_id',2)
-            ->where('post_type',$type)
-            ->paginate(10)
-            ->through(function ($item) {
-                return $item->getPostTotallyForWebsite(1);
-            });
+        $modelMap = [
+            'news' => \App\Models\News::class,
+            'note' => \App\Models\Note::class,
+            'video' => \App\Models\Video::class,
+            'podcast' => \App\Models\Podcast::class,
+            'image' => \App\Models\Gallery::class,
+        ];
+
+        if (!isset($modelMap[$type])) {
+            abort(404);
+        }
 
         $page_title = $this->getEnPageTitle($type);
 
-        $website_title = $page_title . ' - ' . AppSetting::get_setting('en_page_title');
+        try {
+            $modelClass = $modelMap[$type];
 
-        $view_name = 'website.ltr.article';
+            $posts = $modelClass::orderBy('id', 'DESC')
+                ->where('lang_id', $this->englishLangId())
+                ->where('is_published', true)
+                ->paginate($type == 'podcast' ? 5 : 50)
+                ->through(fn ($item) => $this->normalizeLtrItem(ContentMetaDataResource::make($item)->resolve()));
 
-        $most_visited = Post::getMostVisited(2,null,3)->map(function ($item) {
-            return $item->getPostTotallyForWebsite(1);
-        });
+            $website_title = $page_title . ' - ' . $this->enBrandName();
 
-        $related =  Post::getLatestPostsForWebsite('news',5,2);
+            $view_name = $type == 'podcast' ? 'website.ltr.podcast' : 'website.ltr.article';
 
-        $related_title = 'Latest News';
+            $most_visited = $this->enMostViewedNews();
 
-        if ($type == 'podcast') {
-            $view_name = 'website.ltr.podcast';
+            $related = $this->enLatestNews();
+
+            $related_title = 'Latest News';
+
+            $seo = [
+                'title' => $page_title,
+                'description' => $page_title . ' archive of Sobhe Sahel news website',
+                'type' => 'website',
+                'url' => url()->current(),
+            ];
+
+            return $this->ltrView($view_name, compact('posts', 'page_title', 'website_title', 'most_visited', 'related', 'related_title', 'seo'), $page_title);
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            report($e);
+
+            return $this->comingSoon($page_title);
         }
-
-        return view($view_name, compact('posts', 'page_title', 'website_title','most_visited','related','related_title'));
     }
 
     private function getPageTitle($type)
@@ -305,82 +332,110 @@ class PostController extends Controller
         return view('website.rtl.' . $post_translation->post_type . '_single', compact($compact));
     }
 
+    /**
+     * English single content page (en/{type}/{code}/{slug}) — mirrors
+     * new_single() with an English lang_id guard and LTR views. Anything the
+     * legacy LTR blades cannot render falls back to the "coming soon" page
+     * (WP-15 — چندزبانه).
+     */
     public function en_single($type, $code, $slug)
     {
-        $post_model = Post::where('post_code', $code)->where('post_type',($type == 'photo') ? 'image' : $type)->firstOrFail()->load('PostTranslation','User');
+        $type = $type == 'photo' ? 'image' : $type;
 
-        $post_translation = $post_model->PostTranslation[0];
+        $modelMap = [
+            'news' => \App\Models\News::class,
+            'note' => \App\Models\Note::class,
+            'video' => \App\Models\Video::class,
+            'podcast' => \App\Models\Podcast::class,
+            'image' => \App\Models\Gallery::class,
+        ];
 
-        if ($post_translation == null) {
+        if (!isset($modelMap[$type])) {
             abort(404);
         }
 
-        $post = $post_model->getPostTotallyForWebsite(1,false,true,true);
+        $model = $modelMap[$type]::findOrFail($code);
 
-        $website_title = $post['title'] . ' - ' . AppSetting::get_setting('en_page_title');
-
-        $is_marked = User::isPostMarked($post_model->id);
-
-        $seo = [
-            'title' => $post['title'],
-            'description' => strip_tags($post['short_description']),
-            'keywords' => implode(',', array_map(function ($item) {
-                return $item['name'];
-            }, $post['tags'])),
-            'image' => asset($post['image_large'])
-        ];
-
-        $compact = ['post', 'website_title', 'is_marked', 'seo'];
-
-        //Note AND News
-        if (in_array($post_translation->post_type, ['note', 'news'])) {
-            $comments = $this->getComments($post_translation->post_id);
-
-            $related = $this->getRelated($post_model,$post_translation->lang_id);
-
-            $latest = Post::getLatestPostsForWebsite('news',6,$post_translation->lang_id);
-
-            $most_visited = Post::getMostVisited(2,null,3)->map(function ($item) {
-                return $item->getPostTotallyForWebsite(1);
-            });
-
-            $author = json_decode(json_encode(AuthorRerource::make($post_translation->Post->User)),true);
-
-            $compact = array_merge($compact, ['comments', 'related', 'latest', 'author' , 'most_visited']);
+        // Per-content language guard: only English rows are served here.
+        if (!$model->is_published || (int) $model->lang_id !== $this->englishLangId()) {
+            abort(404);
         }
 
-        //Video
-        if ($post_translation->post_type == 'video') {
-            $video = $post_translation->Post->PostData()->where('title', 'video')->first();
+        try {
+            $post = $this->normalizeLtrItem(ContentMetaDataResource::make($model)->resolve());
 
-            $video = ($video == null) ? [] : $video->data;
+            $post['post_body'] = $post['body'] ?? '';
 
-            $compact = array_merge($compact, ['video']);
+            $post['category'] = [];
+
+            if ($model instanceof News) {
+                $post['category'] = $model->categories
+                    ->map(fn ($category) => [
+                        'slug' => $category->slug,
+                        'en_name' => $category->en_title ?: $category->title,
+                    ])
+                    ->values()
+                    ->all();
+            }
+
+            try {
+                $post['tags'] = $model->tags->map(fn ($tag) => ['name' => (string) $tag->name])->values()->all();
+            } catch (\Throwable $e) {
+                $post['tags'] = [];
+            }
+
+            $comments = [];
+
+            $is_marked = false;
+
+            $website_title = $post['title'] . ' - ' . $this->enBrandName();
+
+            $seo = [
+                'title' => $post['title'],
+                'description' => strip_tags((string) ($post['short_description'] ?? '')),
+                'keywords' => implode(',', array_map(fn ($tag) => $tag['name'], $post['tags'])),
+                'image' => asset($post['image_large']),
+            ];
+
+            $related = $this->enLatestNews(5);
+
+            $related_title = 'Latest News';
+
+            $most_visited = $this->enMostViewedNews();
+
+            $poll = null;
+
+            $data = compact('post', 'comments', 'is_marked', 'website_title', 'seo', 'related', 'related_title', 'most_visited', 'poll');
+
+            if ($type == 'video') {
+                $data['video'] = ['video' => $model->embed ?? ''];
+            }
+
+            if ($type == 'image') {
+                $data['gallery'] = is_array($model->attachments ?? null) ? $model->attachments : [];
+            }
+
+            if ($type == 'podcast') {
+                $data['episodes'] = $this->normalizeLtrItems(
+                    ContentMetaDataResource::collection(
+                        \App\Models\Podcast::where('id', '!=', $model->id)
+                            ->where('lang_id', $this->englishLangId())
+                            ->where('is_published', true)
+                            ->orderBy('id', 'DESC')
+                            ->limit(5)
+                            ->get()
+                    )->resolve()
+                );
+            }
+
+            return $this->ltrView("website.ltr.{$type}_single", $data, $post['title']);
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            report($e);
+
+            return $this->comingSoon();
         }
-
-        //Image
-        if ($post_translation->post_type == 'image') {
-            $gallery = $post_translation->Post->PostData()->where('title', 'gallery')->first();
-
-            $gallery = ($gallery == null) ? [] : $gallery->data;
-
-            $compact = array_merge($compact, ['gallery']);
-        }
-
-        //Podcast
-        if ($post_translation->post_type == 'podcast') {
-            $episodes = Post::where('id', '!=', $post_translation->post_id)->where('post_type', 'podcast')->limit(5)->get()->map(function ($item) {
-                return $item->getPostTotallyForWebsite(1);
-            });
-
-            $compact = array_merge($compact, ['episodes']);
-        }
-
-        $poll = Poll::getActivePoll(2);
-
-        $compact = array_merge($compact, ['poll']);
-
-        return view('website.ltr.' . $post_translation->post_type . '_single', compact($compact));
     }
 
     private function getComments($post_id)

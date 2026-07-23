@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Cache;
 
 class CategoryController extends Controller
 {
+    use \App\Http\Controllers\Website\Concerns\RendersEnglishSite;
+
     public function index($slug)
     {
         $category = Category::where('slug', $slug)->firstOrFail();
@@ -66,45 +68,55 @@ class CategoryController extends Controller
         return view('website.rtl.article',compact('posts','page_title','category_id','has_follow','related_title','related','most_visited','seo','website_title'));
     }
 
+    /**
+     * English category listing (en/category/{slug}) — mirrors index() with
+     * English lang-filtered queries and the LTR article view (WP-15).
+     */
     public function en_index($slug)
     {
         $category = Category::where('slug', $slug)->firstOrFail();
 
-        $page_title = $category->en_name;
+        $page_title = $category->en_title ?: $category->title;
 
-        $categoryIds = collect([$category->id]);
+        try {
+            $categoryIds = $category->children->pluck('id')->prepend($category->id);
 
-        $childCategoryIds = $category->children->pluck('id');
-        $categoryIds = $categoryIds->merge($childCategoryIds);
+            $posts = News::orderBy('id', 'DESC')
+                ->where('lang_id', $this->englishLangId())
+                ->where('is_published', true)
+                ->whereHas('categories', function ($query) use ($categoryIds) {
+                    $query->whereIn('categories.id', $categoryIds);
+                })
+                ->paginate(20)
+                ->withQueryString()
+                ->through(fn ($item) => $this->normalizeLtrItem(ContentMetaDataResource::make($item)->resolve()));
 
-        $posts = Post::orderBy('id', 'DESC')
-            ->where('lang_id', 2)
-            ->whereHas('categories', function($query) use ($categoryIds) {
-                $query->whereIn('categories.id', $categoryIds);
-            })
-            ->paginate(20)
-            ->through(function ($item) {
-                return $item->getPostTotallyForWebsite(1);
-            });
+            $category_id = $category->id;
 
-        $category_id = $category->id;
-
-        if (Auth::check()){
-            $user = Auth::user();
-
-            $has_follow = $user->categories()->where('category_id', $category_id)->exists();
-        }else{
             $has_follow = false;
+
+            $related = $this->enLatestNews(5);
+
+            $related_title = 'Latest News';
+
+            $most_visited = $this->enMostViewedNews();
+
+            $website_title = $page_title . ' | ' . $this->enBrandName();
+
+            $seo = [
+                'title' => $page_title,
+                'description' => $category->meta_desc ?? $category->description ?? '',
+                'type' => 'website',
+                'url' => url()->current(),
+            ];
+
+            return $this->ltrView('website.ltr.article', compact('posts', 'page_title', 'category_id', 'has_follow', 'related_title', 'related', 'most_visited', 'website_title', 'seo'), $page_title);
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            report($e);
+
+            return $this->comingSoon($page_title);
         }
-
-        $related =  Post::getLatestPostsForWebsite('news',5,2);
-
-        $related_title = 'Latest News';
-
-        $most_visited = Post::getMostVisited(2,null,3)->map(function ($item) {
-            return $item->getPostTotallyForWebsite(1);
-        });
-
-        return view('website.ltr.article',compact('posts','page_title','category_id','has_follow','related_title','related','most_visited'));
     }
 }
