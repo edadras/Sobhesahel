@@ -40,7 +40,8 @@
     @endif
 
     <div class="advBanner advBanner--{{ $position }}">
-        <a href="{{ $banner_ad['url'] }}" target="_blank" rel="nofollow">
+        {{-- Anchor goes through the click-tracking route (ads/click/{id}). --}}
+        <a href="{{ route('advertise_click', ['id' => $banner_ad['id']]) }}" target="_blank" rel="nofollow">
             <img src="{{ \Illuminate\Support\Facades\Storage::url($banner_ad['image']) }}"
                  alt="{{ $banner_ad['name'] }}"
                  loading="lazy"/>
