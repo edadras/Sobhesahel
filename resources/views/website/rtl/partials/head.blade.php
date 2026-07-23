@@ -20,3 +20,4 @@
     <link rel="icon" href="{{ secure_asset('asset/img/logo.png') }}"/>
 
     @include('website.components.yektanet-ads', ['position' => 'head'])
+    {!! rescue(fn () => setting('scripts.head'), '', false) !!}

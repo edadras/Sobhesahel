@@ -12,6 +12,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Outerweb\FilamentSettings\Filament\Pages\Settings as BaseSettings;
 
 class Settings extends BaseSettings
@@ -62,6 +63,14 @@ class Settings extends BaseSettings
                                 ->label('شعار انگلیسی وبسایت'),
                             Textarea::make('general.en_brand_description')
                                 ->label('توضیحات انگلیسی وبسایت'),
+                            TextInput::make('general.time_format')
+                                ->label('قالب پیش‌فرض نمایش ساعت')
+                                ->placeholder('H:i')
+                                ->helperText('قالب PHP، مانند H:i یا H:i:s'),
+                            Textarea::make('general.keywords')
+                                ->label('کلمات کلیدی سایت')
+                                ->rows(2)
+                                ->helperText('کلمات کلیدی را با ویرگول (,) از هم جدا کنید.'),
                         ]),
                     Tabs\Tab::make('ارتباط با ما')
                         ->schema([
@@ -137,6 +146,45 @@ class Settings extends BaseSettings
                             Select::make('text_advertise')->searchable()->options(Advertise::where('image', null)->pluck('name', 'id'))
                                 ->multiple()->preload()
                                 ->label('تبلیغات متنی منو'),
+                        ]),
+                    Tabs\Tab::make('اسکریپت‌ها')
+                        ->schema([
+                            Textarea::make('scripts.head')
+                                ->label('اسکریپت‌های داخل <head>')
+                                ->rows(6)
+                                ->helperText('کد کامل همراه با تگ <script> یا <meta> وارد شود؛ در انتهای head سایت درج می‌شود.'),
+                            Textarea::make('scripts.body_start')
+                                ->label('اسکریپت‌های ابتدای <body>')
+                                ->rows(6)
+                                ->helperText('بلافاصله بعد از باز شدن تگ body درج می‌شود.'),
+                            Textarea::make('scripts.body_end')
+                                ->label('اسکریپت‌های انتهای <body>')
+                                ->rows(6)
+                                ->helperText('قبل از بسته شدن تگ body درج می‌شود.'),
+                        ]),
+                    Tabs\Tab::make('نظرات')
+                        ->schema([
+                            Toggle::make('comments.enabled')
+                                ->label('فعال بودن ثبت دیدگاه')
+                                ->default(true),
+                            Select::make('comments.default_status')
+                                ->label('وضعیت پیش‌فرض دیدگاه جدید')
+                                ->options([
+                                    'pending' => 'در انتظار تأیید',
+                                    'verified' => 'تأیید شده',
+                                ])
+                                ->default('pending'),
+                            TextInput::make('comments.min_seconds')
+                                ->label('حداقل فاصله ارسال (ثانیه)')
+                                ->numeric()
+                                ->minValue(0)
+                                ->placeholder('5')
+                                ->helperText('ارسال سریع‌تر از این زمان پس از باز شدن فرم، ربات محسوب می‌شود.'),
+                            TextInput::make('comments.max_links')
+                                ->label('حداکثر تعداد لینک مجاز در دیدگاه')
+                                ->numeric()
+                                ->minValue(0)
+                                ->placeholder('2'),
                         ]),
                 ]),
         ];

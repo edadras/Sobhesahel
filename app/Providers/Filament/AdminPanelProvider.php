@@ -6,6 +6,7 @@ use App\Filament\Pages\Auth\Login;
 use App\Filament\Resources\NoteResource;
 use App\Filament\Widgets\CmsChangesWidget;
 use App\Filament\Widgets\StatisticsWidget;
+use App\Http\Middleware\BlockLoginIps;
 use App\Http\Middleware\RedirectWwwToNonWww;
 use Awcodes\FilamentQuickCreate\QuickCreatePlugin;
 use Devonab\FilamentEasyFooter\EasyFooterPlugin;
@@ -59,6 +60,7 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop()
             ->middleware([
 //                RedirectWwwToNonWww::class,
+                BlockLoginIps::class,
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
@@ -71,7 +73,6 @@ class AdminPanelProvider extends PanelProvider
                 \Edwink\FilamentUserActivity\Http\Middleware\RecordUserActivity::class,
             ]) 
             ->renderHook(PanelsRenderHook::BODY_END, fn () => view('filament.shortcuts'))
-            ->login(Login::class)
             ->brandLogo(fn () => Storage::url(rescue(fn () => setting('general.fa_logo'), '', false)))
             ->brandLogoHeight('40px')
             ->plugins([
@@ -99,6 +100,11 @@ class AdminPanelProvider extends PanelProvider
                         \App\Filament\Resources\ArchiveResource::class,
                     ])->label('انتشار'),
                 EasyFooterPlugin::make()->withSentence('قدرت گرفته از Develogist CMS'),
+                // PWA support (tomatophp/filament-pwa v1) — guarded so a
+                // missing/removed package can never fatal the panel.
+                ...(class_exists(\TomatoPHP\FilamentPWA\FilamentPWAPlugin::class)
+                    ? [\TomatoPHP\FilamentPWA\FilamentPWAPlugin::make()]
+                    : []),
 //                AuthUIEnhancerPlugin::make()
 //                    ->showEmptyPanelOnMobile(false)
 //                    ->formPanelPosition('right')
