@@ -33,9 +33,12 @@ Route::get('/','App\Http\Controllers\Website\IndexController@newIndex')->name('w
 //   dd(\App\Models\Category::find(1)->news()->latest()->get());
 //})->name('website.home');
 
+// روت profile حالا ورودی پنل اعضاست (تصمیم ا۶): عضو واردشده به داشبورد و
+// مهمان به صفحه ورود اعضا هدایت می‌شود.
 Route::get('profile',function (){
-    return redirect(\route('website.home'));
-
+    return auth('member')->check()
+        ? redirect()->route('member.dashboard')
+        : redirect()->route('member.login');
 })->name('profile');
 
 Route::get('test',function (){
@@ -77,6 +80,48 @@ Route::get('subscribe/pay/{token}','App\Http\Controllers\Website\SubscribeContro
 Route::post('subscribe/pay/{token}','App\Http\Controllers\Website\SubscribeController@submitPayment')->middleware('throttle:10,10')->name('website.rtl.subscribe.pay.submit');
 // Access-code unlock for the gated PDF archive (اشتراک دیجیتال نشریات).
 Route::post('pdf/access','App\Http\Controllers\Website\SubscribeController@archiveAccess')->middleware('throttle:10,10')->name('website.rtl.archive.access');
+
+/*
+|--------------------------------------------------------------------------
+| پنل اعضا (member/...) — باشگاه اعضای صبح ساحل (فاز ۱ ناحیه کاربران)
+|--------------------------------------------------------------------------
+| Membership area on the dedicated `member` guard (separate from the admin
+| `web` guard — members can never reach /admin). Login/registration is
+| OTP-first with an optional email+password tab; OTP verification
+| auto-registers unknown mobiles. Pages that belong to later phases render
+| a shared «به‌زودی» view so no sidebar link 404s.
+| This block must stay registered BEFORE the catch-all {type} routes below.
+*/
+Route::prefix('member')->name('member.')->group(function () {
+    // Guest-only (an authenticated member is bounced to the dashboard).
+    Route::middleware(\App\Http\Middleware\RedirectIfMemberAuthenticated::class)->group(function () {
+        Route::get('login', 'App\Http\Controllers\Member\MemberAuthController@showLogin')->name('login');
+        Route::post('login/otp', 'App\Http\Controllers\Member\MemberAuthController@sendOtp')->middleware('throttle:10,10')->name('otp.send');
+        Route::post('login/otp/verify', 'App\Http\Controllers\Member\MemberAuthController@verifyOtp')->middleware('throttle:15,10')->name('otp.verify');
+        Route::get('login/otp/reset', 'App\Http\Controllers\Member\MemberAuthController@resetOtp')->name('otp.reset');
+        Route::post('login/password', 'App\Http\Controllers\Member\MemberAuthController@loginWithPassword')->middleware('throttle:10,10')->name('login.password');
+    });
+
+    // Authenticated member area.
+    Route::middleware(\App\Http\Middleware\MemberAuthenticate::class)->group(function () {
+        Route::post('logout', 'App\Http\Controllers\Member\MemberAuthController@logout')->name('logout');
+
+        Route::get('dashboard', 'App\Http\Controllers\Member\MemberDashboardController@index')->name('dashboard');
+
+        Route::get('settings', 'App\Http\Controllers\Member\MemberSettingsController@index')->name('settings');
+        Route::post('settings/profile', 'App\Http\Controllers\Member\MemberSettingsController@updateProfile')->name('settings.profile');
+        Route::post('settings/password', 'App\Http\Controllers\Member\MemberSettingsController@updatePassword')->name('settings.password');
+        Route::post('settings/locale', 'App\Http\Controllers\Member\MemberSettingsController@updateLocale')->name('settings.locale');
+
+        // «به‌زودی» placeholders — every roadmap page resolves (no 404s);
+        // later phases replace these routes with the real controllers.
+        foreach (array_keys(\App\Http\Controllers\Member\MemberPageController::PAGES) as $memberPage) {
+            Route::get($memberPage, 'App\Http\Controllers\Member\MemberPageController@show')
+                ->defaults('page', $memberPage)
+                ->name($memberPage);
+        }
+    });
+});
 
 //DONE
 Route::get('{type}/{code}/{slug}','App\Http\Controllers\Website\PostController@new_single')->name('website.rtl.single')->where('type','news|note|podcast|video|photo');
