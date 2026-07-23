@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Sanctum\HasApiTokens;
 
 /**
  * عضو سایت (باشگاه اعضای صبح ساحل).
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\Storage;
  */
 class Member extends Authenticatable
 {
-    use Notifiable;
+    use HasApiTokens, Notifiable;
 
     protected $guarded = ['id'];
 
